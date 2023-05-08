@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>帳戶</title>
+    <!-- bootstrap5-->
+    <link rel="stylesheet" href="./assets/css/BS5_CSS/bootstrap.css">
+    <script src="./assets/js/BS5_js/bootstrap.bundle.js"></script>
+    <!-- jQuery -->
+    <script src="./assets/js/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <style>
+        button {
+            border: none;
+            background-color: transparent;
+        }
+
+        .modal_none {
+            display: none;
+        }
+
+        .modal_block {
+            display: block;
+        }
+
+        .data_modal {
+            position: fixed;
+            bottom: 0;
+            left: 0%;
+            right: 0%;
+            width: 100%;
+            background-color: white;
+            z-index: 1000;
+            border-radius: 40px 40px;
+        }
+
+
+        .back_btn {
+            color: white;
+            text-align: center;
+            font-size: 40px;
+            position: fixed;
+            margin-left: 0%;
+        }
+
+        input[type=date] {
+            width: 150px;
+        }
+
+        .close {
+            font-size: 40px;
+            position: fixed;
+            margin-left: 0%;
+        }
+
+        .loc_btn {
+            background-color: rgba(206, 206, 206, 0.302);
+        }
+
+        .checked_btn {
+            background-color: #0069B4;
+            color: white;
+        }
+
+        .mask_gray {
+            z-index: 99;
+            background-color: rgba(206, 206, 206, 0.302);
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            opacity: 1;
+        }
+
+        .mask_on {
+            display: block;
+        }
+
+        .mask_off {
+            display: none;
+        }
+
+
+
+        .modal-content .container div+button {
+            background-color: #0069B4;
+            color: white;
+            width: 100%;
+            line-height: 80px;
+            border-radius: 20px;
+        }
+
+        .form_btn .col-4 {
+            text-align: center;
+            padding-bottom: 5px;
+        }
+
+        .form_btn .col-4 button {
+            width: 90%;
+            border-radius: 15px;
+        }
+    </style>
+
+</head>
+
+<body style="background-size: cover; background-color: rgba(206, 206, 206, 0.302)">
+    <div class='mask_gray mask_off'></div>
+    <!-- 導覽列 -->
+    <div style="height: 80px; background-color: #0069B4; width: 100%; ">
+        <button class="back_btn">x</button>
+        <h1 style="color: white; line-height:80px; text-align: center;">帳戶</h1>
+    </div>
+    <!-- 會員資料區 -->
+    <div style="background-color: white;">
+        <div class="container" style="padding-top: 20px;">
+            <div class="row">
+                <div class="col-12" style="text-align:center">
+                    <h6>
+                        會員編號 908823107
+                    </h6>
+                    <span style="font-size: 12px;">
+                        TWD
+                    </span><span style="font-size: 44px;">1000</span>
+                    <hr>
+                    <button style="border: none; background-color: transparent;">
+                        <i class="material-icons" style="font-size:60px;">
+                            credit_card</i><br>儲值</button>
+                    <button style="border: none; background-color: transparent;">
+                        <i class="material-icons" style="font-size:60px;">credit_card
+                        </i><br>提領</button>
+                </div>
+            </div>
+
+
+        </div>
+        <hr>
+    </div>
+
+    <div class="container">
+        付款紀錄
+    </div>
+
+    <div style="background-color: white;" id="typeChoose">
+        <div class="container" style="padding-top: 20px;">
+            <button class="date1_btn">日期
+                <i class="material-icons" style="vertical-align: bottom;">keyboard_arrow_down
+                </i>
+            </button>
+            <button>交易類型
+                <i class="material-icons" style="vertical-align: bottom;">keyboard_arrow_down
+                </i>
+            </button>
+            <hr>
+            <div class="modal_none loc1_btn" style="background-color: white;">
+                <div>
+                    <button>地點
+                        <i class="material-icons" style="vertical-align: bottom;">keyboard_arrow_down
+                        </i>
+                    </button>
+                </div>
+                <hr>
+            </div>
+            <div class="container">資料區
+                <div class="row">
+                    <div class="col-6">
+                        <h1>台新國際商業銀行</h1>
+                        <p style="color: gray;">Carparking提領</p>
+                        <p style="color: gray">2023/4/17 17:03</p>
+                    </div>
+                    <div class="col-6" style="text-align: right;">
+                        <h1 >55</h1>
+                        <p style="color: gray">餘額 : 0</p>
+                    </div>
+                    <hr>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div id="dateModal" class="data_modal modal_none" style="background-color: white; align-items: flex-end;">
+
+        <div class="modal-content">
+            <button class="close">X</button>
+            <h1 style="text-align: center;">日期</h1>
+            <hr>
+            <div class="container">
+                <div>
+                    <p>選擇時間區間</p>
+                    <input type="date" value="" style="display: inline;">
+                    <input type="date" value="" style="display: inline;"><br>
+                </div>
+                <button>
+                    <h1>選擇日期</h1>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+    <div id="locationModal" class="data_modal modal_none" style="background-color: white; align-items: flex-end;">
+
+        <div class="modal-content">
+            <button class="close">X</button>
+            <h1 style="text-align: center;">地點</h1>
+            <hr>
+            <div class="container">
+                <div class="row form_btn">
+                    <div class="col-4">
+                        <button class="loc_btn">無</button>
+                    </div>
+                    <div class="col-4">
+                        <button class="loc_btn">無</button>
+                    </div>
+                    <div class="col-4">
+                        <button class="loc_btn">無</button>
+                    </div>
+                    <div class="col-4">
+                        <button class="loc_btn">無</button>
+                    </div>
+                    <div class="col-4">
+                        <button class="loc_btn">無</button>
+                    </div>
+                </div>
+                <button>
+                    <h1>選擇地點</h1>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+    <div id="TradetypeModal" class="data_modal modal_none" style="background-color: white; align-items: flex-end;">
+
+        <div class="modal-content">
+            <button class="close">X</button>
+            <h1 style="text-align: center;">交易類型</h1>
+            <hr>
+            <div class="container">
+                <div class="row form_btn" style="align-items: center; padding-bottom: 5px;">
+                    <div class="col-4">
+                        <button class="loc_btn" value="" name="income">收入</button>
+                    </div>
+                    <div class="col-4">
+                        <button class="loc_btn" value="" name="expenditure">支出</button>
+                    </div>
+                    <div class="col-4">
+                        <button class="loc_btn" value="" name="fee">繳費</button>
+                    </div>
+
+                </div>
+                <button>
+                    <h1>選擇類型</h1>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        // modal區
+        var modal = document.getElementsByClassName("date_modal")
+        $('#typeChoose .container .date1_btn').on('click', function () {
+            modal_block($('#dateModal'))
+            maskOn()
+        })
+        $('#typeChoose div div div button').on('click', function () {
+            modal_block($('#locationModal'))
+            maskOn()
+        })
+        $('#typeChoose div button:first-child+button').on('click', function () {
+            modal_block($('#TradetypeModal'))
+            modal_block($(".loc1_btn"))
+            maskOn()
+        })
+        $('.close').on('click', function () {
+            closeModal()
+            maskOff()
+        })
+        window.onclick = function (event) {
+            if ($(event.target).hasClass('mask_on') == true) {
+                closeModal()
+                maskOff()
+            }
+        }
+        function closeModal() {
+            $('.data_modal').removeClass("modal_block");
+            $('.data_modal').addClass("modal_none");
+        }
+        function maskOn() {
+            $(".mask_gray").removeClass('mask_off')
+            $(".mask_gray").addClass('mask_on')
+        }
+        function maskOff() {
+            $(".mask_gray").removeClass('mask_on')
+            $(".mask_gray").addClass('mask_off')
+        }
+        function modal_none(x) {
+            x.removeClass("modal_block");
+            x.addClass("modal_none");
+        }
+        function modal_block(x) {
+            x.removeClass("modal_none");
+            x.addClass("modal_block");
+        }
+
+        // modal按鈕CSS
+        $('.form_btn button').on('click', function () {
+            if ($(this).hasClass("checked_btn") == true) {
+                $(this).removeClass("checked_btn")
+            } else {
+                $(this).addClass("checked_btn")
+            }
+        })
+
+
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>要資料範例</title>
+  <!-- bootstrap5-->
+  <link rel="stylesheet" href="./assets/css/BS5_CSS/bootstrap.css">
+  <script src="./assets/js/BS5_js/bootstrap.bundle.js"></script>
+  <!-- jQuery -->
+  <script src="./assets/js/jquery-3.6.4.min.js"></script>
+  <style>
+  </style>
+</head>
+
+<body>
+  要資料用示範區
+  <div id="member"></div>
+  <div id="carstay"></div>
+  <script>
+    // 要member資料http://localhost:3000/select/member/member_id
+    $.ajax({
+      url: "http://localhost:3000/select/member/1",
+      type: "GET"
+    }).done(function (x) {      
+      var datafromS = JSON.parse(x);
+      console.log(datafromS);
+      var member = datafromS[0]
+      $('#member').text(member.member_id+member.member_name+member.member_ac+member.member_pass+member.member_phone+member.member_email)
+    })
+    // 要全部carstay資料http://localhost:3000/select/carstay
+    $.ajax({
+      url: "http://localhost:3000/select/carstay/",
+      type: "GET"
+    }).done(function (x) {      
+      var datafromS = JSON.parse(x);
+      console.log(datafromS);      
+    })
+    // 要carstay資料http://localhost:3000/select/carstay/sl_id
+    $.ajax({
+      url: "http://localhost:3000/select/carstay/1",
+      type: "GET"
+    }).done(function (x) {      
+      var datafromS = JSON.parse(x);
+      console.log(datafromS);
+      var carstay = datafromS[0]
+      $('#carstay').text(carstay.sl_id+carstay.cs_name+carstay.cs_type+"...")
+    })
+
+     // 要流量資料 http://localhost:3000/select/traffic/id(停車場id)
+    $.ajax({
+      url: "http://localhost:3000/select/traffic/1",
+     
+      type: "GET"
+    }).done(function (x) {      
+      var datafromS = JSON.parse(x);
+      console.log("時間(小時)剩餘停車位"+JSON.parse(datafromS[0].monday).h1);
+      console.log(datafromS[0]);
+      
+    })
+
+  </script>
+
+</body>
+
+</html>
