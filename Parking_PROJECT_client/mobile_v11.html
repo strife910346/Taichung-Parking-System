@@ -188,7 +188,7 @@
             <div id="filter">
                 <label for="distance_select"></label>
                 <select id="distance_select">
-                    <option value="99999">距離(不限)</option>
+                    <option value="2000">距離(不限)</option>
                     <option value="300">300公尺內</option>
                     <option value="500">500公尺內</option>
                     <option value="800">800公尺內</option>
@@ -278,7 +278,7 @@
                                     @click="showDialog_fee(parking_name.Notes)" alt="">
                                 <!-- <img id="like" class="btn" src="./assets/image/map_image/like_btn.svg" alt=""> -->
                                 <img id="go" class="btn" src="./assets/image/map_image/go_btn.svg"
-                                    @click="routing([parking_name.Y, parking_name.X])" alt="">
+                                    @click="routing(parking_name.Y, parking_name.X)" alt="">
                             </div>
                             <div id="popular_time_graph" class="row">
                                 <p class="col-12">熱門時段</p>
@@ -349,7 +349,7 @@
                                 @click="showDialog_roadfee(parking.paycash)" alt="">
                             <!-- <img id="like" class="btn" src="./assets/image/map_image/like_btn.svg" alt=""> -->
                             <img id="go" class="btn" src="./assets/image/map_image/go_btn.svg"
-                                @click="routingTest([parking.TWD97_Y, parking.TWD97_X])" alt="">
+                                @click="routing(parking.TWD97_Y, parking.TWD97_X)" alt="">
                         </div>
                     </div>
                 </div>
@@ -425,6 +425,7 @@
                                 <b>${parkDct['Position']}</b><br>
                                 總車位數：${parkDct['TotalCar']}<br>
                                 剩餘車位：${CorrectAvailableCar}<br>
+                                <button class="routing" onclick="routing(${parkDct['Y']}, ${parkDct['X']})>開始導航</button>
                                 `)
                 // add parking info to list(if AvailableCar < 0)
             } else {
@@ -432,14 +433,20 @@
                                 <b>${parkDct['Position']}</b><br>
                                 總車位數：${parkDct['TotalCar']}<br>
                                 剩餘車位：${parkDct['AvailableCar']}<br>
+                                <button class="routing" onclick="routing(${parkDct['Y']}, ${parkDct['X']})">開始導航</button>
                                 `)
                 // add parking info to list(if AvailableCar >= 0)
             }
         }
 
+        // 導航
+        function routing(y, x) {
+            // 導向google導航網頁
+            var url = 'https://www.google.com/maps/dir/?api=1&destination=' + y + ',' + x;
+            window.open(url);
+        }
+
         // 持續刷新使用者位置並取得路邊停車點位
-
-
         // 取得使用者點位
         navigator.geolocation.watchPosition(success, error);
 
@@ -463,7 +470,7 @@
         });
         map.addControl(search);
 
-        let usermarker, userCircle, userZoomed, userlat, userlng, searchlat, searchlng, searchmarker;
+        let usermarker, userCircle, userZoomed, userlat, userlng, searchlat, searchlng, searchmarker, searchCircle;
         map.on('geosearch/showlocation', function (e) {
             searchlat = e.location.y;
             searchlng = e.location.x;
@@ -472,11 +479,91 @@
                 map.removeLayer(searchmarker);
                 // map.removeLayer(userCircle);
             }
-            // add user marker
-            searchmarker = L.marker([e.location.y, e.location.x], { icon: searchIcon }).addTo(map);
+            // add search marker
+            searchmarker = L.marker([searchlat, searchlng], { icon: searchIcon }).addTo(map);
+            if ($('#distance_select').val() == "2000") {
+                searchCircle = L.circle([searchlat, searchlng], {
+                    color: 'blue',
+                    fillColor: '#005DFF70',
+                    fillOpacity: 0.3,
+                    radius: 0
+                }).addTo(map);
+            } else {
+                searchCircle = L.circle([searchlat, searchlng], {
+                    color: 'blue',
+                    fillColor: '#005DFF70',
+                    fillOpacity: 0.3,
+                    radius: $('#distance_select').val()
+                }).addTo(map);
+            }
+
+            // add search road parkin lot
+            let car_parking_url = "https://datacenter.taichung.gov.tw/Swagger/OpenData/791a8a4b-ade6-48cf-b3ed-6c594e58a1f1";
+            let car_parking_xhr = new XMLHttpRequest();
+            car_parking_xhr.open('GET', car_parking_url, true);
+            car_parking_xhr.send();
+            car_parking_xhr.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    response = JSON.parse(this.response);
+                    // console.log(response);
+                    $(response).each(function (i, parkInfo) {
+                        var roadlat = Number(parkInfo['PS_Lat']);
+                        var roadlng = Number(parkInfo['PS_Lng']);
+                        switch (parkInfo['PS_type']) {
+                            case '1':
+                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < $('#distance_select').val()) {
+                                    if (parkInfo['status'] == 0) {
+                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
+                                        parkingClass(markerOK, 'roadOkDisabled');
+                                    } else {
+                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
+                                        parkingClass(markerNon, 'roadNonDisabled');
+                                    }
+                                }
+                                break;
+                            case '2':
+                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < $('#distance_select').val()) {
+                                    if (parkInfo['status'] == 0) {
+                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
+                                        parkingClass(markerOK, 'roadOkParents');
+                                    } else {
+                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
+                                        parkingClass(markerNon, 'roadNonParents');
+                                    }
+                                }
+                                break;
+                            default:
+                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < $('#distance_select').val()) {
+                                    if (parkInfo['status'] == 0) {
+                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
+                                        parkingClass(markerOK, 'roadOkNormal');
+                                    } else {
+                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
+                                        parkingClass(markerNon, 'roadNonNormal');
+                                    }
+                                }
+                                break;
+                        }
+                    })
+                };
+            }
+
+            // click and remove marker
+            $('.reset').click(function () {
+                map.removeLayer(searchmarker);
+                map.removeLayer(searchCircle);
+                $('.roadOkDisabled').remove();
+                $('.roadNonDisabled').remove();
+                $('.roadOkParents').remove();
+                $('.roadNonParents').remove();
+                $('.roadOkNormal').remove();
+                $('.roadNonNormal').remove();
+            })
 
         });
-        // 提示未啟用導航
+
+
+        // 提示未啟用定位
         function error(err) {
             if (err.code === 1) {
                 alert("無法獲得位置資訊，請開啟定位功能或使用搜尋欄搜尋您所在地點");
@@ -516,8 +603,8 @@
         // userplace function
         addUserPlace = (area, parkType, userlat, userlng) => {
             // add area
-            console.log('ok')
-            if (area == "99999") {
+            // console.log('ok')
+            if (area == "2000") {
                 userCircle = L.circle([userlat, userlng], {
                     color: 'blue',
                     fillColor: '#005DFF70',
@@ -677,7 +764,7 @@
         // change area
         $('#distance_select').change(function () {
             map.removeLayer(userCircle);
-            if ($(this).val() == "99999") {
+            if ($(this).val() == "2000") {
                 setTimeout(refrash_road($(this).val()), 2000)
             } else {
                 userCircle = L.circle([userlat, userlng], {
@@ -1004,15 +1091,6 @@
                                 }
                                 break;
                         }
-                        // if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
-                        //     if (parkInfo['status'] == 0) {
-                        //         var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                        //         parkingClass(markerOK, 'road_ok');
-                        //     } else {
-                        //         var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                        //         parkingClass(markerNon, 'road_non');
-                        //     }
-                        // }
                     })
                 };
             }
@@ -1346,9 +1424,9 @@
                             document.getElementById("Dialog_fee").close();
                         },
                         // 導航功能
-                        routing(routeLatLng) {
+                        routing(y, x) {
                             // 導向google導航網頁
-                            var url = 'https://www.google.com/maps/dir/?api=1&destination=' + routeLatLng[0] + ',' + routeLatLng[1];
+                            var url = 'https://www.google.com/maps/dir/?api=1&destination=' + y + ',' + x;
                             window.open(url);
                         }
                     }
@@ -1463,6 +1541,11 @@
                         },
                         closeDialog_roadfee() {
                             document.getElementById("Dialog_road_fee").close();
+                        },
+                        routing(y, x) {
+                            // 導向google導航網頁
+                            var url = 'https://www.google.com/maps/dir/?api=1&destination=' + y + ',' + x;
+                            window.open(url);
                         }
                     }
                 })
