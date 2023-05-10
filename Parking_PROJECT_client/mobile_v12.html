@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mobile_v8.2</title>
+    <title>mobile_v11</title>
     <!-- leaflet -->
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
@@ -108,7 +108,8 @@
                     <i class="fas fa-info fa-stack-1x fa-inverse" style="color: white;cursor: pointer;"></i>
                 </span>
                 <span class="fa-stack fa-xl" style="z-index: 99;">
-                    <i id="redo" class="fas fa-redo fa-rotate-60" style="color: white;cursor: pointer;"></i>
+                    <i id="redo" class="fas fa-redo fa-rotate-60" style="color: white;cursor: pointer;"
+                        onclick="window.location.reload()"></i>
                 </span>
                 <span class="fa-stack fa-xl" style="z-index: 99;">
                     <i class="fas fa-layer-group" style="color: white;cursor: pointer;" onclick="showDialog_map()"></i>
@@ -188,7 +189,7 @@
             <div id="filter">
                 <label for="distance_select"></label>
                 <select id="distance_select">
-                    <option value="2000">距離(不限)</option>
+                    <option value="1000">距離(預設)</option>
                     <option value="300">300公尺內</option>
                     <option value="500">500公尺內</option>
                     <option value="800">800公尺內</option>
@@ -223,7 +224,7 @@
         </button>
 
         <br>
-
+        <!-- 停車場選單 -->
         <div id="parking_lot_item" class="accordion" id="accordion_map_list">
             <div class="accordion-item" v-for="(parking_name, index) in parkingLot" :key="index">
                 <h2 class="accordion-header" id="headingOne">
@@ -299,8 +300,7 @@
                 </dialog>
             </div>
         </div>
-
-        <!-- 使用 v-for 指令，遍歷 parkingRoad 陣列中的資料，並動態生成 HTML 標籤 -->
+        <!-- 停車格選單 -->
         <div id="parking_road_item" class="accordion" id="accordion_map_list">
             <div class="accordion-item" v-for="(parking, index) in parkingRoad" :key="index">
                 <div class="accordion-item">
@@ -338,7 +338,7 @@
                                 </div>
                                 <div id="distance_info" class="col-4">
                                     <p class="distance">{{ parking.distanceKM }}公里{{ parking.distanceM }}公尺</p>
-                                    <p class="distance" style="display: none;">{{ parking.distance }}</p>
+                                    <p class="distanceR" style="display: none;">{{ parking.distance }}</p>
                                     <p class="distance_time">{{ parking.travelTime }}分鐘</p>
                                 </div>
                             </div>
@@ -365,11 +365,11 @@
                 </dialog>
             </div>
         </div>
+
         <br><br><br><br><br><br><br><br><br><br>
         <!-- Add more accordion items here -->
 
     </div>
-
 
 
     <script>
@@ -481,7 +481,7 @@
             }
             // add search marker
             searchmarker = L.marker([searchlat, searchlng], { icon: searchIcon }).addTo(map);
-            if ($('#distance_select').val() == "2000") {
+            if ($('#distance_select').val() == "1000") {
                 searchCircle = L.circle([searchlat, searchlng], {
                     color: 'blue',
                     fillColor: '#005DFF70',
@@ -604,7 +604,7 @@
         addUserPlace = (area, parkType, userlat, userlng) => {
             // add area
             // console.log('ok')
-            if (area == "2000") {
+            if (area == "1000") {
                 userCircle = L.circle([userlat, userlng], {
                     color: 'blue',
                     fillColor: '#005DFF70',
@@ -764,7 +764,7 @@
         // change area
         $('#distance_select').change(function () {
             map.removeLayer(userCircle);
-            if ($(this).val() == "2000") {
+            if ($(this).val() == "1000") {
                 setTimeout(refrash_road($(this).val()), 2000)
             } else {
                 userCircle = L.circle([userlat, userlng], {
@@ -1435,40 +1435,46 @@
                 // console.log(parkingLot);
             })
             .then(() => {
-                // 在選單改變時觸發事件
-                document.getElementById("special_select").addEventListener("change", function () {
-                    var selectedValue = this.value; // 取得目前選擇的值
-                    var parkingItems = document.querySelectorAll("#parking_lot_item .accordion-item"); // 取得所有停車場項目
+                //停車場篩選用程式碼
+                var distance_select = document.getElementById("distance_select");
+                var special_select = document.getElementById("special_select");
+                var type_select = document.getElementById("type_select");
+                var parkingItems = document.querySelectorAll("#parking_lot_item .accordion-item");
 
-                    // 依據選擇的值顯示相對應的停車場項目
+                distance_select.addEventListener("change", filterParkingItems);
+                special_select.addEventListener("change", filterParkingItems);
+                type_select.addEventListener("change", filterParkingItems);
+
+                function filterParkingItems() {
+                    var distanceValue = parseInt(distance_select.value);
+                    var specialValue = special_select.value;
+                    var typeValue = type_select.value;
+
                     for (var i = 0; i < parkingItems.length; i++) {
                         var parkingItem = parkingItems[i];
                         var parkingName = parkingItem.querySelector(".parking_position").textContent;
                         var parkingType = parkingLot.find(function (item) { return item.Position === parkingName; }).Type;
+                        var distance = parkingLot.find(function (item) { return item.Position === parkingName; }).distance;
 
-                        // 顯示所有停車場
-                        if (selectedValue === "non_special") {
+                        if (distance <= distanceValue &&
+                            (specialValue === "non_special" ||
+                                (specialValue === "disabled" && parkingType.includes(1)) ||
+                                (specialValue === "parent" && parkingType.includes(2))) &&
+                            (typeValue === "non_parking_type" ||
+                                (typeValue === "parking-lot" && parkingLot.find(function (item) { return item.Position === parkingName; }).ParkingType === "ParkingLot") ||
+                                (typeValue === "roadside-all" && parkingLot.find(function (item) { return item.Position === parkingName; }).ParkingType !== "ParkingLot") ||
+                                (typeValue === "roadside-empty" && parkingLot.find(function (item) { return item.Position === parkingName; }).ParkingType !== "ParkingLot" && parkingLot.find(function (item) { return item.Position === parkingName; }).TotalSpace > parkingLot.find(function (item) { return item.Position === parkingName; }).RemainingSpace))) {
                             parkingItem.style.display = "block";
-                        }
-                        // 顯示身障車位
-                        else if (selectedValue === "disabled" && parkingType.includes(1)) {
-                            parkingItem.style.display = "block";
-                        }
-                        // 顯示親子車位
-                        else if (selectedValue === "parent" && parkingType.includes(2)) {
-                            parkingItem.style.display = "block";
-                        }
-                        // 隱藏其它類型的停車場
-                        else {
+                        } else {
                             parkingItem.style.display = "none";
                         }
                     }
-                });
+                }
             })
 
-        // --------------------------------------------------------------
 
-        //台中路邊停車格資訊 --v2
+
+        //台中路邊停車格資訊
 
         // 定義 parkingRoad 陣列在全域範圍
         const parkingRoad = [];
@@ -1513,7 +1519,7 @@
             .then(response => response.text())
             .then(csvString => {
                 const taichung_road_info = parseTaichungRoadInfo(csvString);
-                for (let i = 0; i < 100; i++) { //taichung_road_info.length
+                for (let i = 0; i < 1000; i++) { //taichung_road_info.length
                     parkingRoad.push(taichung_road_info[i]);
                 }
 
@@ -1550,31 +1556,47 @@
                     }
                 })
 
-                console.log(parkingRoad);
+                // console.log(parkingRoad);
                 // 在這裡使用 parkingRoad
             })
             .catch(error => console.error(error))
 
             .then(() => {
-                const specialSelect = document.getElementById("special_select");
-                specialSelect.addEventListener("change", filterSpecial);
+                //停車格篩選用程式碼
+                var distance_selectR = document.getElementById("distance_select");
+                distance_selectR.addEventListener("change", filterDistanceR);
 
-                function filterSpecial() {
-                    const parkingItemsS = document.querySelectorAll("#parking_road_item .accordion-item");
-                    const valueS = specialSelect.value;
+                function filterDistanceR() {
+                    var parkingItems = document.querySelectorAll("#parking_road_item .accordion-item");
+                    var valueD = distance_selectR.value;
 
-                    parkingItemsS.forEach(item => {
-                        const parking = item.querySelector(".parking_name");
+                    parkingItems.forEach(item => {
+                        var parkingRD = item.querySelector(".distanceR");
+                        var distanceR = parseInt(parkingRD.textContent);
 
-                        if (valueS === "disabled" && item.querySelector("#handicapped") === null) {
-                            item.style.display = "none";
-                        } else if (valueS === "parent" && item.querySelector("#Parent_Child") === null) {
+                        var specialSelect = document.getElementById("special_select");
+                        var valueS = specialSelect.value;
+                        var type_selectR = document.getElementById("type_select");
+                        var valueT = type_selectR.value;
+
+                        if ((valueD !== "" && parseInt(valueD) < distanceR) ||
+                            (valueS === "disabled" && item.querySelector("#handicapped") === null) ||
+                            (valueS === "parent" && item.querySelector("#Parent_Child") === null) ||
+                            (valueT === "parking-lot") ||
+                            (valueT === "roadside-empty" && item.querySelector("#status_light") == null)) {
                             item.style.display = "none";
                         } else {
                             item.style.display = "block";
                         }
                     });
                 }
+
+                var specialSelect = document.getElementById("special_select");
+                specialSelect.addEventListener("change", filterDistanceR);
+
+                var type_selectR = document.getElementById("type_select");
+                type_selectR.addEventListener("change", filterDistanceR);
+
             })
 
 
