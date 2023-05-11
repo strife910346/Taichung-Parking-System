@@ -4,10 +4,12 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mobile_v11</title>
+    <title>Mobile Parking Map</title>
     <!-- leaflet -->
-    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <!-- <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script> -->
+    <script src="./assets/js/map_control_js/leaflet/leaflet.js"></script>
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" /> -->
+    <link rel="stylesheet" href="./assets/css/map_control_css/leaflet/leaflet.css" />
 
     <!-- bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -173,7 +175,7 @@
             <img id="car_parking_img" class="map_select" src="./assets/image/map_image/car_parking_select.jpg" alt=""
                 style="cursor: pointer;" onclick="">
             <img id="car_stay_img" class="map_select" src="./assets/image/map_image/car_stay.jpg" alt=""
-                style="cursor: pointer;" onclick="window.location.href = './Mobile_v1_carStay.html';">
+                style="cursor: pointer;" onclick="window.location.href = './mobile_carStay_v3.html';">
         </div>
     </dialog>
 
@@ -189,7 +191,7 @@
             <div id="filter">
                 <label for="distance_select"></label>
                 <select id="distance_select">
-                    <option value="1000">距離(預設)</option>
+                    <option value="2000">距離(預設)</option>
                     <option value="300">300公尺內</option>
                     <option value="500">500公尺內</option>
                     <option value="800">800公尺內</option>
@@ -425,7 +427,7 @@
                                 <b>${parkDct['Position']}</b><br>
                                 總車位數：${parkDct['TotalCar']}<br>
                                 剩餘車位：${CorrectAvailableCar}<br>
-                                <button class="routing" onclick="routing(${parkDct['Y']}, ${parkDct['X']})>開始導航</button>
+                                <button onclick="routing(${parkDct['Y']}, ${parkDct['X']})">開始導航</button>
                                 `)
                 // add parking info to list(if AvailableCar < 0)
             } else {
@@ -433,7 +435,7 @@
                                 <b>${parkDct['Position']}</b><br>
                                 總車位數：${parkDct['TotalCar']}<br>
                                 剩餘車位：${parkDct['AvailableCar']}<br>
-                                <button class="routing" onclick="routing(${parkDct['Y']}, ${parkDct['X']})">開始導航</button>
+                                <button onclick="routing(${parkDct['Y']}, ${parkDct['X']})>開始導航</button>
                                 `)
                 // add parking info to list(if AvailableCar >= 0)
             }
@@ -470,7 +472,14 @@
         });
         map.addControl(search);
 
-        let usermarker, userCircle, userZoomed, userlat, userlng, searchlat, searchlng, searchmarker, searchCircle;
+        let usermarker, userCircle, userZoomed, userlat, userlng, searchlat = 0, searchlng = 0, searchmarker, searchCircle;
+
+        searchCircle = L.circle([0, 0], {
+            color: 'blue',
+            fillColor: '#005DFF70',
+            fillOpacity: 0.3,
+            radius: 0
+        }).addTo(map);
 
         map.on('geosearch/showlocation', function (e) {
             searchlat = e.location.y;
@@ -483,7 +492,7 @@
             }
             // add search marker
             searchmarker = L.marker([searchlat, searchlng], { icon: searchIcon }).addTo(map);
-            if ($('#distance_select').val() == "1000") {
+            if ($('#distance_select').val() == "2000") {
                 searchCircle = L.circle([searchlat, searchlng], {
                     color: 'blue',
                     fillColor: '#005DFF70',
@@ -561,7 +570,7 @@
         addUserPlace = (area, parkType, userlat, userlng) => {
             // add area
             // console.log('ok')
-            if (area == "1000") {
+            if (area == "2000") {
                 userCircle = L.circle([userlat, userlng], {
                     color: 'blue',
                     fillColor: '#005DFF70',
@@ -722,7 +731,7 @@
         $('#distance_select').change(function () {
             map.removeLayer(userCircle);
             map.removeLayer(searchCircle);
-            if ($(this).val() == "1000") {
+            if ($(this).val() == "2000") {
                 setTimeout(refrash_road($(this).val()), 1000);
                 setTimeout(search_road($(this).val()), 1000)
             } else {
@@ -1320,7 +1329,7 @@
         redo.addEventListener('click', () => {
             // 顯示訊息
             const message = document.createElement('div');
-            message.innerText = '已更新清單資訊';
+            message.innerText = '更新頁面';
             message.style.position = 'fixed';
             message.style.top = '50%';
             message.style.left = '50%';
@@ -1335,35 +1344,29 @@
             // 關閉訊息
             setTimeout(() => {
                 message.remove();
-            }, 700);
+            }, 400);
         });
 
+        // 檢查Local Storage中是否有名為"visited"的項目
+        if (!localStorage.getItem("visited")) {
+            // 如果"visited"不存在，將其設置為true並重新加載頁面
+            localStorage.setItem("visited", true);
+            // 在頁面加載後延遲兩秒後重新加載
+            setTimeout(function () {
+                window.location.reload();
+            }, 4000);
+        }
+        // 將按鈕的單擊事件處理程序設置為防止單擊後重新加載
+        // document.getElementById("reload-btn").addEventListener("click", function (event) {
+        //     event.preventDefault();
+        // });
 
-        // 加入最愛的提示訊息
-        const likeBtns = document.querySelectorAll('#like');
-        likeBtns.forEach(likeBtn => {
-            likeBtn.addEventListener('click', () => {
-                // 顯示訊息
-                const message = document.createElement('div');
-                message.innerText = '已加到最愛清單';
-                message.style.position = 'fixed';
-                message.style.top = '50%';
-                message.style.left = '50%';
-                message.style.transform = 'translate(-50%, -50%)';
-                message.style.padding = '10px 20px';
-                message.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-                message.style.color = '#fff';
-                message.style.borderRadius = '5px';
-                message.style.zIndex = 9999;
-                document.body.appendChild(message);
 
-                // 關閉訊息
-                setTimeout(() => {
-                    message.remove();
-                }, 700);
-            });
-        });
+
+
+
     </script>
+
     <script>
 
         // 取得台中停車場資訊
@@ -1445,7 +1448,15 @@
                             // 導向google導航網頁
                             var url = 'https://www.google.com/maps/dir/?api=1&destination=' + y + ',' + x;
                             window.open(url);
+                        },
+                        sortParkingLotByDistance() {
+                            this.parkingLot.sort((a, b) => {
+                                return a.distance - b.distance;
+                            });
                         }
+                    },
+                    mounted() {
+                        this.sortParkingLotByDistance();
                     }
                 })
                 // 在這裡使用parkingLot
@@ -1569,7 +1580,15 @@
                             // 導向google導航網頁
                             var url = 'https://www.google.com/maps/dir/?api=1&destination=' + y + ',' + x;
                             window.open(url);
+                        },
+                        sortParkingRoadByDistance() {
+                            this.parkingRoad.sort((a, b) => {
+                                return a.distance - b.distance;
+                            });
                         }
+                    },
+                    mounted() {
+                        this.sortParkingRoadByDistance();
                     }
                 })
 
