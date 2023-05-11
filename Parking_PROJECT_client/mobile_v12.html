@@ -471,12 +471,14 @@
         map.addControl(search);
 
         let usermarker, userCircle, userZoomed, userlat, userlng, searchlat, searchlng, searchmarker, searchCircle;
+
         map.on('geosearch/showlocation', function (e) {
             searchlat = e.location.y;
             searchlng = e.location.x;
             // reset marker and circle
             if (searchmarker) {
                 map.removeLayer(searchmarker);
+                map.removeLayer(searchCircle);
                 // map.removeLayer(userCircle);
             }
             // add search marker
@@ -498,55 +500,7 @@
             }
 
             // add search road parkin lot
-            let car_parking_url = "https://datacenter.taichung.gov.tw/Swagger/OpenData/791a8a4b-ade6-48cf-b3ed-6c594e58a1f1";
-            let car_parking_xhr = new XMLHttpRequest();
-            car_parking_xhr.open('GET', car_parking_url, true);
-            car_parking_xhr.send();
-            car_parking_xhr.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
-                    response = JSON.parse(this.response);
-                    // console.log(response);
-                    $(response).each(function (i, parkInfo) {
-                        var roadlat = Number(parkInfo['PS_Lat']);
-                        var roadlng = Number(parkInfo['PS_Lng']);
-                        switch (parkInfo['PS_type']) {
-                            case '1':
-                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < $('#distance_select').val()) {
-                                    if (parkInfo['status'] == 0) {
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkDisabled');
-                                    } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonDisabled');
-                                    }
-                                }
-                                break;
-                            case '2':
-                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < $('#distance_select').val()) {
-                                    if (parkInfo['status'] == 0) {
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkParents');
-                                    } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonParents');
-                                    }
-                                }
-                                break;
-                            default:
-                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < $('#distance_select').val()) {
-                                    if (parkInfo['status'] == 0) {
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkNormal');
-                                    } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonNormal');
-                                    }
-                                }
-                                break;
-                        }
-                    })
-                };
-            }
+            search_road($('#distance_select').val())
 
             // click and remove marker
             $('.reset').click(function () {
@@ -764,8 +718,10 @@
         // change area
         $('#distance_select').change(function () {
             map.removeLayer(userCircle);
+            map.removeLayer(searchCircle);
             if ($(this).val() == "1000") {
-                setTimeout(refrash_road($(this).val()), 2000)
+                setTimeout(refrash_road($(this).val()), 1000);
+                setTimeout(search_road($(this).val()), 1000)
             } else {
                 userCircle = L.circle([userlat, userlng], {
                     color: 'blue',
@@ -773,8 +729,15 @@
                     fillOpacity: 0.3,
                     radius: $(this).val()
                 }).addTo(map);
+                searchCircle = L.circle([searchlat, searchlng], {
+                    color: 'blue',
+                    fillColor: '#005DFF70',
+                    fillOpacity: 0.3,
+                    radius: $(this).val()
+                }).addTo(map);
                 // refrash_road($(this).val())
-                setTimeout(refrash_road($(this).val()), 2000)
+                setTimeout(refrash_road($(this).val()), 1000);
+                setTimeout(search_road($(this).val()), 1000)
             }
 
         })
@@ -1096,6 +1059,57 @@
             }
         }
 
+        function search_road(search_area) {
+            let car_parking_url = "https://datacenter.taichung.gov.tw/Swagger/OpenData/791a8a4b-ade6-48cf-b3ed-6c594e58a1f1";
+            let car_parking_xhr = new XMLHttpRequest();
+            car_parking_xhr.open('GET', car_parking_url, true);
+            car_parking_xhr.send();
+            car_parking_xhr.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    response = JSON.parse(this.response);
+                    // console.log(response);
+                    $(response).each(function (i, parkInfo) {
+                        var roadlat = Number(parkInfo['PS_Lat']);
+                        var roadlng = Number(parkInfo['PS_Lng']);
+                        switch (parkInfo['PS_type']) {
+                            case '1':
+                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < search_area) {
+                                    if (parkInfo['status'] == 0) {
+                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
+                                        parkingClass(markerOK, 'roadOkDisabled');
+                                    } else {
+                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
+                                        parkingClass(markerNon, 'roadNonDisabled');
+                                    }
+                                }
+                                break;
+                            case '2':
+                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < search_area) {
+                                    if (parkInfo['status'] == 0) {
+                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
+                                        parkingClass(markerOK, 'roadOkParents');
+                                    } else {
+                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
+                                        parkingClass(markerNon, 'roadNonParents');
+                                    }
+                                }
+                                break;
+                            default:
+                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < search_area) {
+                                    if (parkInfo['status'] == 0) {
+                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
+                                        parkingClass(markerOK, 'roadOkNormal');
+                                    } else {
+                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
+                                        parkingClass(markerNon, 'roadNonNormal');
+                                    }
+                                }
+                                break;
+                        }
+                    })
+                };
+            }
+        }
 
         function refrash_park() {
             $(".parkDisabled").remove();
