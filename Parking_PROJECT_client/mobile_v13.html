@@ -506,12 +506,15 @@
             $('.reset').click(function () {
                 map.removeLayer(searchmarker);
                 map.removeLayer(searchCircle);
+                searchlat = 0;
+                searchlng = 0;
                 $('.roadOkDisabled').remove();
                 $('.roadNonDisabled').remove();
                 $('.roadOkParents').remove();
                 $('.roadNonParents').remove();
                 $('.roadOkNormal').remove();
                 $('.roadNonNormal').remove();
+                setTimeout(refrash_road($('#distance_select').val()), 1000);
             })
 
         });
