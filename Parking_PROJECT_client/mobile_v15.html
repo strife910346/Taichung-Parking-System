@@ -124,20 +124,12 @@
         <ul class="list-menu" style="display: none;z-index: 99;background-color: white;cursor: pointer;width: 100%;">
 
             <!-- <div class="d-grid  w-100" style="z-index: 99;">
-                <button class="btn btn-primary border-0 w-100 navlist" type="button">Where my car !</button>
-            </div> -->
-            <div class="d-grid  w-100" style="z-index: 99;">
                 <button class="btn btn-primary border-0 w-100 navlist" type="button">繳費紀錄</button>
             </div>
 
             <div class="d-grid  w-100" style="z-index: 99;">
                 <button class="btn btn-primary border-0 w-100 navlist" type="button">付費車牌</button>
             </div>
-
-            <!-- <div class="d-grid  w-100" style="z-index: 99;">
-                <button class="btn btn-primary border-0 w-100 navlist" type="button">常用車位</button>
-            </div> -->
-
             <div class="d-grid  w-100" style="z-index: 99;">
                 <button class="btn btn-primary border-0 w-100 navlist" type="button">個人資訊</button>
             </div>
@@ -147,9 +139,9 @@
             <div class="d-grid  w-100" style="z-index: 99;">
                 <button class="btn btn-primary border-0 w-100 navlist" type="button">通知中心</button>
             </div>
-            <div class="d-grid  w-100" style="z-index: 99;">
-                <button class="btn btn-primary border-0 w-100 navlist" type="button">登出</button>
-            </div>
+            <div id="logIO" class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist" type="button">登入</button>
+            </div> -->
         </ul>
     </div>
     <!-- 覆蓋式視窗 -->
@@ -434,19 +426,19 @@
             if (parkDct['AvailableCar'] < 0) {
                 var CorrectAvailableCar = 0;
                 marker.bindPopup(`
-                                <b>${parkDct['Position']}</b><br>
-                                總車位數：${parkDct['TotalCar']}<br>
-                                剩餘車位：${CorrectAvailableCar}<br>
-                                <button onclick="routing(${parkDct['Y']}, ${parkDct['X']})">開始導航</button>
-                                `)
+                            <b>${parkDct['Position']}</b><br>
+                            總車位數：${parkDct['TotalCar']}<br>
+                            剩餘車位：${CorrectAvailableCar}<br>
+                            <button onclick="routing(${parkDct['Y']}, ${parkDct['X']})">開始導航</button>
+                        `)
                 // add parking info to list(if AvailableCar < 0)
             } else {
                 marker.bindPopup(`
-                                <b>${parkDct['Position']}</b><br>
-                                總車位數：${parkDct['TotalCar']}<br>
-                                剩餘車位：${parkDct['AvailableCar']}<br>
-                                <button onclick="routing(${parkDct['Y']}, ${parkDct['X']})>開始導航</button>
-                                `)
+                            <b>${parkDct['Position']}</b><br>
+                            總車位數：${parkDct['TotalCar']}<br>
+                            剩餘車位：${parkDct['AvailableCar']}<br>
+                            <button onclick="routing(${parkDct['Y']}, ${parkDct['X']})">開始導航</button>
+                        `)
                 // add parking info to list(if AvailableCar >= 0)
             }
         }
@@ -1551,7 +1543,7 @@
                                         var saturday = JSON.parse(datafromT[i].saturday);
                                         var sunday = JSON.parse(datafromT[i].sunday);
                                         var week = [sunday, monday, tuesday, wednesday, thursday, friday, saturday];
-                                        console.log(week);
+                                        // console.log(week);
 
                                         var dayOfWeek = new Date().getDay();
                                         // console.log(dayOfWeek);
@@ -1565,7 +1557,7 @@
                                         for (var k = 0; k < 24; k++) {
                                             labels.push(k + '時');
                                         }
-   
+
                                         var canvas = parkingItemT.querySelector("#myChart");
                                         var ctx = canvas.getContext('2d');
 
@@ -1640,10 +1632,13 @@
                                                 }
                                             }
                                         })
+
                                     }
                                 }
+
                             }
-                        })
+                        }
+                        )
 
                     })
                 }
@@ -1952,6 +1947,62 @@
 
 
     </script> -->
+
+    <!-- 登入後判斷頁面呈現與切換 -->
+    <script>
+        // 假設 memberID 存在於 localStorage 中
+        var memberID = localStorage.getItem('memberID');
+        var memberAc = localStorage.getItem('member_ac');
+
+        var loginHtml = `
+                <div class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist" type="button">繳費紀錄</button>
+            </div>
+
+            <div class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist" type="button">付費車牌</button>
+            </div>
+            <div class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist" type="button">個人資訊</button>
+            </div>
+            <div class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist" type="button">付款方式</button>
+            </div>
+            <div class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist" type="button">通知中心</button>
+            </div>
+            <div id="logIO" class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist clearLocalStroage" type="button">登出</button>
+            </div>
+        `;
+
+
+
+
+        var SignOutHtml = `   
+        <div class="d-grid  w-100" style="z-index: 99;">
+            
+            <div class="d-grid  w-100" style="z-index: 99;">
+                <a class="btn btn-primary border-0 w-100 navlist" type="button" href="register.html">註冊</a>
+            </div>
+            <div id="logIO" class="d-grid  w-100" style="z-index: 99;">
+                <a class="btn btn-primary border-0 w-100 navlist" type="button" href="login.html">登入</a>
+            </div>
+        `
+        if (memberID) {
+            // 若 memberID 存在，表示已登入，顯示登出標籤，隱藏登入標籤
+            $('.list-menu').html(loginHtml);
+        } else {
+            // 若 memberID 不存在，表示未登入，顯示登入標籤，隱藏登出標籤
+            $('.list-menu').html(SignOutHtml);
+        }
+
+        $('.clearLocalStroage').on('click', function () {
+            localStorage.removeItem('memberID');
+        });
+
+
+    </script>
 </body>
 
 </html>
