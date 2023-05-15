@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Parking Map</title>
+    <title>Parking map</title>
     <!-- leaflet -->
     <!-- <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script> -->
     <script src="./assets/js/map_control_js/leaflet/leaflet.js"></script>
@@ -30,6 +30,8 @@
     <meta charset="UTF-8">
     <!-- Vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- chart -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 
     <style>
         body {
@@ -285,7 +287,15 @@
                             </div>
                             <div id="popular_time_graph" class="row">
                                 <p class="col-12">熱門時段</p>
-                                <img src="./assets/image/map_image/popular_time_graph.svg" alt="">
+                                <div class="main divWeeks" id="divWeek"
+                                    style="width: 380px;height: 270px; border: 1px solid #838080;border-radius: 2%;">
+                                    <div class="chart-box dark">
+                                        <div class="chart-body ">
+                                            <canvas id="myChart" width="100" height="90"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <img src="./assets/image/map_image/popular_time_graph.svg" alt=""> -->
                             </div>
                         </div>
                     </div>
@@ -1499,6 +1509,150 @@
                     }
                 }
             })
+            .then(() => {
+                // 流量表
+                var parkingLotT = parkingLot;
+                trafficData()
+                function trafficData() {
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: `http://localhost:3000/select/traffic`,
+                            type: "GET"
+                        }).done(function (x) {
+                            const datafromT = JSON.parse(x);
+                            resolve(datafromT);
+
+
+                            //停車場篩選用程式碼
+                            var parkingItemsT = document.querySelectorAll("#parking_lot_item .accordion-item");
+
+                            var parkingTypeTArr = [];
+                            var parkingNameTArr = [];
+
+                            for (var i = 0; i < parkingItemsT.length; i++) {
+                                var parkingItemT = parkingItemsT[i];
+                                var parkingNameT = parkingItemT.querySelector(".parking_position").textContent;
+                                var parkingTypeT = parkingLotT.find(function (x) {
+                                    return x.Position === parkingNameT;
+                                });
+
+                                var parking = parkingItemT.querySelector(".parking_position").innerText;
+                                let categoriesP = parking.split('-');
+                                // console.log(categoriesP);
+                                for (let i = 0; i < datafromT.length; i++) {
+                                    let categoriesT = datafromT[i].parkingLot_name.split('-');
+                                    if (categoriesP[2] == categoriesT[2]) {
+                                        // 創建折線圖
+                                        var monday = JSON.parse(datafromT[i].monday);
+                                        var tuesday = JSON.parse(datafromT[i].tuesday);
+                                        var wednesday = JSON.parse(datafromT[i].wednesday);
+                                        var thursday = JSON.parse(datafromT[i].thursday);
+                                        var friday = JSON.parse(datafromT[i].friday);
+                                        var saturday = JSON.parse(datafromT[i].saturday);
+                                        var sunday = JSON.parse(datafromT[i].sunday);
+                                        var week = [sunday, monday, tuesday, wednesday, thursday, friday, saturday];
+                                        console.log(week);
+
+                                        var dayOfWeek = new Date().getDay();
+                                        // console.log(dayOfWeek);
+
+                                        // 獲取當天對應的星期數據
+                                        var todayData = week[dayOfWeek];
+                                        var today = Object.values(todayData);
+                                        // console.log(today);
+
+                                        var labels = [];
+                                        for (var k = 0; k < 24; k++) {
+                                            labels.push(k + '時');
+                                        }
+   
+                                        var canvas = parkingItemT.querySelector("#myChart");
+                                        var ctx = canvas.getContext('2d');
+
+                                        // 定義漸變顏色
+                                        var gradient = ctx.createLinearGradient(100, 50, 100, 300);
+                                        gradient.addColorStop(0, 'rgba(123, 229, 255 , 1)');
+                                        gradient.addColorStop(0.5, 'rgba(123, 169, 255, 0.5)');
+                                        gradient.addColorStop(1, 'rgba(192, 142, 241, 0.3)');
+
+                                        var chart = new Chart(ctx, {
+                                            type: 'line',
+                                            data: {
+                                                labels: labels,
+                                                datasets: [{
+                                                    label: '使用率',
+                                                    data: today,
+                                                    backgroundColor: gradient,
+                                                    borderColor: 'rgb(136, 226, 226)',
+                                                    fill: true, // 是否填滿色彩
+                                                    pointStyle: 'rect',
+                                                    pointRadius: 2,
+                                                    pointHoverRadius: 7,
+                                                    pointBackgroundColor: 'rgb(136, 226, 226)',
+                                                }]
+                                            },
+                                            options: {
+                                                layout: {
+                                                    padding: { left: 20, right: 0, top: 20, bottom: 30 },
+                                                },
+                                                tooltips: {
+                                                    callbacks: {
+                                                        label: function (tooltipItem, data) {
+                                                            return "使用率: " + tooltipItem.yLabel + "%";
+                                                        }
+                                                    }
+                                                },
+                                                legend: {
+                                                    display: false,         // 關閉顏色框
+                                                },
+                                                scales: {
+                                                    xAxes: [{
+                                                        gridLines: {
+                                                            display: true, // X軸 線條不顯示 
+                                                        },
+                                                        ticks: {
+                                                            fontColor: "#8b8b8b", // X軸 文字顏色
+                                                            maxTicksLimit: 4,
+                                                            autoSkip: true,
+                                                            maxRotation: 0,
+                                                            minRotation: 0,
+                                                            autoSkipPadding: 15
+                                                        },
+                                                    }],
+                                                    yAxes: [{
+                                                        gridLines: {
+                                                            display: true,
+
+                                                        },
+                                                        position: 'right',
+                                                        ticks: {
+                                                            fontColor: "#8b8b8b", // Y軸 文字顏色 
+                                                            maxTicksLimit: 6,
+                                                            beginAtZero: true,
+                                                            min: 0,
+                                                            max: 100,
+                                                            stepSize: 10,
+                                                            callback: function (value) {
+                                                                return value + "%";
+                                                            }
+                                                        }
+                                                    }]
+                                                }
+                                            }
+                                        })
+
+                                    }
+                                }
+
+                            }
+                        }
+                        )
+
+                    })
+                }
+            })
+
+
 
 
 
@@ -1638,6 +1792,169 @@
 
 
     </script>
+
+    <!-- 流量表 -->
+    <!-- <script>
+        // var dataObj = {};
+        // trafficData()
+            .then((parkingLot) => {
+
+                function trafficData() {
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: `http://localhost:3000/select/traffic`,
+                            type: "GET"
+                        }).done(function (x) {
+                            const datafromT = JSON.parse(x);
+                            resolve(datafromT);
+                            // console.log(datafromT);
+                            // dataObj[datafromT['parkingLot_name']] = [];
+
+                            //停車場篩選用程式碼
+                            var parkingItemsT = document.querySelectorAll("#parking_lot_item .accordion-item");
+                            // filterParkingItemsT()
+                            function filterParkingItemsT() {
+                                for (var i = 0; i < parkingItemsT.length; i++) {
+                                    var parkingItemT = parkingItemsT[i];
+                                    var parkingNameT = parkingItemT.querySelector(".parking_position").textContent;
+                                    var parkingType = parkingLot.find(function (item) { return item.Position === parkingNameT }).Type;
+                                    console.log(parkingLot);
+
+
+                                    if (parkingNameT == datafromT.parkingLot_name) {
+                                        for (let j = 0; j < parkingItemsT.length; j++) {
+                                            // 南屯區-交通局-文心森林公園附屬P
+
+                                            var monday = JSON.parse(datafromT.monday);
+                                            var tuesday = JSON.parse(datafromT.tuesday);
+                                            var wednesday = JSON.parse(datafromT.wednesday);
+                                            var thursday = JSON.parse(datafromT.thursday);
+                                            var friday = JSON.parse(datafromT.friday);
+                                            var saturday = JSON.parse(datafromT.saturday);
+                                            var sunday = JSON.parse(datafromT.sunday);
+
+                                            var week = [sunday, monday, tuesday, wednesday, thursday, friday, saturday];
+                                            // console.log(week);
+
+                                            var dayOfWeek = new Date().getDay();
+                                            // console.log(dayOfWeek);
+
+                                            // 獲取當天對應的星期數據
+                                            var todayData = week[dayOfWeek];
+                                            var today = Object.values(todayData);
+                                            // console.log(today);
+
+                                            var labels = [];
+                                            for (var k = 0; k < 24; k++) {
+                                                labels.push(k + '時');
+                                            }
+
+
+
+                                            // 創建折線圖
+                                            var canvas = document.getElementById('myChart');
+                                            var ctx = canvas.getContext('2d');
+
+                                            // 定義漸變顏色
+                                            var gradient = ctx.createLinearGradient(100, 50, 100, 300);
+                                            gradient.addColorStop(0, 'rgba(123, 229, 255 , 1)');
+                                            gradient.addColorStop(0.5, 'rgba(123, 169, 255, 0.5)');
+                                            gradient.addColorStop(1, 'rgba(192, 142, 241, 0.3)');
+
+                                            var chart = new Chart(ctx, {
+                                                type: 'line',
+                                                data: {
+                                                    labels: labels,
+                                                    datasets: [{
+                                                        label: '使用率',
+                                                        data: today,
+                                                        backgroundColor: gradient,
+                                                        borderColor: 'rgb(136, 226, 226)',
+                                                        fill: true, // 是否填滿色彩
+                                                        pointStyle: 'rect',
+                                                        pointRadius: 2,
+                                                        pointHoverRadius: 7,
+                                                        pointBackgroundColor: 'rgb(136, 226, 226)',
+                                                    }]
+                                                },
+                                                options: {
+                                                    layout: {
+                                                        padding: { left: 20, right: 0, top: 20, bottom: 30 },
+                                                    },
+                                                    tooltips: {
+                                                        callbacks: {
+                                                            label: function (tooltipItem, data) {
+                                                                return "使用率: " + tooltipItem.yLabel + "%";
+                                                            }
+                                                        }
+                                                    },
+                                                    legend: {
+                                                        display: false,         // 關閉顏色框
+                                                    },
+                                                    scales: {
+                                                        xAxes: [{
+                                                            gridLines: {
+                                                                display: true, // X軸 線條不顯示 
+                                                            },
+                                                            ticks: {
+                                                                fontColor: "#8b8b8b", // X軸 文字顏色
+                                                                maxTicksLimit: 4,
+                                                                autoSkip: true,
+                                                                maxRotation: 0,
+                                                                minRotation: 0,
+                                                                autoSkipPadding: 15
+                                                            },
+                                                        }],
+                                                        yAxes: [{
+                                                            gridLines: {
+                                                                display: true,
+
+                                                            },
+                                                            position: 'right',
+                                                            ticks: {
+                                                                fontColor: "#8b8b8b", // Y軸 文字顏色 
+                                                                maxTicksLimit: 6,
+                                                                beginAtZero: true,
+                                                                min: 0,
+                                                                max: 100,
+                                                                stepSize: 10,
+                                                                callback: function (value) {
+                                                                    return value + "%";
+                                                                }
+                                                            }
+                                                        }]
+                                                    }
+
+                                                }
+
+                                            });
+
+                                        }
+
+
+                                    }
+                                }
+                            }
+
+
+
+
+                        })
+
+                    })
+                }
+                // console.log(datafromT);
+
+
+            })
+
+
+
+
+
+
+
+    </script> -->
 </body>
 
 </html>

@@ -52,5 +52,18 @@ api.get('/traffic/:id', function (req, res) {
         })
 })
 
+api.get('/traffic', function (req, res) {
+    var sql = `SELECT * FROM traffic`
+    config.query(sql, [req.params.id],
+        function (err, result, fields) {
+            if (err) {
+                console.log(err)
+                res.send('完蛋 出錯了' + err)
+            } else {
+                res.send(JSON.stringify(result));
+            }
+        })
+})
+
 
 module.exports = api;
