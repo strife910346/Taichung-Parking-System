@@ -552,9 +552,10 @@
         });
 
         function success(pos, area = $('#distance_select').val(), parkType = $('#type_select').val()) {
-
             userlat = pos.coords.latitude;
             userlng = pos.coords.longitude;
+
+            map.setZoom(15);
             // reset marker and circle
             if (usermarker) {
                 map.removeLayer(usermarker);
@@ -572,6 +573,7 @@
         addUserPlace = (area, parkType, userlat, userlng) => {
             // add area
             // console.log('ok')
+            
             if (area == "2000") {
                 userCircle = L.circle([userlat, userlng], {
                     color: 'blue',
