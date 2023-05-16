@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Car Stay Map</title>
+    <title>Car stay map</title>
     <!-- leaflet -->
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
@@ -118,10 +118,7 @@
         </div>
         <!-- 下拉選單 -->
         <ul class="list-menu" style="display: none;z-index: 99;background-color: white;cursor: pointer;width: 100%;">
-
-            <!-- <div class="d-grid  w-100" style="z-index: 99;">
-                <button class="btn btn-primary border-0 w-100 navlist" type="button">Where my car !</button>
-            </div> -->
+<!-- 
             <div class="d-grid  w-100" style="z-index: 99;">
                 <button class="btn btn-primary border-0 w-100 navlist" type="button">繳費紀錄</button>
             </div>
@@ -129,10 +126,6 @@
             <div class="d-grid  w-100" style="z-index: 99;">
                 <button class="btn btn-primary border-0 w-100 navlist" type="button">付費車牌</button>
             </div>
-
-            <!-- <div class="d-grid  w-100" style="z-index: 99;">
-                <button class="btn btn-primary border-0 w-100 navlist" type="button">常用車位</button>
-            </div> -->
 
             <div class="d-grid  w-100" style="z-index: 99;">
                 <button class="btn btn-primary border-0 w-100 navlist" type="button">個人資訊</button>
@@ -145,7 +138,7 @@
             </div>
             <div class="d-grid  w-100" style="z-index: 99;">
                 <button class="btn btn-primary border-0 w-100 navlist" type="button">登出</button>
-            </div>
+            </div> -->
         </ul>
     </div>
     <!-- 覆蓋式視窗 -->
@@ -157,7 +150,7 @@
         </div>
         <div class="dialog_map_content">
             <img id="car_parking_img" class="map_select" src="./assets/image/map_image/car_parking.jpg" alt=""
-                style="cursor: pointer;" onclick="window.location.href = './mobile_v15.html';">
+                style="cursor: pointer;" onclick="window.location.href = './mobile_v13.html';">
             <img id="car_stay_img" class="map_select" src="./assets/image/map_image/car_stay_select.jpg" alt=""
                 style="cursor: pointer;" onclick="">
         </div>
@@ -887,7 +880,7 @@
                         }
                     }
                 })
-                // console.log(datafromS);
+                console.log(datafromS);
                 // 停車場篩選用程式碼
                 var stay_type_select = document.getElementById("car_stay_type");
                 var service_select = document.getElementById("service");
@@ -924,9 +917,60 @@
                 }
             })
 
+    </script>
+    <script>
+        // 假設 memberID 存在於 localStorage 中
+        var memberID = localStorage.getItem('memberID');
+        var memberAc = localStorage.getItem('member_ac');
+
+        var loginHtml = `
+                <div class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist" type="button">繳費紀錄</button>
+            </div>
+
+            <div class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist" type="button">付費車牌</button>
+            </div>
+            <div class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist" type="button">個人資訊</button>
+            </div>
+            <div class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist" type="button">付款方式</button>
+            </div>
+            <div class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist" type="button">通知中心</button>
+            </div>
+            <div id="logIO" class="d-grid  w-100" style="z-index: 99;">
+                <button class="btn btn-primary border-0 w-100 navlist clearLocalStroage" type="button">登出</button>
+            </div>
+        `;
 
 
+    
 
+        var SignOutHtml = `   
+        <div class="d-grid  w-100" style="z-index: 99;">
+            
+            <div class="d-grid  w-100" style="z-index: 99;">
+                <a class="btn btn-primary border-0 w-100 navlist" type="button" href="register.html">註冊</a>
+            </div>
+            <div id="logIO" class="d-grid  w-100" style="z-index: 99;">
+                <a class="btn btn-primary border-0 w-100 navlist" type="button" href="login.html">登入</a>
+            </div>
+        `
+        if (memberID) {
+            // 若 memberID 存在，表示已登入，顯示登出標籤，隱藏登入標籤
+            $('.list-menu').html(loginHtml);
+        } else {
+            // 若 memberID 不存在，表示未登入，顯示登入標籤，隱藏登出標籤
+            $('.list-menu').html(SignOutHtml);
+        }
+
+        $('.clearLocalStroage').on('click', function () {
+            localStorage.removeItem('memberID');
+        });
+
+       
     </script>
 </body>
 
