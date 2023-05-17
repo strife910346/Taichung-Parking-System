@@ -12,15 +12,24 @@ api.get('/:id/:memo', function (req, res) {
         })
     res.send("修改成功");
 })
-api.put('/', function (req, res) {
-    var sql = 'UPDATE pokemon SET memo=? where id =?;'    
-    config.query(sql, [req.body.memo, req.body.id],
+api.put('/membermoney', function (req, res) {
+    var sql = 'SELECT member_money  FROM member WHERE member_id=?;'    
+    var sql1 = 'UPDATE member SET member_money=? where member_id=?;'   
+    
+    config.query(sql, [req.body.id],
         function (err, results, fields) {
             if (err) {
+                console.log(err)
                 res.send("修改失敗" + JSON.stringify(err))
             } else {
-                res.send("修改成功")
+                var x = parseInt(results[0].member_money)+parseInt(req.body.money)
+                config.query(sql1, [x,req.body.id],function(err, results, fields){
+                    console.log(results)
+                    res.send(results)
+                })
+                
             }
         })
+        // console.log(x)
 })
 module.exports = api;

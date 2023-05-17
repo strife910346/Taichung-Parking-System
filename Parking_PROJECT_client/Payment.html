@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>繳費</title>
+    <link rel="stylesheet" href="./assets/css/BS5_CSS/bootstrap.css">
+    <script src="./assets/js/BS5_js/bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="./assets/font-awesome-4.7.0/css/font-awesome.css">
+    <script src="./assets/js/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="./assets/css/payment/payment.css">
+
+</head>
+
+<body class="body_color ">
+
+    <!-- 導覽列 -->
+    <div class="bg_blue" style="height: 80px; ">
+        <div class="dis_flex_center">
+            <h1 style=" color: white; line-height:80px; ">
+                <b>繳費</b>
+            </h1>
+        </div>
+        <div style="margin-top: -83px;">
+            <button class="border_none payment_page" style="                   
+        color: white;
+        text-align:center;                                 
+        font-size: 40px; 
+        padding-left: 30px;                            
+        ">
+                <i class="fa fa-angle-left"></i>
+            </button>
+        </div>
+    </div>
+    <!-- 車牌餘額 -->
+    <div class="bg_white" style="padding-top: 10px;">
+        <div class="container">
+            <div class="row ">
+                <div class="col-4 mt-3 ">
+                    <div class="row">
+                        <div class="col-12 dis_flex_center">
+                            <img style="width:250px;" src="./assets/image/Gold_Flow_image/pay-22.png" alt="">
+                        </div>
+                        <div class="dis_flex_center" style="position: relative; top: -64px; left: 10px;">
+                            <select name="license">
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-1 border_right_3px" style="height: 120px; ">
+                </div>
+                <div class="col-6 ms-4">
+                    <div class="row">
+                        <div class="col-12 ">
+                            <h2><b>錢包餘額</b> </h2>
+                        </div>
+                        <div class="col-12 dis_flex_center">
+                            <div class="row ms-3  dis_flex_center">
+                                <div class="col-3 ">
+                                    <b>
+                                        <h2 style="margin-top: 10px;">TWD</h2>
+                                    </b>
+                                </div>
+                                <div class="col-9 ">
+                                    <b>
+                                        <p id="wallet" class="ms-4   mt-2" style="font-size: 40px;"></p>
+                                    </b>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-12 pb-4" style="margin-top: -10px; margin-left: 15px;">
+                            <button class="btn_blue stored">
+                                <a class="a_none" href="./stored_value.html"><b>儲值</b> </a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <!-- 繳費項目 -->
+
+    <div class="d-flex flex-column data_py" style="margin-bottom: -50px;">
+    </div>
+
+    <div class="i_hidden" style="position: fixed;right:30px;bottom: 150px;">
+        <a href="#">
+            <i style="font-size: 40px;" class="fa fa-arrow-circle-up"></i>
+        </a>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <!-- 重新載入 -->
+    <div id="bg_gray_loader" class="hidden">
+        <div id="loader"></div>
+        <div>
+            <h1 id="loader_text"><b>載入中</b> </h1>
+        </div>
+    </div>
+
+    <!-- 餘額不足提示框 -->
+    <div id="bg_gray_loader" class="n_m_hidden ">
+        <div id="notmoney"
+            style="border-radius: 50px; position: fixed; top:40%; left:25%; background-color: white;width: 500px;height: 500px;">
+            <div><i id="close_not_money" style="font-size: 40px; margin-left: 30px;margin-top: 30px;"
+                    class="fa fa-close"></i>
+            </div>
+            <div class="dis_flex_column_center" style="margin-top: 30px;">
+                <div><i class="fa fa-exclamation-circle"
+                        style="margin-bottom: 50px; font-size: 200px;color: rgb(243, 243, 1);"></i></div>
+                <div>
+                    <h1 style="font-size: 50px;"><b>餘額不足，請先儲值</b> </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 全選 -->
+
+    <div class="bg_blue scroll fixed box_fixed" style="height: 10vh;width: 100%;">
+        <div class="scroll_row dis_wrap" style="height:100%">
+            <div class="dis_flex_row_1 mt-4 ms-5" style="width: 100%;">
+                <div class="scrollinput">
+                    <input style="height: 20px; width: 20px;" type="checkbox" id="payment_all" class="me-1">
+                    <label for="payment_all">
+                        <h1 style="color: white;"><b>全選</b> </h1>
+                    </label>
+                </div>
+            </div>
+            <div class="ms-5 dis_flex_row_between me-5 mt-4" style=" margin-bottom: 20px; width: 100%;">
+                <div class="dis_flex_row">
+                    <h1 style="color: white;"  class="me-2">
+                        <b>總筆數 : </b>
+                    </h1>
+                    <h1 style="color: white;" id="sum">
+                        <b>0</b>
+                    </h1>
+                </div>
+                <div class="dis_flex_row">
+                    <h1 style="color: white;" class="me-2"><b>總金額 : </b> </h1>
+                    <h1 style="color: white;" id="total">
+                        <b>0</b>
+                    </h1>
+                </div>
+                <div>
+                    <button id="payment" class="btn_white">
+                        <b>繳費</b>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 付款確定 -->
+
+    <div class=".scrollFunc hidden bg_black" id="hidden">
+        <div class="bg_white" id="myclose"
+            style=" border-top-left-radius: 20px; border-top-left-radius: 20px ; position: fixed; bottom: 0%; width: 100%; ">
+            <div style="height: 14vh;">
+                <div class="dis_flex_column_center pt-5">
+                    <h1 class="color_gary"><b>是否使用錢包繳費</b> </h1>
+                </div>
+                <div class="dis_flex_row" style="padding-top: 80px;">
+                    <button class="btn_gray me-3" id="cancel">取消</button>
+                    <button id="payment_sure" class="btn_bottom_blue">確定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./assets/js/payment/payment.js"></script>
+
+</body>
+
+</html>

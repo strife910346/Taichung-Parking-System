@@ -62,7 +62,7 @@
         #userPlaceBtn {
             position: absolute;
             right: 10px;
-            top: 120px;
+            top: 140px;
             z-index: 16;
             padding: 5px 5px 4px;
             border-radius: 50%;
@@ -75,21 +75,6 @@
             width: 30px;
         }
 
-        #targetBtn {
-            position: absolute;
-            right: 10px;
-            top: 180px;
-            z-index: 16;
-            padding: 5px 5px 4px;
-            border-radius: 50%;
-            border: 0px;
-            background-color: white;
-            box-shadow: 0 0 5px gray;
-        }
-
-        #targetBtn img {
-            width: 30px;
-        }
     </style>
 </head>
 
@@ -150,7 +135,7 @@
         </div>
         <div class="dialog_map_content">
             <img id="car_parking_img" class="map_select" src="./assets/image/map_image/car_parking.jpg" alt=""
-                style="cursor: pointer;" onclick="window.location.href = './mobile_v16.html';">
+                style="cursor: pointer;" onclick="window.location.href = './mobile_v13.html';">
             <img id="car_stay_img" class="map_select" src="./assets/image/map_image/car_stay_select.jpg" alt=""
                 style="cursor: pointer;" onclick="">
         </div>
@@ -924,24 +909,24 @@
         var memberAc = localStorage.getItem('member_ac');
 
         var loginHtml = `
-                <div class="d-grid  w-100" style="z-index: 99;">
-                <button class="btn btn-primary border-0 w-100 navlist" type="button">繳費紀錄</button>
+        <div class="d-grid  w-100" style="z-index: 99;">
+                <a class="btn btn-primary border-0 w-100 navlist" type="button" href="./Trade_record.html">交易紀錄</a>
             </div>
 
             <div class="d-grid  w-100" style="z-index: 99;">
-                <button class="btn btn-primary border-0 w-100 navlist" type="button">付費車牌</button>
+                <a class="btn btn-primary border-0 w-100 navlist" type="button" href="./Car_Licence_add.html">新增車牌</a>
             </div>
             <div class="d-grid  w-100" style="z-index: 99;">
-                <button class="btn btn-primary border-0 w-100 navlist" type="button">個人資訊</button>
+                <a class="btn btn-primary border-0 w-100 navlist" type="button" href="./Gold_flow_home.html">會員中心</a>
             </div>
             <div class="d-grid  w-100" style="z-index: 99;">
-                <button class="btn btn-primary border-0 w-100 navlist" type="button">付款方式</button>
+                <a class="btn btn-primary border-0 w-100 navlist" type="button" href="./Payment.html">立即繳費</a>
             </div>
             <div class="d-grid  w-100" style="z-index: 99;">
-                <button class="btn btn-primary border-0 w-100 navlist" type="button">通知中心</button>
+                <a class="btn btn-primary border-0 w-100 navlist" type="button" href="./NotificationCenter.html">通知中心</a>
             </div>
             <div id="logIO" class="d-grid  w-100" style="z-index: 99;">
-                <button class="btn btn-primary border-0 w-100 navlist clearLocalStroage" type="button">登出</button>
+                <a class="btn btn-primary border-0 w-100 navlist clearLocalStroage" type="button" href="login.html">登出</a>
             </div>
         `;
 

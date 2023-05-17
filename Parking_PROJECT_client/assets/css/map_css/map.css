@@ -7,10 +7,10 @@
     width: 390px;
 }
 
-.btn{
+.btn {
     padding: 0px;
     border-radius: 55px;
-  }
+}
 
 .search-box {
     display: flex;
@@ -36,7 +36,7 @@
     outline: none;
 }
 
-#map_mark{
+#map_mark {
     font-size: 15px;
     height: 40px;
     padding: 10px 5px;
@@ -169,7 +169,7 @@ select {
 }
 
 /* 將下拉選單的選項文字置中 */
-#filter  {
+#filter {
     text-align: center;
     position: relative;
     top: 60px;
@@ -199,7 +199,7 @@ dialog {
     border: none;
     z-index: 999;
     max-width: 500px;
-    left:195px;
+    left: 195px;
     top: 420px;
 }
 
@@ -219,7 +219,7 @@ dialog {
     font-family: 'Nunito';
     font-style: normal;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 16px;
     line-height: 16px;
     text-align: center;
     width: 100%;
@@ -248,7 +248,7 @@ dialog {
     height: 380px;
 }
 
-#Dialog_map{
+#Dialog_map {
     position: fixed;
     background-color: white;
     border-radius: 5px;
@@ -256,7 +256,7 @@ dialog {
     border: none;
     z-index: 999;
     max-width: 500px;
-    left:194px;
+    left: 194px;
     top: 20px;
 }
 
@@ -282,10 +282,9 @@ dialog {
 
 .map_select:active {
     border: 2px solid rgba(0, 0, 0, 0.684);
-  }
+}
 
-
-#Dialog_fee{
+#Dialog_road_fee {
     position: fixed;
     background-color: white;
     border-radius: 5px;
@@ -293,7 +292,19 @@ dialog {
     border: none;
     z-index: 999;
     max-width: 500px;
-    left:194px;
+    left: 194px;
+    top: -200px;
+}
+
+#Dialog_fee {
+    position: fixed;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: none;
+    border: none;
+    z-index: 999;
+    max-width: 500px;
+    left: 194px;
     top: -80px;
 }
 
@@ -303,8 +314,8 @@ dialog {
     font-family: 'Nunito';
     font-style: normal;
     font-weight: 400;
-    /* font-size: 10px; */
-    line-height: 14px;
+    font-size: 18px;
+    line-height: 20px;
 }
 
 .parking_subname {
@@ -313,8 +324,8 @@ dialog {
     font-family: 'Nunito';
     font-style: normal;
     font-weight: 400;
-    /* font-size: 10px; */
-    line-height: 14px;
+    font-size: 18px;
+    line-height: 20px;
 }
 
 .stay_name {
@@ -337,13 +348,13 @@ dialog {
 
 }
 
-.service-group{
+.service-group {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     flex: 1;
     margin-right: 9px;
-  
+
 }
 
 #location_addr p {
@@ -382,6 +393,7 @@ dialog {
     /* gray */
     color: #ACACAC;
 }
+
 #toilets p {
     /* small */
 
@@ -395,6 +407,7 @@ dialog {
     /* gray */
     color: #ACACAC;
 }
+
 #hotw p {
     /* small */
 
@@ -419,6 +432,7 @@ dialog {
 #like {
     width: 23%;
 }
+
 #stay_like {
     display: block;
     position: relative;
@@ -440,12 +454,31 @@ margin-right: -13px; */
     font-family: 'Nunito';
     font-style: normal;
     font-weight: 400;
-    font-size: 8px;
+    font-size: 15px;
     line-height: 11px;
 }
 
 .leafover_num {
     color: #34A853;
+}
+
+#distance_select {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-size: 10pt;
+    padding: 3px 5px;
+}
+#special_select {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-size: 10pt;
+    padding: 3px 5px;
+}
+#type_select {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-size: 10pt;
+    padding: 3px 5px;
 }
 
 .distance {
@@ -460,6 +493,7 @@ margin-right: -13px; */
     color: #ACACAC;
     margin-bottom: 9px;
 }
+
 .distance_time {
     /* small */
     font-family: 'Nunito';
@@ -484,4 +518,3 @@ margin-right: -13px; */
 
     color: #ACACAC;
 }
-

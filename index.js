@@ -24,9 +24,9 @@ var deleteCURD = require('./CRUD/delete.js');
 app.use('/delete', deleteCURD);
 var selectCURD = require('./CRUD/select.js');
 app.use('/select', selectCURD);
-app.use('/Parking_PROJECT_client', express.static('Parking_PROJECT_client'))
+app.use('/Parking_PROJECT_client',express.static('Parking_PROJECT_client') )
 
 //404頁面
 app.use(function (req, res) {
-    res.send('404找不到');
+    res.send('404找不到 不知道 不清楚 不要問我');
 });

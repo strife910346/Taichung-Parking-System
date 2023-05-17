@@ -1,0 +1,92 @@
+p {
+    margin: 0 auto
+}
+
+a {
+    text-decoration: none;
+}
+
+.placeCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wordColor {
+    font-size: 14px;
+    color: #ACACAC;
+}
+
+.accPwdWord {
+    color: #525252;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.accPwd {
+    outline: 1px solid #0069B4;
+    height: 35px;
+}
+
+.accPwd::-webkit-input-placeholder {
+    color: #e0e0e0;
+    font-size: 18px;
+    padding-left: 10px;
+}
+
+#checkEye,
+#checkEye1 {
+    position: relative;
+    right: 40px;
+    color: #0069B4;
+}
+
+label>span {
+    color: red;
+}
+
+label {
+    display: block;
+    margin-left: 25%;
+}
+
+.accPwd {
+    margin-left: 25%;
+    width: 50%;
+}
+
+.error {
+    color: red;
+}
+
+.container {
+    position: relative;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.searchIcon {
+    position: relative;
+    right: 50px;
+    color: #0069B4;
+}
+
+.accPwd {
+    margin-left: 25%;
+    width: 50%;
+}
+
+#checkEye {
+    position: relative;
+    right: 40px;
+    color: #0069B4;
+}
+
+#loginBtn {
+    width: 50%;
+    height: 35px;
+    background-color: #0069B4;
+    color: white;
+    margin-left: 25%;
+}
+
