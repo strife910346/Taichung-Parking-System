@@ -488,7 +488,11 @@
         $('.glass').val(searchPlace);
         if ($('.glass').val() == searchPlace) {
             document.addEventListener('DOMContentLoaded', function () {
-                $('.glass').trigger($.Event("keypress", { key: "Enter" }));
+                $('form').submit(function() {
+                    event.preventDefault();
+                });
+                
+                // $('.glass').trigger($.Event("keypress", { key: "Enter" }));
             })
         }
 
