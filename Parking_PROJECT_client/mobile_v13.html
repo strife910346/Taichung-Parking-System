@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="./assets/css/map_control_css/leaflet-sidebar.css" />
     <!-- geasearch -->
     <link rel="stylesheet" href="./assets/css/map_control_css/geosearch.css">
-    <script src="./assets/js/map_control_js/geosearch.umd.js"></script>
+    <script src="./assets/js/map_control_js/geosearch.js"></script>
     <meta charset="UTF-8">
     <!-- Vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -276,7 +276,7 @@
                                 <!-- <img id="like" class="btn" src="./assets/image/map_image/like_btn.svg" alt=""> -->
                                 <img id="go" class="btn" src="./assets/image/map_image/go_btn.svg"
                                     @click="routing(parking_name.Y, parking_name.X)" alt="">
-                                </div>
+                            </div>
                             <div id="popular_time_graph" class="row">
                                 <p class="col-12" style="font-size: 16px;">熱門時段</p>
                                 <div class="main divWeeks" id="divWeek"
@@ -314,7 +314,7 @@
 
                         <button class="accordion-button" :class="{ collapsed: activeCollapse !== index }" type="button">
                             <p class="parking_name">{{ parking.rdname }}</p>
-                            <p class="parking_subname" > ( {{ parking.se_road }} )</p>
+                            <p class="parking_subname"> ( {{ parking.se_road }} )</p>
                             <div class="special-group">
 
                                 <div id="ParkingTypeR" style="display: none;">{{parking.ParkingType}}</div>
@@ -485,16 +485,14 @@
 
         // 讀取暫存資料送到搜尋框
         let searchPlace = sessionStorage.getItem('searchInfo');
-        let searchLength = searchPlace.length;
-        if (sessionStorage.getItem('searchInfo')) {
-            $('.glass').val(searchPlace);
-            if ($('.glass').val() == searchLength) {
-                $('.glass').trigger($.Event("keypress", { key: "Enter" }))
-            }
+        $('.glass').val(searchPlace);
+        if ($('.glass').val() == searchPlace) {
+            document.addEventListener('DOMContentLoaded', function () {
+                $('.glass').trigger($.Event("keypress", { key: "Enter" }));
+            })
         }
 
-
-
+        // display search marker
         map.on('geosearch/showlocation', function (e) {
             searchlat = e.location.y;
             searchlng = e.location.x;
