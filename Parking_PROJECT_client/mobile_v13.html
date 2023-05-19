@@ -1016,7 +1016,7 @@
                     markers.addLayers(markerList);
                 };
             }
-            setTimeout(map.addLayer(markers), 1000);
+            map.addLayer(markers), 1000;
         }
 
         var searchMarkers = undefined;
@@ -1141,7 +1141,7 @@
                 };
 
             }
-            setTimeout(map.addLayer(searchMarkers), 1000);
+            map.addLayer(searchMarkers), 1000;
         }
 
         function refrash_park() {
