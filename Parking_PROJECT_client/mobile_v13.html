@@ -666,7 +666,63 @@
             }
 
             // add search road parkin lot
-            search_road($('#distance_select').val(), $('#special_select').val())
+            switch ($('#type_select').val()) {
+                case "parking-lot":
+                    $(".parkDisabled").show();
+                    $(".parkParents").show();
+                    $(".parkNormal").show();
+                    $('.marker-cluster').hide();
+                    switch ($('#special_select').val()) {
+                        case "disabled":
+                            $(".parkParents").hide();
+                            $(".parkNormal").hide();
+                            break;
+                        case "parent":
+                            $(".parkDisabled").hide();
+                            $(".parkNormal").hide();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case "roadside-all":
+                    $(".parkDisabled").hide();
+                    $(".parkParents").hide();
+                    $(".parkNormal").hide();
+                    $('.marker-cluster').show();
+                    switch ($('#special_select').val()) {
+                        case "disabled":
+                            search_road($('#distance_select').val(), "disabled");
+                            break;
+                        case "parent":
+                            search_road($('#distance_select').val(), "parent");
+                            break;
+                        default:
+                            search_road($('#distance_select').val(), $('#special_select').val());
+                            break;
+                    }
+                    break;
+                default:
+                    $(".parkDisabled").show();
+                    $(".parkParents").show();
+                    $(".parkNormal").show();
+                    switch ($('#special_select').val()) {
+                        case "disabled":
+                            $(".parkParents").hide();
+                            $(".parkNormal").hide();
+                            search_road($('#distance_select').val(), "disabled");
+                            break;
+                        case "parent":
+                            $(".parkDisabled").hide();
+                            $(".parkNormal").hide();
+                            search_road($('#distance_select').val(), "parent");
+                            break;
+                        default:
+                            search_road($('#distance_select').val(), $('#special_select').val());
+                            break;
+                    }
+                    break;
+            }
 
             // click and remove marker
             $('.reset').click(function () {
@@ -703,191 +759,329 @@
 
         // change area
         $('#distance_select').change(function () {
-            map.removeLayer(userCircle);
-            map.removeLayer(searchCircle);
-            if ($(this).val() == "2000") {
-                refrash_road($(this).val(), $('#special_select').val());
-                search_road($(this).val(), $('#special_select').val());
+            if (searchmarker) {
+                if ($(this).val() == "2000") {
+                    map.removeLayer(searchCircle);
+                    search_road($(this).val(), $('#special_select').val());
+                } else {
+                    searchCircle = L.circle([searchlat, searchlng], {
+                        color: 'blue',
+                        fillColor: '#005DFF70',
+                        fillOpacity: 0.3,
+                        radius: $(this).val()
+                    }).addTo(map);
+                    setTimeout(search_road($(this).val(), $('#special_select').val()), 1000)
+                }
             } else {
-                userCircle = L.circle([userlat, userlng], {
-                    color: 'blue',
-                    fillColor: '#005DFF70',
-                    fillOpacity: 0.3,
-                    radius: $(this).val()
-                }).addTo(map);
-                searchCircle = L.circle([searchlat, searchlng], {
-                    color: 'blue',
-                    fillColor: '#005DFF70',
-                    fillOpacity: 0.3,
-                    radius: $(this).val()
-                }).addTo(map);
-                setTimeout(refrash_road($(this).val(), $('#special_select').val()), 1000);
-                setTimeout(search_road($(this).val(), $('#special_select').val()), 1000)
+                map.removeLayer(userCircle);
+                if ($(this).val() == "2000") {
+                    map.removeLayer(searchCircle);
+                    refrash_road($(this).val(), $('#special_select').val());
+                } else {
+                    userCircle = L.circle([userlat, userlng], {
+                        color: 'blue',
+                        fillColor: '#005DFF70',
+                        fillOpacity: 0.3,
+                        radius: $(this).val()
+                    }).addTo(map);
+                    setTimeout(refrash_road($(this).val(), $('#special_select').val()), 1000);
+                }
             }
-
         })
 
         // change parking type
         $('#type_select').change(function () {
-            switch ($(this).val()) {
-                case "parking-lot":
-                    $(".parkDisabled").show();
-                    $(".parkParents").show();
-                    $(".parkNormal").show();
-                    $('.marker-cluster').hide();
-                    switch ($('#special_select').val()) {
-                        case "disabled":
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            break;
-                        case "parent":
-                            $(".parkDisabled").hide();
-                            $(".parkNormal").hide();
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case "roadside-all":
-                    $(".parkDisabled").hide();
-                    $(".parkParents").hide();
-                    $(".parkNormal").hide();
-                    $('.marker-cluster').show();
-                    switch ($('#special_select').val()) {
-                        case "disabled":
-                            refrash_road($('#distance_select').val(), "disabled");
-                            search_road($('#distance_select').val(), "disabled");
-                            break;
-                        case "parent":
-                            refrash_road($('#distance_select').val(), "parent");
-                            search_road($('#distance_select').val(), "parent");
-                            break;
-                        default:
-                            refrash_road($('#distance_select').val(), $('#special_select').val());
-                            search_road($('#distance_select').val(), $('#special_select').val());
-                            break;
-                    }
-                    break;
-                case "roadside-empty":
-                    $(".parkDisabled").hide();
-                    $(".parkParents").hide();
-                    $(".parkNormal").hide();
-                    refrash_road($('#distance_select').val(), "roadside-empty");
-                    search_road($('#distance_select').val(), "roadside-empty");
-                    break;
-                default:
-                    $(".parkDisabled").show();
-                    $(".parkParents").show();
-                    $(".parkNormal").show();
-                    switch ($('#special_select').val()) {
-                        case "disabled":
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            refrash_road($('#distance_select').val(), "disabled");
-                            search_road($('#distance_select').val(), "disabled");
-                            break;
-                        case "parent":
-                            $(".parkDisabled").hide();
-                            $(".parkNormal").hide();
-                            refrash_road($('#distance_select').val(), "parent");
-                            search_road($('#distance_select').val(), "parent");
-                            break;
-                        default:
-                            refrash_road($('#distance_select').val(), $('#special_select').val());
-                            search_road($('#distance_select').val(), $('#special_select').val());
-                            break;
-                    }
-                    break;
+            if (searchmarker) {
+                switch ($(this).val()) {
+                    case "parking-lot":
+                        $(".parkDisabled").show();
+                        $(".parkParents").show();
+                        $(".parkNormal").show();
+                        $('.marker-cluster').hide();
+                        switch ($('#special_select').val()) {
+                            case "disabled":
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                break;
+                            case "parent":
+                                $(".parkDisabled").hide();
+                                $(".parkNormal").hide();
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case "roadside-all":
+                        $(".parkDisabled").hide();
+                        $(".parkParents").hide();
+                        $(".parkNormal").hide();
+                        $('.marker-cluster').show();
+                        switch ($('#special_select').val()) {
+                            case "disabled":
+                                search_road($('#distance_select').val(), "disabled");
+                                break;
+                            case "parent":
+                                search_road($('#distance_select').val(), "parent");
+                                break;
+                            default:
+                                search_road($('#distance_select').val(), $('#special_select').val());
+                                break;
+                        }
+                        break;
+                    case "roadside-empty":
+                        $(".parkDisabled").hide();
+                        $(".parkParents").hide();
+                        $(".parkNormal").hide();
+                        search_road($('#distance_select').val(), "roadside-empty");
+                        break;
+                    default:
+                        $(".parkDisabled").show();
+                        $(".parkParents").show();
+                        $(".parkNormal").show();
+                        switch ($('#special_select').val()) {
+                            case "disabled":
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                search_road($('#distance_select').val(), "disabled");
+                                break;
+                            case "parent":
+                                $(".parkDisabled").hide();
+                                $(".parkNormal").hide();
+                                search_road($('#distance_select').val(), "parent");
+                                break;
+                            default:
+                                search_road($('#distance_select').val(), $('#special_select').val());
+                                break;
+                        }
+                        break;
+                }
+            } else {
+                switch ($(this).val()) {
+                    case "parking-lot":
+                        $(".parkDisabled").show();
+                        $(".parkParents").show();
+                        $(".parkNormal").show();
+                        $('.marker-cluster').hide();
+                        switch ($('#special_select').val()) {
+                            case "disabled":
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                break;
+                            case "parent":
+                                $(".parkDisabled").hide();
+                                $(".parkNormal").hide();
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case "roadside-all":
+                        $(".parkDisabled").hide();
+                        $(".parkParents").hide();
+                        $(".parkNormal").hide();
+                        $('.marker-cluster').show();
+                        switch ($('#special_select').val()) {
+                            case "disabled":
+                                refrash_road($('#distance_select').val(), "disabled");
+                                break;
+                            case "parent":
+                                refrash_road($('#distance_select').val(), "parent");
+                                break;
+                            default:
+                                refrash_road($('#distance_select').val(), $('#special_select').val());
+                                break;
+                        }
+                        break;
+                    case "roadside-empty":
+                        $(".parkDisabled").hide();
+                        $(".parkParents").hide();
+                        $(".parkNormal").hide();
+                        refrash_road($('#distance_select').val(), "roadside-empty");
+                        break;
+                    default:
+                        $(".parkDisabled").show();
+                        $(".parkParents").show();
+                        $(".parkNormal").show();
+                        switch ($('#special_select').val()) {
+                            case "disabled":
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                refrash_road($('#distance_select').val(), "disabled");
+                                break;
+                            case "parent":
+                                $(".parkDisabled").hide();
+                                $(".parkNormal").hide();
+                                refrash_road($('#distance_select').val(), "parent");
+                                break;
+                            default:
+                                refrash_road($('#distance_select').val(), $('#special_select').val());
+                                break;
+                        }
+                        break;
+                }
             }
         })
 
         // change park lot type
         $('#special_select').change(function () {
-            refrash_road($('#distance_select').val(), $(this).val())
-            search_road($('#distance_select').val(), $(this).val())
-            switch ($(this).val()) {
-                case "disabled":
-                    $(".parkDisabled").show();
-                    $(".parkParents").hide();
-                    $(".parkNormal").hide();
-                    refrash_road($('#distance_select').val(), "disabled");
-                    search_road($('#distance_select').val(), "disabled");
-                    switch ($('#type_select').val()) {
-                        case "parking-lot":
-                            $('.marker-cluster').hide();
-                            break;
-                        case "roadside-all":
-                            $(".parkDisabled").hide();
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            $('.marker-cluster').show();
-                            break;
-                        case "roadside-empty":
-                            $(".parkDisabled").hide();
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            refrash_road($('#distance_select').val(), "roadside-empty");
-                            search_road($('#distance_select').val(), "roadside-empty");
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case "parent":
-                    $(".parkDisabled").hide();
-                    $(".parkParents").show();
-                    $(".parkNormal").hide();
-                    refrash_road($('#distance_select').val(), "parent");
-                    search_road($('#distance_select').val(), "parent");
-                    switch ($('#type_select').val()) {
-                        case "parking-lot":
-                            $('.marker-cluster').hide();
-                            break;
-                        case "roadside-all":
-                            $(".parkDisabled").hide();
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            $('.marker-cluster').show();
-                            break;
-                        case "roadside-empty":
-                            $(".parkDisabled").hide();
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            refrash_road($('#distance_select').val(), "roadside-empty");
-                            search_road($('#distance_select').val(), "roadside-empty");
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    $(".parkDisabled").show();
-                    $(".parkParents").show();
-                    $(".parkNormal").show();
-                    refrash_road($('#distance_select').val(), "other");
-                    search_road($('#distance_select').val(), "other");
-                    switch ($('#type_select').val()) {
-                        case "parking-lot":
-                            $('.marker-cluster').hide();
-                            break;
-                        case "roadside-all":
-                            $(".parkDisabled").hide();
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            $('.marker-cluster').show();
-                            break;
-                        case "roadside-empty":
-                            $(".parkDisabled").hide();
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            refrash_road($('#distance_select').val(), "roadside-empty");
-                            search_road($('#distance_select').val(), "roadside-empty");
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
+            if (searchmarker) {
+                switch ($(this).val()) {
+                    case "disabled":
+                        $(".parkDisabled").show();
+                        $(".parkParents").hide();
+                        $(".parkNormal").hide();
+                        search_road($('#distance_select').val(), "disabled");
+                        switch ($('#type_select').val()) {
+                            case "parking-lot":
+                                $('.marker-cluster').hide();
+                                break;
+                            case "roadside-all":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                $('.marker-cluster').show();
+                                break;
+                            case "roadside-empty":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                search_road($('#distance_select').val(), "roadside-empty");
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case "parent":
+                        $(".parkDisabled").hide();
+                        $(".parkParents").show();
+                        $(".parkNormal").hide();
+                        search_road($('#distance_select').val(), "parent");
+                        switch ($('#type_select').val()) {
+                            case "parking-lot":
+                                $('.marker-cluster').hide();
+                                break;
+                            case "roadside-all":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                $('.marker-cluster').show();
+                                break;
+                            case "roadside-empty":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                search_road($('#distance_select').val(), "roadside-empty");
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    default:
+                        $(".parkDisabled").show();
+                        $(".parkParents").show();
+                        $(".parkNormal").show();
+                        search_road($('#distance_select').val(), "other");
+                        switch ($('#type_select').val()) {
+                            case "parking-lot":
+                                $('.marker-cluster').hide();
+                                break;
+                            case "roadside-all":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                $('.marker-cluster').show();
+                                break;
+                            case "roadside-empty":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                search_road($('#distance_select').val(), "roadside-empty");
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                }
+            } else {
+                switch ($(this).val()) {
+                    case "disabled":
+                        $(".parkDisabled").show();
+                        $(".parkParents").hide();
+                        $(".parkNormal").hide();
+                        refrash_road($('#distance_select').val(), "disabled");
+                        switch ($('#type_select').val()) {
+                            case "parking-lot":
+                                $('.marker-cluster').hide();
+                                break;
+                            case "roadside-all":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                $('.marker-cluster').show();
+                                break;
+                            case "roadside-empty":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                refrash_road($('#distance_select').val(), "roadside-empty");
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case "parent":
+                        $(".parkDisabled").hide();
+                        $(".parkParents").show();
+                        $(".parkNormal").hide();
+                        refrash_road($('#distance_select').val(), "parent");
+                        switch ($('#type_select').val()) {
+                            case "parking-lot":
+                                $('.marker-cluster').hide();
+                                break;
+                            case "roadside-all":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                $('.marker-cluster').show();
+                                break;
+                            case "roadside-empty":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                refrash_road($('#distance_select').val(), "roadside-empty");
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    default:
+                        $(".parkDisabled").show();
+                        $(".parkParents").show();
+                        $(".parkNormal").show();
+                        refrash_road($('#distance_select').val(), "other");
+                        switch ($('#type_select').val()) {
+                            case "parking-lot":
+                                $('.marker-cluster').hide();
+                                break;
+                            case "roadside-all":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                $('.marker-cluster').show();
+                                break;
+                            case "roadside-empty":
+                                $(".parkDisabled").hide();
+                                $(".parkParents").hide();
+                                $(".parkNormal").hide();
+                                refrash_road($('#distance_select').val(), "roadside-empty");
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                }
             }
+
         })
 
         var markers = undefined;
