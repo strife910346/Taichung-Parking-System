@@ -476,7 +476,7 @@
 
             userlat = pos.coords.latitude;
             userlng = pos.coords.longitude;
-            // reset marker and circle
+            // reset marker
             if (usermarker) {
                 map.removeLayer(usermarker);
             }
@@ -485,138 +485,65 @@
             map.setView([userlat, userlng], 15);
             // userplace callback
             addUserPlace(1000, userlat, userlng);
-            usermarker = L.marker([userlat, userlng], { icon: userIcon }).addTo(map);
         }
 
         // userplace function
         addUserPlace = (area, userlat, userlng) => {
-            refrash_road(area, 'other');
+            refrash_road(area);
             refrash_park();
         }
 
-        var markers = undefined;
-        var markerList;
-        function refrash_road(cur_area, special) {
-            if (markers) {
-                markers.clearLayers();
-            }
+        let markers = L.markerClusterGroup();
+        let markerList = [];
+        refrash_road = (cur_area) => {
             let a = 0;
             a = cur_area;
-            // add markercluster
-            markers = L.markerClusterGroup();
-            markerList = [];
+            // 清空
+            // markerList = [];
             let car_parking_url = "https://datacenter.taichung.gov.tw/Swagger/OpenData/791a8a4b-ade6-48cf-b3ed-6c594e58a1f1";
             let car_parking_xhr = new XMLHttpRequest();
             car_parking_xhr.open('GET', car_parking_url, true);
             car_parking_xhr.send();
             car_parking_xhr.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
-                    response = JSON.parse(this.response);
-                    if (special == "disabled") {
-                        $(response).each(function (i, parkInfo) {
-                            var roadlat = Number(parkInfo['PS_Lat']);
-                            var roadlng = Number(parkInfo['PS_Lng']);
-                            if (parkInfo['PS_type'] == '1') {
-                                if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
-                                    if (parkInfo['status'] == 0) {
-                                        var parkOk = L.icon({
-                                            iconUrl: './assets/image/map_control_img/no_car.png',
-                                            iconSize: [15, 15],
-                                            className: 'roadOkDisabled'
-                                        });
-                                        var roadOkDisabled = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
-                                        markerList.push(roadOkDisabled);
-                                    } else {
-                                        var parkNon = L.icon({
-                                            iconUrl: './assets/image/map_control_img/in_car.png',
-                                            iconSize: [15, 15],
-                                            className: 'roadNonDisabled'
-                                        });
-                                        var roadNonDisabled = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
-                                        markerList.push(roadNonDisabled);
-                                    }
-                                }
-                            }
-                        })
-                    } else if (special == "parent") {
-                        $(response).each(function (i, parkInfo) {
-                            var roadlat = Number(parkInfo['PS_Lat']);
-                            var roadlng = Number(parkInfo['PS_Lng']);
-                            if (parkInfo['PS_type'] == '2') {
-                                if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
-                                    if (parkInfo['status'] == 0) {
-                                        var parkOk = L.icon({
-                                            iconUrl: './assets/image/map_control_img/no_car.png',
-                                            iconSize: [15, 15],
-                                            className: 'roadOkParents'
-                                        });
-                                        var roadOkParents = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
-                                        markerList.push(roadOkParents);
-                                    } else {
-                                        var parkNon = L.icon({
-                                            iconUrl: './assets/image/map_control_img/in_car.png',
-                                            iconSize: [15, 15],
-                                            className: 'roadNonParents'
-                                        });
-                                        var roadNonParents = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
-                                        markerList.push(roadNonParents);
-                                    }
-                                }
-                            }
-                        })
-                    } else if (special == "roadside-empty") {
-                        $(response).each(function (i, parkInfo) {
-                            var roadlat = Number(parkInfo['PS_Lat']);
-                            var roadlng = Number(parkInfo['PS_Lng']);
-                            if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
-                                if (parkInfo['status'] == 0) {
-                                    var parkOk = L.icon({
-                                        iconUrl: './assets/image/map_control_img/no_car.png',
-                                        iconSize: [15, 15],
-                                        className: 'roadOk'
-                                    });
-                                    var roadOk = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
-                                    markerList.push(roadOk);
-                                }
-                            }
-                        });
-                    } else {
-                        $(response).each(function (i, parkInfo) {
-                            var roadlat = Number(parkInfo['PS_Lat']);
-                            var roadlng = Number(parkInfo['PS_Lng']);
-                            if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
-                                if (parkInfo['status'] == 0) {
-                                    targetPoint.push([roadlat, roadlng]);
-                                    targetDis.push(L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)));
-                                    var parkOk = L.icon({
-                                        iconUrl: './assets/image/map_control_img/no_car.png',
-                                        iconSize: [15, 15],
-                                        className: 'roadOk'
-                                    });
-                                    var roadOk = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
-                                    markerList.push(roadOk);
-                                } else {
-                                    var parkNon = L.icon({
-                                        iconUrl: './assets/image/map_control_img/in_car.png',
-                                        iconSize: [15, 15],
-                                        className: 'roadNon'
-                                    });
-                                    var roadNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
-                                    markerList.push(roadNon);
-                                }
-                            }
-                        })
+                    if (markers) {
+                        markers.clearLayers();
                     }
-                    markers.addLayers(markerList);
-                };
-            }
+                    markerList = [];
+                    let response = JSON.parse(this.response);
+                    // console.log(response);
+                    $(response).each(function (i, parkInfo) {
+                        var roadlat = Number(parkInfo['PS_Lat']);
+                        var roadlng = Number(parkInfo['PS_Lng']);
+                        if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
+                            if (parkInfo['status'] == 0) {
+                                targetPoint.push([roadlat, roadlng]);
+                                targetDis.push(L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)));
+                                var parkOk = L.icon({
+                                    iconUrl: './assets/image/map_control_img/no_car.png',
+                                    iconSize: [15, 15],
+                                    className: 'roadOk'
+                                });
+                                var roadOk = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                markerList.push(roadOk);
+                            } else {
+                                var parkNon = L.icon({
+                                    iconUrl: './assets/image/map_control_img/in_car.png',
+                                    iconSize: [15, 15],
+                                    className: 'roadNon'
+                                });
+                                var roadNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
+                                markerList.push(roadNon);
+                            }
+                        }
+                    })
+                }
+                markers.addLayers(markerList);
+            };
             map.addLayer(markers);
         }
 
         function refrash_park() {
-            $(".parkDisabled").remove();
-            $(".parkParents").remove();
-            $(".parkNormal").remove();
             // api匯入
             let parking_park_url = "https://motoretag.taichung.gov.tw/DataAPI/api/ParkingSpotListAPI";
             let parking_park_xhr = new XMLHttpRequest();
@@ -624,7 +551,10 @@
             parking_park_xhr.send();
             parking_park_xhr.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
-                    response = JSON.parse(this.response);
+                    $(".parkDisabled").remove();
+                    $(".parkParents").remove();
+                    $(".parkNormal").remove();
+                    let response = JSON.parse(this.response);
                     $(response).each(function (i, parkInfo) {
                         $(parkInfo['ParkingLots']).each(function (i, parkMark) {
                             // console.log(parkMark['Type'].includes('1'));
@@ -880,7 +810,7 @@
         // 資料庫
         var traderecords = [];
         var ncid = localStorage.getItem("memberID")
-        console.log(ncid)
+        // console.log(ncid)
 
         function refreshcord() {
             $.ajax({

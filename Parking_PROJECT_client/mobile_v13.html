@@ -607,13 +607,6 @@
                             break;
                     }
                     break;
-                case "roadside-empty":
-                    $(".parkDisabled").hide();
-                    $(".parkParents").hide();
-                    $(".parkNormal").hide();
-                    refrash_road($('#distance_select').val(), "roadside-empty");
-                    search_road($('#distance_select').val(), "roadside-empty");
-                    break;
                 default:
                     $(".parkDisabled").show();
                     $(".parkParents").show();
@@ -899,22 +892,27 @@
 
         var markers = undefined;
         var markerList;
-        function refrash_road(cur_area, special) {
+
+        refrash_road = (cur_area, special) => {
             if (markers) {
                 markers.clearLayers();
             }
+            markerList = [];
             let a = 0;
             a = cur_area;
             // add markercluster
             markers = L.markerClusterGroup();
-            markerList = [];
             let car_parking_url = "https://datacenter.taichung.gov.tw/Swagger/OpenData/791a8a4b-ade6-48cf-b3ed-6c594e58a1f1";
             let car_parking_xhr = new XMLHttpRequest();
             car_parking_xhr.open('GET', car_parking_url, true);
             car_parking_xhr.send();
             car_parking_xhr.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
-                    response = JSON.parse(this.response);
+                    if (markers) {
+                        markers.clearLayers();
+                    }
+                    markerList = [];
+                    let response = JSON.parse(this.response);
                     if (special == "disabled") {
                         $(response).each(function (i, parkInfo) {
                             var roadlat = Number(parkInfo['PS_Lat']);
@@ -1025,13 +1023,9 @@
 
         var searchMarkers = undefined;
         var searchList;
-        function search_road(search_area, special) {
-            if (searchMarkers) {
-                searchMarkers.clearLayers();
-            }
+        search_road = (search_area, special) => {
             // add search marker
             searchMarkers = L.markerClusterGroup();
-            searchList = [];
             let a = 0;
             a = search_area;
             let car_parking_url = "https://datacenter.taichung.gov.tw/Swagger/OpenData/791a8a4b-ade6-48cf-b3ed-6c594e58a1f1";
@@ -1040,7 +1034,11 @@
             car_parking_xhr.send();
             car_parking_xhr.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
-                    response = JSON.parse(this.response);
+                    if (searchMarkers) {
+                        searchMarkers.clearLayers();
+                    }
+                    searchList = [];
+                    let response = JSON.parse(this.response);
                     if (special == "disabled") {
                         $(response).each(function (i, parkInfo) {
                             var roadlat = Number(parkInfo['PS_Lat']);
@@ -1143,21 +1141,21 @@
                     }
                     searchMarkers.addLayers(searchList);
                 };
+
             }
             map.addLayer(searchMarkers);
         }
 
         function refrash_park() {
-            $(".parkDisabled").remove();
-            $(".parkParents").remove();
-            $(".parkNormal").remove();
-            // api匯入
             let parking_park_url = "https://motoretag.taichung.gov.tw/DataAPI/api/ParkingSpotListAPI";
             let parking_park_xhr = new XMLHttpRequest();
             parking_park_xhr.open('GET', parking_park_url, true);
             parking_park_xhr.send();
             parking_park_xhr.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
+                    $(".parkDisabled").remove();
+                    $(".parkParents").remove();
+                    $(".parkNormal").remove();
                     response = JSON.parse(this.response);
                     $(response).each(function (i, parkInfo) {
                         $(parkInfo['ParkingLots']).each(function (i, parkMark) {
@@ -1218,13 +1216,10 @@
                                     }
                                     break;
                             }
-
                         })
                     })
                 }
             }
-
-
         }
 
 
