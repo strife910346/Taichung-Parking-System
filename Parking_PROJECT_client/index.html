@@ -493,13 +493,13 @@
             refrash_park();
         }
 
-        let markers = L.markerClusterGroup();
+        let markers = undefined;
         let markerList = [];
         refrash_road = (cur_area) => {
             let a = 0;
             a = cur_area;
             // 清空
-            // markerList = [];
+            markers = L.markerClusterGroup();
             let car_parking_url = "https://datacenter.taichung.gov.tw/Swagger/OpenData/791a8a4b-ade6-48cf-b3ed-6c594e58a1f1";
             let car_parking_xhr = new XMLHttpRequest();
             car_parking_xhr.open('GET', car_parking_url, true);

@@ -891,13 +891,11 @@
         })
 
         var markers = undefined;
-        var markerList;
-
+        var markerList = []
         refrash_road = (cur_area, special) => {
             if (markers) {
                 markers.clearLayers();
             }
-            markerList = [];
             let a = 0;
             a = cur_area;
             // add markercluster
@@ -1022,9 +1020,9 @@
         }
 
         var searchMarkers = undefined;
-        var searchList;
+        var searchList = [];
         search_road = (search_area, special) => {
-            // add search marker
+            // search Cluster
             searchMarkers = L.markerClusterGroup();
             let a = 0;
             a = search_area;
