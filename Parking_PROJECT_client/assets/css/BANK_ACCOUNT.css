@@ -22,23 +22,14 @@ button {
     border-radius: 40px 40px;
 }
 
-
-.back_btn {
-    color: white;
-    text-align: center;
-    font-size: 40px;
-    position: fixed;
-    margin-left: 0%;
-}
-
 input[type=date] {
     width: 150px;
 }
 
 .close {
-    font-size: 40px;
+    font-size: 18px;
     position: fixed;
-    margin-left: 0%;
+    margin-left: 3%;
 }
 
 .loc_btn {
@@ -89,4 +80,115 @@ input[type=date] {
 .form_btn .col-4 button {
     width: 90%;
     border-radius: 15px;
+}
+h1 {
+    font-size: 32px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 18px;
+}
+
+h4 {
+    font-size: 16px;
+}
+
+h5 {
+    font-size: 14px;
+}
+
+h6 {
+    font-size: 12px;
+}
+
+p {
+    font-size: 10px;
+}
+
+.color_gary {
+    color: rgb(150, 150, 150);
+}
+
+.border_gray {
+    border: 1px rgb(150, 150, 150) solid;
+}
+
+.dis_flex_column_center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.dis_flex_row_j_center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.dis_flex_center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dis_flex_row {
+    display: flex;
+    flex-direction: row;
+}
+
+.border_none {
+    border: none;
+    background-color: transparent;
+}
+
+.body_color {
+    background-size: cover;
+    background-color: rgba(206, 206, 206, 0.302)
+}
+
+.btn-gray {
+    width: 100%;
+    background-color: rgba(128, 128, 128, 0.241);
+    border-radius: 10px;
+    color: #0069B4;
+    border-color: white;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.btn_blue {
+    width: 100%;
+    background-color: #0069B4;
+    border-radius: 10px;
+    color: white;
+    border-color: white;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.btn_i {
+    color: white;
+    text-align: center;
+    font-size: 24px;
+}
+
+.bg_blue {
+    background-color: #0069B4;
+}
+
+.bg_white {
+    background-color: white;
+}
+
+.color_white {
+    color: white;
+}
+
+.color_blue {
+    color: #0069B4
 }

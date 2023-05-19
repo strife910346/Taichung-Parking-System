@@ -1,7 +1,7 @@
 
 .box {
     box-shadow: 10px 10px 13px rgba(0, 0, 0, 0.6);
-    transform: translate(-10px, -10px);
+    transform: translate(-5px, -5px);
     transition-delay: 0s;
     transition-duration: 0.5s;
     border-radius: 30px;
@@ -16,14 +16,6 @@
 
 
 
-/* .hover_pyment {
-
-    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.6);
-    transform: translate(-10px, -10px);
-    transition-delay: 0s;
-    transition-duration: 0.5s;
-} */
-
 .nook_hidden {
     visibility: hidden;
 }
@@ -36,37 +28,37 @@
 
 .nook {
 
-    width: 154px;
+    width: 103px;
     height: 0px;
     border-left: 30px solid transparent;
     border-right: 30px solid transparent;
     border-bottom: 30px solid #28d;
     transform: rotate(-45deg);
+
     position: relative;
-    left: -53px;
+    left: -37px;
     top: 10px;
     /*--下面顺便定义文字样式--*/
-    color: #ffc;
-    font-size: 16px;
+    color: white;
     text-align: center;
     line-height: 28px;
 }
 
 .hover_pyment {
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 #loader {
     border: 8px solid #f3f3f3;
     border-top: 15px solid #3498db;
     border-radius: 50%;
-    width: 120px;
-    height: 120px;
+    width: 60px;
+    height: 60px;
     animation: spin 1s linear infinite;
     visibility: hidden;
     position: absolute;
     top: 45%;
-    left: 46%;
+    left: 45%;
     transform: translate(-50%, -50%);
 
 }
@@ -74,9 +66,9 @@
 #loader_text {
 
     position: absolute;
-    top: 53%;
-    left: 46%;
-    font-size: 45px;
+    top: 55%;
+    left: 44%;
+    font-size: 24px;
     color: #0069B4;
     visibility: hidden;
 }
@@ -136,11 +128,11 @@ p {
 }
 
 .color_gary {
-    color: rgb(150, 150, 150);
+    color: rgb(126, 123, 123)
 }
 
 .border_gray {
-    border: 1px rgb(150, 150, 150) solid;
+    border: 1px rgb(126, 123, 123) solid;
 }
 
 .dis_flex_column_center {
@@ -196,23 +188,30 @@ p {
 }
 
 .btn_gray {
-    width: 40%;
+    width: 30%;
     background-color: rgba(128, 128, 128, 0.241);
     border-radius: 10px;
     color: #0069B4;
     border-color: transparent;
-    font-size: 20px;
+    font-size: 16px;
     padding: 5px;
 }
-
+.color_white{
+    color: white;
+}
+.btn_i{
+    color: white;
+    text-align: center;
+    font-size: 24px;
+}
 
 .btn_bottom_blue {
-    width: 40%;
+    width: 30%;
     background-color: #0069B4;
     border-radius: 10px;
     color: white;
     border-color: transparent;
-    font-size: 20px;
+    font-size: 16px;
     padding: 5px;
 }
 
@@ -230,7 +229,7 @@ p {
 }
 
 .btn_white {
-    font-size: 24px;
+    font-size: 16px;
     color: white;
     background-color: rgb(219, 219, 219);
     border-radius: 15px;
@@ -243,7 +242,7 @@ p {
         -2px 2px 2px rgba(116, 116, 116, 0.082),
         -2px 2px 2px rgba(116, 116, 116, 0.082);
     box-shadow: 0px 13px 0px 0px rgb(133, 132, 132);
-    transition: all .4s;
+    transition: all .4s;    
 }
 
 .btn_white:hover {
@@ -254,12 +253,12 @@ p {
 
 
 .btn_white:active {
-    transform: translate(0, 9px);
+    transform: translate(0, 1px);
     box-shadow: 0px 1px 0px 0px rgb(0, 81, 139);
 }
 
 .btn_yellow {
-    font-size: 24px;
+    font-size: 16px;
     color: #0069B4;
     background-color: yellow;
     border-radius: 15px;
@@ -281,7 +280,7 @@ p {
 }
 
 .btn_blue {
-    font-size: 24px;
+    font-size: 16px;
     padding-top: 3px;
     padding-bottom: 3px;
     padding-right: 10px;
@@ -300,7 +299,11 @@ p {
     box-shadow: 0px 15px 0px 0px rgb(1, 84, 144);
     transition: all .4s;
 }
-
+.dis_flex_row_j_center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
 .bg_blue {
     background-color: #0069B4;
 }
@@ -336,7 +339,7 @@ p {
 }
 select[name="license"] {
     border: 0;
-    font-size: 32px;
+    font-size: 18px;
     font-weight: bold;
 }
 .a_none{

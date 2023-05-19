@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>選擇刪除車牌號碼</title>
     <!-- bootstrap5-->
     <link rel="stylesheet" href="./assets/css/BS5_CSS/bootstrap.css">
@@ -27,21 +29,81 @@
         img {
             width: 300px;
         }
+        .bg_blue {
+            background-color: #0069B4;
+        }
+        .color_white{
+            color: white;
+        }
+        .border_none{
+            border: none;
+            background-color: transparent;
+        }
+        .btn_i {
+            color: white;
+            text-align: center;
+            font-size: 24px;
+        }
+        .dis_flex_row_j_center{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        h1 {
+            font-size: 32px;
+        }
+
+        h2 {
+            font-size: 24px;
+        }
+
+        h3 {
+            font-size: 18px;
+        }
+
+        h4 {
+            font-size: 16px;
+        }
+
+        h5 {
+            font-size: 14px;
+        }
+
+        h6 {
+            font-size: 12px;
+        }
+
+        p {
+            font-size: 10px;
+        }
+        .dis_flex_center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 
 <body>
-    <div style="height: 80px; background-color: #0069B4; width: 100%; ">
-        <button class="back_btn">x</button>
-        <h1 style="color: white; line-height:80px; text-align: center;"><b>選擇刪除車牌號碼</b></h1>
+    <div class="bg_blue">
+        <div style="position: absolute; left:5px">
+            <button class="border_none color_white btn_i Gold_flow_home_page">
+                x
+            </button>
+        </div>
+        <div class=" dis_flex_row_j_center pt-1">
+            <h2 class="color_white">
+                <b>選擇刪除車牌號碼</b>
+            </h2>
+        </div>
     </div>
     <div style="background-color: white;">
         <div class="container" style="padding-top: 20px;">
             <div class="row" style="justify-content: center;">
                 <div class="col-12" style="text-align:center">
-                    <h6>
+                    <h4>
                         請選擇刪除車牌號碼
-                    </h6>
+                    </h4>
                     <hr>
                 </div>
             </div>
@@ -65,7 +127,7 @@
     <script>
         var id = localStorage.getItem("memberID")
         console.log(id)
-        $(".back_btn").on("click", function () {
+        $(".Gold_flow_home_page").on("click", function () {
             window.location = "./Gold_flow_home.html"
         })
         function refreshData() {
@@ -79,9 +141,9 @@
                 for (i = 0; i < datafromS.length; i++) {
                     $('#license_data').append(
                         `<div class="col-12" style="display: flex; align-items: center;justify-content: center;">
-                        <div
-                            style="background-image: url('./assets/image/license/pay-01.png'); width: 262px; height: 107px; text-align: center; vertical-align: bottom; margin-top: 5px;">
-                            <button style="margin-top: 25px; font-size: 40px;" onclick="confirmdelete('${datafromS[i].license}')">${datafromS[i].license}</button>
+                        <div 
+                            style="background-image: url('./assets/image/license/pay-01.png'); width: 150px; height: 70px;background-size:150px 70px; text-align: center; vertical-align: bottom; margin-top: 5px;">
+                            <button style="margin-top: 25px; font-size: 24px;" onclick="confirmdelete('${datafromS[i].license}')">${datafromS[i].license}</button>
                         </div>
                 </div>
                 `
@@ -107,7 +169,7 @@
                     license: x
                 }
             }).done(function () {
-                window.location = "./Gold_flow_home.html"
+                window.location = "./Car_Licence_choose.html"
             })
         }
 

@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>繳費成功</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/css/BS5_CSS/bootstrap.css">
     <script src="./assets/js/BS5_js/bootstrap.bundle.js"></script>
     <link rel="stylesheet" href="./assets/font-awesome-4.7.0/css/font-awesome.css">
@@ -39,11 +41,11 @@
         }
 
         .color_gary {
-            color: rgb(150, 150, 150);
+            color: rgb(126, 123, 123)
         }
 
         .border_gray {
-            border: 1px rgb(150, 150, 150) solid;
+            border: 1px rgb(126, 123, 123) solid;
         }
 
         .dis_flex_column_center {
@@ -80,8 +82,8 @@
             border-radius: 10px;
             color: #0069B4;
             border: none;
-            font-size: 20px;
-            padding: 5px;
+            font-size: 18px;
+            padding: 3px;
             box-shadow: 0px 15px 0px 0px rgba(37, 37, 37, 0.241);
             transition: all .4s;
         }
@@ -115,8 +117,8 @@
             background-color: rgb(0, 106, 181);
             border-radius: 10px;
             color: white;
-            font-size: 20px;
-            padding: 5px;
+            font-size: 18px;
+            padding: 3px;
             text-shadow: -2px 2px 2px rgb(1, 84, 144),
                 -2px 2px 2px rgb(1, 84, 144),
                 -2px 2px 2px rgb(1, 84, 144),
@@ -126,49 +128,70 @@
             box-shadow: 0px 15px 0px 0px rgb(1, 84, 144);
             transition: all .4s;
         }
+
+        .bg_blue {
+            background-color: #0069B4;
+        }
+
+        .color_white {
+            color: white;
+        }
+
+        .dis_flex_row_j_center {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .btn_i {
+            color: white;
+            text-align: center;
+            font-size: 24px;
+        }
     </style>
 </head>
 
 <body class="body_color">
 
     <!-- 導覽列 -->
-    <div style=" background-color: #0069B4; ">
-        <div class="dis_flex_center">
-            <h1 style=" color: white; line-height:80px; ">
+    <div class="bg_blue">
+        <div style="position: absolute; left:5px">
+            <button class="border_none color_white btn_i Gold_flow_home_page">
+                x
+            </button>
+        </div>
+        <div class=" dis_flex_row_j_center pt-1">
+            <h2 class="color_white">
                 <b>繳費成功</b>
-            </h1>
+            </h2>
         </div>
     </div>
-    <div class="dis_flex_column_center" style="margin-top: -10px; height:844px; background-color: white;">
-        <div style="margin-top: 100px;">
-            <div>
-                <img class="animate__animated animate__bounce animate__repeat-2 " style="width: 200px;"
-                    src="./assets/image/Gold_Flow_image/pay-10suc.png" alt="">
-            </div>
-            <br>
-        </div>
-        <div style="margin-top: 50px;">
-            <h1 class="animate__animated animate__fadeInDown" style="color: rgb(49, 225, 5);"><b>繳費成功</b> </h1>
+    <div class="dis_flex_column_center pt-5" style="background-color: white;">
+        <img class="animate__animated animate__bounce animate__repeat-2 " style="width: 100px;"
+            src="./assets/image/Gold_Flow_image/pay-10suc.png" alt="">
+        <br>
+        <div style="margin-top: 10px;">
+            <h3 class="animate__animated animate__fadeInDown" style="color: rgb(49, 225, 5);"><b>繳費成功</b> </h3>
         </div>
 
-        <div style="margin-top: 50px;">
-            <h2 class="color_gary">繳費金額</h2>
+        <div style="margin-top: 20px;">
+            <h4 class="color_gary">繳費金額</h4>
         </div>
         <div class="dis_flex_row">
             <div>
-                <h1 id="payment" style="position: relative; top:20px; "><b></b></h1>
+                <h1 style=" position: relative; top:10px; " id="payment"><b> </b></h1>
             </div>
 
         </div>
-        <div class="color_gary" style="margin-top: 60px;">
-            <h1 id="date"></h1>
+        <div class="color_gary" style="margin-top: 20px;">
+            <h4 id="date"></h4>
         </div>
         <div class="color_gary">
-            <h1 id="time"></h1>
+            <h4 id="time"></h4>
         </div>
 
     </div>
-    <div style="padding-top: 100px;" class="container">
+    <div style="padding-top: 50px;" class="container">
         <div class="row">
             <div class="col-6">
                 <button class="btn-gray Trade_record">
@@ -186,6 +209,9 @@
     <br>
 
     <script>
+        $(".Gold_flow_home_page").on("click", function () {
+            window.location = "./Gold_flow_home.html"
+        })
         var date = new Date()
         var tm = date.getMonth() + 1;
         var td = date.getDate();

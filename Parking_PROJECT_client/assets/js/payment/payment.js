@@ -1,5 +1,5 @@
-var member_ac =  localStorage.getItem("member_ac")  
-if(!member_ac){
+var member_ac = localStorage.getItem("member_ac")
+if (!member_ac) {
     window.location = "./login.html"
 }
 const reloadBtn = document.getElementById("payment");
@@ -166,76 +166,76 @@ function cat(a) {
         for (var i = 0; i < dataServer.length; i++) {
             // console.log(dataServer[i].py_id)
             $(".data_py").append(`
-            <div tabindex="0" class=" d_none container hover_pyment bg_white border_top_gray border_bottom_gray"
-            style="padding: 20px;">
+            <div tabindex="0" class="container hover_pyment bg_white border_top_gray border_bottom_gray"
+>
             <div class="nook nook_hidden">
-            <h2><b>已選</b></h2>
+            <h4><b>已選</b></h4>
              </div>
-        <div class="row" style="margin-top: 10px ;">
+        <div class="row" style="margin-top:-15px">
             <div class="col-1 dis_flex_center">
                 <input data-delete-id="${dataServer[i].py_id}" name="all" style="height: 20px; width: 20px;" type="checkbox" id="payment_${dataServer[i].py_id}" value=${dataServer[i].py_amount}>
             </div>
             <div class="col-11 payment_value">
                 <label for="payment_${dataServer[i].py_id}" onclick="stopClick(event)">
                     <div class="row container">
-                        <div class="col-12">
-                            <h2><b> 停車繳費</b></h2>
+                        <div class="col-12">    
+                            <h3><b> 停車繳費</b></h3>
                         </div>
                         <div class="col-12 border_bottom_gray border_top_gray">
                             <div class="row ">
                                 <div class="col-8 ">
-                                    <div class="row border_right">
+                                    <div class="row ">
                                         <div class="col-12 pt-4">
                                             <div class="row">
                                                 <div class="col-4">
     
                                                     <div class="row ms-2">
                                                         <div class="col-12 dis_flex_center date123">
-                                                            <h3 class="date1">${dataServer[i].py_ps_d}</h3>
+                                                            <h5 class="date1">${dataServer[i].py_ps_d}</h5>
                                                         </div>
                                                         <div class="col-12 dis_flex_center">
-                                                            <h3 class="time1">${dataServer[i].py_ps_t
-                }</h3>
+                                                            <h5 class="time1">${dataServer[i].py_ps_t
+                }</h5>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-4 dis_flex_center">
                                                     <i class="fa fa-arrow-circle-right"
-                                                        style="font-size: 18px; color: #0069B4;"></i>
+                                                        style="font-size: 14px; color: #0069B4;"></i>
     
                                                 </div>
                                                 <div class="col-4">
                                                     <div class="row me-2">
                                                         <div class="col-12 dis_flex_center">
-                                                            <h3 class="date2">${dataServer[i].py_pe_d
-                }</h3>
+                                                            <h5 class="date2">${dataServer[i].py_pe_d
+                }</h5>
                                                         </div>
                                                         <div class="col-12 dis_flex_center">
-                                                            <h3 class="time2">${dataServer[i].py_pe_t}</h3>
+                                                            <h5 class="time2">${dataServer[i].py_pe_t}</h5>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-12 " style="display: flex; align-items:center;">
-                                            <h4 class="mt-3 parking">
+                                            <h5 class="mt-3 parking">
                                                 ${dataServer[i].py_location}
-                                            </h4>
+                                            </h5>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-4 ">
-                                    <div class="row  pt-2">
+                                    <div class="row  pt-4">
                                         <div class="col-12">
-                                            <h3>
+                                            <h4>
                                                 <b>應繳金額</b>
-                                            </h3>
+                                            </h4>
                                         </div>
-                                        <div class="col-12 mt-3 dis_flex_center">
-                                            <h1 class="test">
+                                        <div class="col-12 mt-2 dis_flex_center">
+                                            <h2 class="test">
                                             ${dataServer[i].py_amount}
-                                            </h1>
-                                            <h1>元</h1>
+                                            </h2>
+                                            <h3 class="mt-1">元</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -243,11 +243,11 @@ function cat(a) {
                         </div>
                         <div class="col-12">
                             <div class="row mt-3">
-                             <div class="col-2">
-                                    <h3><b>車牌:</b> </h3>
+                             <div class="col-3">
+                                    <h4><b>車牌:</b></h4>
                                 </div>
-                                <div class="col-10">
-                                    <h3 class="license">${dataServer[i].license}</h3>
+                                <div class="col-9">
+                                    <h4 class="license">${dataServer[i].license}</h4>
                                 </div>
                             </div>
     
@@ -281,7 +281,7 @@ function cat(a) {
     })
 }
 // 得到車牌資料
-var id =  localStorage.getItem("memberID")  
+var id = localStorage.getItem("memberID")
 console.log(id)
 var url = `http://localhost:3000/select/license/${id}`;
 $.get(url, function (license) {
@@ -306,32 +306,34 @@ $.get(url, function (license) {
 
 })
 // 得到錢包餘額資料
-var id =  localStorage.getItem("memberID")  
+var id = localStorage.getItem("memberID")
 console.log(id)
 
 $.ajax({
     url: `http://localhost:3000/select/member`,
     type: "post",
-    data:{id}
-  }).done(function (wallet) {      
+    data: { id }
+}).done(function (wallet) {
     $.each(JSON.parse(wallet), function (index, value) {
         // console.log(value)
-        $("#wallet").text(value.member_money)
+        $("#wallet").text(value.member_money).css("font-weight", "bold")
         // `<option>${value} </option>`
     })
-  })
+})
 // 繳費框收起
 window.addEventListener("scroll", function () {
     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-        $(".scroll").css("height", "5vh").css("transition-duration", "0.1s")
+        // $(".dis_wrap").removeClass("pt-2")
+        $(".scroll").css("height", "8vh").css("transition-duration", "0.1s")
         $(".scroll_row").css("flexWrap", "nowrap").css("transition-duration", "0.1s")
-        $(".dis_flex_row_1").css("margin-bottom", "15px").css("transition-duration", "0.1s")
-        $(".i_hidden").removeClass("i_hidden")
+        // $(".dis_flex_row_1").css("margin-bottom", "15px").css("transition-duration", "0.1s")
+        $(".i_top").removeClass("i_hidden")
     } else {
-        $(".scroll").css("height", "10vh").css("transition-duration", "0.3s")
+        $(".dis_wrap").addClass("pt-2")
+        $(".scroll").css("height", "12vh").css("transition-duration", "0.3s")
         $(".scroll_row").css("flexWrap", "wrap").css("transition-duration", "0.3s")
-        $(".dis_flex_row_1").css("margin-bottom", "0px").css("transition-duration", "0.3s")
-        $(".i_hidden").addClass("i_hidden")
+        // $(".dis_flex_row_1").css("margin-bottom", "0px").css("transition-duration", "0.3s")
+        $(".i_top").addClass("i_hidden")
     }
 });
 //  按下確定後 將資料傳到交易紀錄並跳轉至繳費頁面
@@ -342,8 +344,8 @@ $("#payment_sure").on("click", function () {
     $.ajax({
         url: `http://localhost:3000/select/member`,
         type: "post",
-        data:{id}
-      }).done(function (wallet) {      
+        data: { id }
+    }).done(function (wallet) {
         $.each(JSON.parse(wallet), function (index, value) {
             var x = value.member_money
             var paymentcheckbox = document.getElementsByName('all');
@@ -408,8 +410,8 @@ $("#payment_sure").on("click", function () {
                 }, 1000);
             }
         })
-      })
-   
+    })
+
 })
 
 payment_sure.onclick = function () {

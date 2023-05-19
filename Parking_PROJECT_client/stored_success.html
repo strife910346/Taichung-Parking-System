@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>儲值成功</title>
     <link rel="stylesheet" href="./assets/css/BS5_CSS/bootstrap.css">
     <script src="./assets/js/BS5_js/bootstrap.bundle.js"></script>
@@ -39,11 +41,11 @@
         }
 
         .color_gary {
-            color: rgb(150, 150, 150);
+            color: rgb(126, 123, 123)
         }
 
         .border_gray {
-            border: 1px rgb(150, 150, 150) solid;
+            border: 1px rgb(126, 123, 123) solid;
         }
 
         .dis_flex_column_center {
@@ -90,6 +92,9 @@
         }
 
 
+        .bg_blue {
+            background-color: #0069B4;
+        }
 
         .btn_blue:active {
             transform: translate(0, 5px);
@@ -102,8 +107,8 @@
             background-color: rgb(0, 106, 181);
             border-radius: 10px;
             color: white;
-            font-size: 20px;
-            padding: 5px;
+            font-size: 18px;
+            padding: 3px;
             text-shadow: -2px 2px 2px rgb(1, 84, 144),
                 -2px 2px 2px rgb(1, 84, 144),
                 -2px 2px 2px rgb(1, 84, 144),
@@ -113,33 +118,51 @@
             box-shadow: 0px 15px 0px 0px rgb(1, 84, 144);
             transition: all .4s;
         }
+
+        .color_white {
+            color: white;
+        }
+
+        .dis_flex_row_j_center {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .btn_i {
+            color: white;
+            text-align: center;
+            font-size: 24px;
+        }
     </style>
 </head>
 
 <body class="body_color">
 
     <!-- 導覽列 -->
-    <div style=" background-color: #0069B4; ">
-        <div class="dis_flex_center">
-            <h1 style="color: white; line-height:80px; ">
+    <div class="bg_blue">
+        <div style="position: absolute; left:5px" >
+            <button class="border_none color_white btn_i Gold_flow_home_page">
+                x
+            </button>
+        </div>
+        <div class=" dis_flex_row_j_center pt-1" >
+            <h2 class="color_white">
                 <b>儲值結果</b>
-            </h1>
+            </h2>
         </div>
     </div>
-    <div class="dis_flex_column_center" style="margin-top: -10px; height:844px; background-color: white;">
-        <div style="margin-top: 100px;">
-            <div>
-                <img class="animate__animated animate__bounce animate__repeat-2 " style="width: 200px;"
-                    src="./assets/image/Gold_Flow_image/pay-10suc.png" alt="">
-            </div>
-            <br>
-        </div>
-        <div style="margin-top: 50px;">
-            <h1 class="animate__animated animate__fadeInDown" style="color: rgb(49, 225, 5);"><b>儲值成功</b> </h1>
+
+    <div class="dis_flex_column_center pt-5 " style=" background-color: white;">
+        <img class="animate__animated animate__bounce animate__repeat-2 " style="width: 100px;"
+            src="./assets/image/Gold_Flow_image/pay-10suc.png" alt="">
+        <br>
+        <div style="margin-top: 10px;">
+            <h3 class="animate__animated animate__fadeInDown" style="color: rgb(49, 225, 5);"><b>儲值成功</b> </h3>
         </div>
 
-        <div style="margin-top: 50px;">
-            <h2 class="color_gary">儲值金額</h2>
+        <div style="margin-top: 20px;">
+            <h4 class="color_gary">儲值金額</h4>
         </div>
         <div class="dis_flex_row">
             <div>
@@ -148,43 +171,38 @@
 
         </div>
         <div style="margin-top: 20px;">
-            <h3 class="color_gary time">
+            <h4 class="color_gary time">
 
-            </h3>
+            </h4>
 
         </div>
 
     </div>
 
     <div style="margin-top: 50px;" class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="row">
-                    <div class="col-11">
-                        <h2 class="color_gary">目前Car Parking帳戶餘額</h4>
-                    </div>
-                    <div class="col-1">
-                        <h2 class="color_gary member_money"></h2>
-                    </div>
-                </div>
-
+        <div class="row ">
+            <div class="col-9">
+                <h4 class="color_gary">目前Car Parking帳戶餘額</h4>
             </div>
-
-            <hr class="color_gary">
+            <div class="col-1">
+                <h2 class="color_gary member_money"></h2>
+            </div>
         </div>
-        <div class="dis_flex_column_center">
-            <h2 class="color_gary">可至交易紀錄查看儲值明細</h2>
-        </div>
+        <hr class="color_gary">
+    </div>
+    <div class="dis_flex_column_center">
+        <h4 class="color_gary">可至交易紀錄查看儲值明細</h4>
+    </div>
     </div>
 
-    <div class="dis_flex_column_center" style="margin-top: 3px; height: 18vh;">
+    <div class="dis_flex_column_center" style="height: 18vh;">
         <div class="container">
             <button class="btn_blue stored_tr" type="submit" value="Submit">
                 <b>確定儲值</b> </button>
 
 
-            <div style="margin-top: 40px;" class="dis_flex_column_center">
-                <h3 class="color_gary">此付款流程由Car Parking提供</h3>
+            <div style="margin-top: 20px;" class="dis_flex_column_center">
+                <h6 class="color_gary">此付款流程由Car Parking提供</h6>
             </div>
         </div>
 
@@ -211,7 +229,7 @@
         $.ajax({
             url: "http://localhost:3000/select/member",
             type: "post",
-            data : {id}
+            data: { id }
         }).done(function (x) {
             var data = JSON.parse(x);
             // console.log(data)
@@ -252,6 +270,10 @@
                 window.location = "./Gold_flow_home.html"
             }
 
+        })
+
+        $(".Gold_flow_home_page").on("click", function(){
+            window.location = "./Gold_flow_home.html"
         })
     </script>
 </body>

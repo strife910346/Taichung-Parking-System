@@ -3,7 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>交易紀錄</title>
+    <!-- fontawesome -->
+    <link rel="stylesheet" href="./assets/font-awesome-4.7.0/css/font-awesome.css">
     <!-- bootstrap5-->
     <link rel="stylesheet" href="./assets/css/BS5_CSS/bootstrap.css">
     <script src="./assets/js/BS5_js/bootstrap.bundle.js"></script>
@@ -11,34 +15,36 @@
     <script src="./assets/js/jquery-3.6.4.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="./assets/css/BANK_ACCOUNT.css">
-
-    <style>
-
-    </style>
-
 </head>
 
 <body style="background-size: cover; background-color: rgba(206, 206, 206, 0.302)">
     <div class='mask_gray mask_off'></div>
     <!-- 導覽列 -->
-    <div style="height: 80px; background-color: #0069B4; width: 100%; ">
-        <button class="back_btn">x</button>
-        <h1 style="color: white; line-height:80px; text-align: center;"><b> 交易紀錄</b></h1>
+    <div style="position: absolute; left:5px">
+        <button class=" border_none btn_i G_F_H">
+            <i class="fa fa-angle-left"></i>
+        </button>
     </div>
+    <div class="bg_blue dis_flex_row_j_center pt-1">
+        <h2 class="color_white  ">
+            <b>交易紀錄</b>
+        </h2>
+    </div>
+
     <!-- 會員資料區 -->
     <div style="background-color: white;">
         <div class="container" style="padding-top: 20px;">
             <div class="row">
                 <div class="col-12" style="text-align:center">
-                    <h6 id="memberid">
-                    </h6>
-                    <span style="font-size: 12px;">
+                    <h4 id="memberid">
+                    </h4>
+                    <span style="font-size: 14px;">
                         TWD
-                    </span><span style="font-size: 44px;" id="money">1000</span>
+                    </span><span style="font-size: 24px;" id="money">1000</span>
                     <hr>
                     <div id="typeChoose">
 
-                        <div class="container" style="padding-top: 20px;">
+                        <div class="container">
                             <button class="date1_btn">日期
                                 <i class="material-icons" style="vertical-align: bottom;">keyboard_arrow_down
                                 </i>
@@ -78,18 +84,18 @@
 
     <div id="dateModal" class="data_modal modal_none" style="background-color: white; align-items: flex-end;">
 
-        <div class="modal-content">
+        <div class="modal-content mt-1">
             <button class="close">X</button>
-            <h1 style="text-align: center;">日期</h1>
-            <hr>
+            <h3 style="text-align: center;">日期</h3>
+            <hr style="margin-top: -3px;">
             <div class="container">
                 <div>
-                    <p>選擇時間區間</p>
-                    起始日期<input type="date" style="display: inline;" name="date1">
-                    結束日期:<input type="date" style="display: inline;" name="date2"><br>
+                    <h5 class="mb-1">選擇時間區間</h5>
+                    起始日期: <input type="date" style="display: inline;" name="date1"><br>
+                    結束日期: <input type="date" style="display: inline;" name="date2">
                 </div>
                 <button id="dateChoose">
-                    <h1>選擇日期</h1>
+                    <h4>選擇日期</h4>
                 </button>
             </div>
 
@@ -102,8 +108,8 @@
 
         <div class="modal-content">
             <button class="close">X</button>
-            <h1 style="text-align: center;">交易類型</h1>
-            <hr>
+            <h3 style="text-align: center;">交易類型</h3>
+            <hr style="margin-top: -3px;">
             <div class="container">
                 <div class="row form_btn" style="align-items: center; padding-bottom: 5px;">
                     <div class="col-4">
@@ -118,7 +124,7 @@
 
                 </div>
                 <button id="trTypeChoose">
-                    <h1>選擇類型</h1>
+                    <h4>選擇類型</h4>
                 </button>
             </div>
 
@@ -221,12 +227,12 @@
                     $('#traderecord_data').append(`
                         <div class="col-16 row traderecord_data" datadate="${traderecord[i].tr_date}" datatype="${traderecord[i].tr_type}">
                             <div class="col-6" style="text-align: left;">
-                                <h1>${traderecord[i].tr_counterparty}</h1>
+                                <h4>${traderecord[i].tr_counterparty}</h4>
                                 <p style="color: gray;">Carparking${type}</p>
                                 <p style="color: gray">${traderecord[i].tr_date} ${traderecord[i].tr_time}</p>
                             </div>
                             <div class="col-6" style="text-align: right;">
-                                <h1>${traderecord[i].tr_amount}元</h1>
+                                <h4>${traderecord[i].tr_amount}元</h4>
                             </div>                            
                             <hr>
                         </div>
@@ -294,7 +300,7 @@
 
         }
 
-        $(".back_btn").on("click", function () {
+        $(".G_F_H").on("click", function () {
             window.location = "./Gold_flow_home.html"
         })
     </script>

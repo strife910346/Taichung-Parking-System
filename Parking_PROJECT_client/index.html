@@ -27,8 +27,14 @@
     <script src="./assets/js/map_control_js/leaflet/leaflet.js"></script>
     <link rel="stylesheet" href="./assets/css/map_control_css/leaflet/leaflet.css" />
 
+    <!-- MarkerCluster -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+
     <!-- jQuery -->
     <script src="./assets/js/jquery-3.6.4.min.js"></script>
+    <!-- icon -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 
 </head>
 
@@ -63,6 +69,51 @@
         </div>
     </nav>
 
+    <!-- 通知 -->
+    <!-- 關閉內容時 點擊ncContainer外的空間 -->
+    <div class="row">
+        <div class="col-12">
+            <div class="overlay"></div>
+        </div>
+    </div>
+
+    <!-- 內容 -->
+    <div class="ncContainer border rounded-3">
+        <div class="row NCtopBgc mb-3" style="margin-top: -10px;">
+            <div class="col-12">
+                <p class="NCtopWord">通知中心</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 NCplaceCenter mb-3">
+                <button type="button" id="allPage" onclick="btnAll()"
+                    class="border border-light p-2 me-1 Classification">全部</button>
+                <button type="button" onclick="btnAdd()" class="border border-light p-2 me-1 Classification">儲值</button>
+                <button type="button" onclick="btnMin()" class="border border-light p-2 me-1 Classification">提領</button>
+                <button type="button" onclick="btnAready()"
+                    class="border border-light p-2 me-1 Classification">已繳費</button>
+                <button type="button" onclick="btnNo()" class="border border-light p-2 Classification">未繳費</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="mergedArray_fromS"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="mergedArray_data"></div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
 
 
     <!-- 主視覺 -->
@@ -76,7 +127,7 @@
                         <input type="text" class="form-control" id="searchPlace" placeholder="快速查找">
                     </div>
                     <div class="my-3"></div>
-                    <button type="button" class="btn btn-outline-light" id="targetBtn">最近停車位！</button>
+                    <button type="button" id="targetBtn" class="btn btn-outline-light">最近停車位！</button>
 
                 </div>
                 <div class="col-12 col-md-6">
@@ -104,7 +155,7 @@
                             </div>
                             <div class="card-body">
                                 <h4 class="card-title text-center">停車流量</h4>
-                                <h6 class="card-text text-center">掌握時間與空位 預先判斷</h6>
+                                <h6 class="card-text text-center">預先判斷時間與空位</h6>
                             </div>
                         </div>
                     </div>
@@ -115,7 +166,7 @@
                             </div>
                             <div class="card-body">
                                 <h4 class="card-title text-center">停車場</h4>
-                                <h6 class="card-text text-center">繳費免排隊 直接開出場</h6>
+                                <h6 class="card-text text-center">選擇各家停車場類型</h6>
                             </div>
                         </div>
                     </div>
@@ -126,7 +177,7 @@
                             </div>
                             <div class="card-body">
                                 <h4 class="card-title text-center">路邊停車</h4>
-                                <h6 class="card-text text-center">超商免繳單 在家線上繳</h6>
+                                <h6 class="card-text text-center">即時空位就是你</h6>
                             </div>
                         </div>
                     </div>
@@ -279,7 +330,12 @@
         var memberAc = localStorage.getItem('member_ac');
 
         var loginHtml = `
-                <button id="ncBtn" class=" nav-link logout me-3 NotificationCenter"> <i class="bi bi-app-indicator"></i> </button>
+        <button id="ncBtn" class="rounded-3 NCplaceCenter mt-2 me-2">
+                <span id="ncCircle"></span>
+                <span id="ncIcon">
+                    <i class='fas fa-car' style="color: #0069B4;"></i>
+                </span>
+            </button>
                 
                 <div class="dropdown">
                     <button class="btn dropdown-toggle nav-link logout text-white" type="button" data-bs-toggle="dropdown"
@@ -321,19 +377,19 @@
 
     <!-- 導向繳費頁面 -->
     <script>
-        $(".payment").on("click", function(){
+        $(".payment").on("click", function () {
             window.location = "./Payment.html"
         })
     </script>
     <!-- 導向通知中心 -->
     <script>
-        $(".NotificationCenter").on("click", function(){
+        $(".NotificationCenter").on("click", function () {
             window.location = "./NotificationCenter.html"
         })
     </script>
     <!-- 導向停車位查找 -->
     <script>
-        $(".mobile_v13").on("click", function(){
+        $(".mobile_v13").on("click", function () {
             window.location = "./mobile_v13.html"
         })
     </script>
@@ -421,17 +477,15 @@
             var url = 'https://www.google.com/maps/dir/?api=1&destination=' + targetPoint[targetIndex][0] + ',' + targetPoint[targetIndex][1];
             window.open(url);
         });
-
         // 讀取搜尋框資料，儲存為sessionStorage
-        $("#searchPlace").keypress(function(event) {
-            if(event.which === 13){
+        $("#searchPlace").keypress(function (event) {
+            if (event.which === 13) {
                 info = $('#searchPlace').val();
                 // console.log(info);
                 sessionStorage.setItem('searchInfo', info);
                 window.location = './mobile_v13.html';
             }
         })
-
         function success(pos) {
 
             userlat = pos.coords.latitude;
@@ -450,20 +504,21 @@
 
         // userplace function
         addUserPlace = (area, userlat, userlng) => {
-            refrash_road(area);
+            refrash_road(area, 'other');
             refrash_park();
         }
 
-        function refrash_road(cur_area) {
-            // console.log(cur_area);
-            $('.roadOkDisabled').remove();
-            $('.roadNonDisabled').remove();
-            $('.roadOkParents').remove();
-            $('.roadNonParents').remove();
-            $('.roadOkNormal').remove();
-            $('.roadNonNormal').remove();
+        var markers = undefined;
+        var markerList;
+        function refrash_road(cur_area, special) {
+            if (markers) {
+                markers.clearLayers();
+            }
             let a = 0;
             a = cur_area;
+            // add markercluster
+            markers = L.markerClusterGroup();
+            markerList = [];
             let car_parking_url = "https://datacenter.taichung.gov.tw/Swagger/OpenData/791a8a4b-ade6-48cf-b3ed-6c594e58a1f1";
             let car_parking_xhr = new XMLHttpRequest();
             car_parking_xhr.open('GET', car_parking_url, true);
@@ -471,54 +526,105 @@
             car_parking_xhr.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
                     response = JSON.parse(this.response);
-                    // console.log(response);
-                    $(response).each(function (i, parkInfo) {
-                        var roadlat = Number(parkInfo['PS_Lat']);
-                        var roadlng = Number(parkInfo['PS_Lng']);
-                        switch (parkInfo['PS_type']) {
-                            case '1':
+                    if (special == "disabled") {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (parkInfo['PS_type'] == '1') {
                                 if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
                                     if (parkInfo['status'] == 0) {
-                                        targetPoint.push([roadlat, roadlng]);
-                                        targetDis.push(L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)));
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkDisabled');
+                                        var parkOk = L.icon({
+                                            iconUrl: './assets/image/map_control_img/no_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadOkDisabled'
+                                        });
+                                        var roadOkDisabled = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                        markerList.push(roadOkDisabled);
                                     } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonDisabled');
+                                        var parkNon = L.icon({
+                                            iconUrl: './assets/image/map_control_img/in_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadNonDisabled'
+                                        });
+                                        var roadNonDisabled = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
+                                        markerList.push(roadNonDisabled);
                                     }
                                 }
-                                break;
-                            case '2':
+                            }
+                        })
+                    } else if (special == "parent") {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (parkInfo['PS_type'] == '2') {
                                 if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
                                     if (parkInfo['status'] == 0) {
-                                        targetPoint.push([roadlat, roadlng]);
-                                        targetDis.push(L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)))
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkParents');
+                                        var parkOk = L.icon({
+                                            iconUrl: './assets/image/map_control_img/no_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadOkParents'
+                                        });
+                                        var roadOkParents = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                        markerList.push(roadOkParents);
                                     } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonParents');
+                                        var parkNon = L.icon({
+                                            iconUrl: './assets/image/map_control_img/in_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadNonParents'
+                                        });
+                                        var roadNonParents = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
+                                        markerList.push(roadNonParents);
                                     }
                                 }
-                                break;
-                            default:
-                                if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
-                                    if (parkInfo['status'] == 0) {
-                                        targetPoint.push([roadlat, roadlng]);
-                                        targetDis.push(L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)))
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkNormal');
-                                    } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonNormal');
-                                    }
+                            }
+                        })
+                    } else if (special == "roadside-empty") {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
+                                if (parkInfo['status'] == 0) {
+                                    var parkOk = L.icon({
+                                        iconUrl: './assets/image/map_control_img/no_car.png',
+                                        iconSize: [15, 15],
+                                        className: 'roadOk'
+                                    });
+                                    var roadOk = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                    markerList.push(roadOk);
                                 }
-                                break;
-                        }
-                    })
+                            }
+                        });
+                    } else {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
+                                if (parkInfo['status'] == 0) {
+                                    targetPoint.push([roadlat, roadlng]);
+                                    targetDis.push(L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)));
+                                    var parkOk = L.icon({
+                                        iconUrl: './assets/image/map_control_img/no_car.png',
+                                        iconSize: [15, 15],
+                                        className: 'roadOk'
+                                    });
+                                    var roadOk = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                    markerList.push(roadOk);
+                                } else {
+                                    var parkNon = L.icon({
+                                        iconUrl: './assets/image/map_control_img/in_car.png',
+                                        iconSize: [15, 15],
+                                        className: 'roadNon'
+                                    });
+                                    var roadNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
+                                    markerList.push(roadNon);
+                                }
+                            }
+                        })
+                    }
+                    markers.addLayers(markerList);
                 };
             }
+            map.addLayer(markers);
         }
 
         function refrash_park() {
@@ -592,220 +698,367 @@
 
     </script>
 
-    <!-- ncBtn -->
+    <!-- 通知中心 -->
     <script>
-        $('#overlay').hide();
+        // 未讀通知提醒
+        var totalCounts = [];
+        function unread() {
+            // console.log(mergedArrays);
+
+            var tr_unreadCount = 0;
+            for (var i = 0; i < mergedArrays.length; i++) {
+                if (!mergedArrays[i].hasOwnProperty("tr_read")) {
+                    continue;
+                }
+                // console.log(mergedArrays[i].tr_read);
+
+                if (mergedArrays[i].tr_read === 0) {
+                    tr_unreadCount++;
+                }
+            }
+            // console.log("未讀訊息: " + tr_unreadCount);
+
+            var py_unreadCount = 0;
+            for (var j = 0; j < mergedArrays.length; j++) {
+                if (!mergedArrays[j].hasOwnProperty("py_read")) {
+                    continue;
+                }
+                // console.log(mergedArrays[i].tr_read);
+
+                if (mergedArrays[j].py_read === 0) {
+                    py_unreadCount++;
+                }
+            }
+            // console.log("未讀訊息: " + py_unreadCount);
+
+            // 全部的未讀訊息
+            var totalUnreadCount = tr_unreadCount + py_unreadCount;
+            console.log("未讀訊息總數:" + totalUnreadCount);
+
+
+
+            var ncIcon = document.getElementById('ncIcon');
+            var ncCircle = document.getElementById('ncCircle');
+
+            if (totalUnreadCount > 0) {
+                ncIcon.innerHTML = "<b style='color: white;'>" + totalUnreadCount + "</b>";
+                ncCircle.innerHTML = "<i class='fas fa-circle iconNcircle';></i>";
+            } else {
+                ncIcon.innerHTML = "<i class='fas fa-car' style='color: white;'></i>";
+                ncCircle.innerHTML = "";
+            }
+
+            if (totalUnreadCount) {
+                totalCounts.push(totalUnreadCount);
+                console.log(totalCounts);
+            }
+            ncBtn();
+        }
+
+        function ncBtn() {
+            $('#ncBtn').on('click', function () {
+                console.log(totalCounts);
+                var license = $("div[datalicense]").attr('datalicense')
+                // 歸零未讀筆數
+                totalCounts[0] = 0;
+
+                // 更新 mergedArrays 中的已讀狀態
+                for (var i = 0; i < mergedArrays.length; i++) {
+                    if (mergedArrays[i].hasOwnProperty("tr_read")) {
+                        mergedArrays[i].tr_read = 1;
+                    }
+                    if (mergedArrays[i].hasOwnProperty("py_read")) {
+                        mergedArrays[i].py_read = 1;
+                    }
+                }
+
+                // 更新未讀筆數顯示
+
+                $.ajax(
+                    {
+                        url: "http://localhost:3000/update/ncread",
+                        type: "PUT",
+                        data: {
+                            id: ncid,
+                            license: license
+                        }
+                    }
+                ).done(function () {
+                    console.log("x");
+                });
+                unread();
+            })
+        }
+
+
+        // 首頁通知按鍵
+        var ncContainerVisible = false; // 追蹤 ncContainer 的顯示狀態
+
+        $('.overlay').hide();
         $('#ncBtn').on('click', function () {
-            $('.NCcontainer').css('display', 'block');
-            $('.overlay').off('click');
-            $('.overlay').hide();
-            setTimeout(function () {
-                $('.overlay').show();
-                $('.overlay').one('click', function () {
-                    $('.NCcontainer').css('display', 'none');
-                    $('.overlay').hide();
-                })
-            });
+            if (ncContainerVisible) {
+                hidencContainer();
+            } else {
+                showncContainer();
+            }
         });
 
+        $('.overlay').on('click', function () {
+            togglencContainer();
+        });
 
+        function showncContainer() {
+            $('.ncContainer').css('display', 'block');
+            $('.overlay').show();
 
-
-        // 通知中心內容
-        window.onload = function () {
-            document.getElementById("allPage").click();
-        };
-
-        // 導入資料+分頁
-        function btnAll() {
-            $("#div1").show();
-            $("#div2").hide();
-            $("#div3").hide();
-            $("#div4").hide();
-            $('#div5').show();
+            ncContainerVisible = true;
         }
+
+        function hidencContainer() {
+            $('.ncContainer').css('display', 'none');
+            $('.overlay').hide();
+            ncContainerVisible = false;
+        }
+
+        function togglencContainer() {
+            if (ncContainerVisible) {
+                hidencContainer();
+            } else {
+                showncContainer();
+            }
+        }
+
+
+        // 分頁內容
+        function btnAll() {
+            $(".ncData_off").removeClass("ncData_off");
+            $(".mergedArray_data").show();
+            $(".mergedArray_fromS").show();
+        }
+
         function btnAdd() {
-            $('#div1').hide();
-            $('#div2').show();
-            $('#div3').hide();
-            $('#div4').hide();
-            $('#div5').hide();
+            $(".ncData_off").removeClass("ncData_off");
+            $(".mergedArray_data").show();
+            $(".mergedArray_fromS").hide();
+
+            for (i = 0; i < $('div[dataType]').length; i++) {
+                var trType = $('div[dataType]')[i].getAttribute('dataType');
+                if (trType === "0") {
+                    // console.log(trType);
+                } else {
+                    // console.log(trType + "nono");
+                    $($('div[dataType]')[i]).addClass("ncData_off")
+                }
+            }
         }
 
         function btnMin() {
-            $('#div1').hide();
-            $('#div2').hide();
-            $('#div3').show();
-            $('#div4').hide();
-            $('#div5').hide();
+            $(".ncData_off").removeClass("ncData_off");
+            $(".mergedArray_data").show();
+            $(".mergedArray_fromS").hide();
+
+            for (i = 0; i < $('div[dataType]').length; i++) {
+                var trType = $('div[dataType]')[i].getAttribute('dataType');
+                if (trType === "1") {
+                    // console.log(trType);
+                } else {
+                    // console.log(trType + "nono");
+                    $($('div[dataType]')[i]).addClass("ncData_off")
+                }
+            }
         }
 
         function btnAready() {
-            $('#div1').hide();
-            $('#div2').hide();
-            $('#div3').hide();
-            $('#div4').show();
-            $('#div5').hide();
+            $(".ncData_off").removeClass("ncData_off");
+            $(".mergedArray_data").show();
+            $(".mergedArray_fromS").hide();
+
+            for (i = 0; i < $('div[dataType]').length; i++) {
+                var trType = $('div[dataType]')[i].getAttribute('dataType');
+                if (trType === "2") {
+                    // console.log(trType);
+                } else {
+                    // console.log(trType + "nono");
+                    $($('div[dataType]')[i]).addClass("ncData_off")
+                }
+            }
         }
 
         function btnNo() {
-            $('#div1').hide();
-            $('#div2').hide();
-            $('#div3').hide();
-            $('#div4').hide();
-            $('#div5').show();
+            $(".ncData_off").removeClass("ncData_off");
+            $(".mergedArray_data").hide();
+            $(".mergedArray_fromS").show();
+
+            for (i = 0; i < $('div[datalicense]').length; i++) {
+                var trlicense = $('div[datalicense]')[i].getAttribute('datalicense');
+                if (trlicense) {
+                    // console.log(trlicense);
+                }
+            }
         }
 
-        allData = [];
-        $.ajax({
-            url: "http://localhost:3000/select/traderecord/1",
-            type: "GET"
-        }).done(function (x) {
-            var traderecord = JSON.parse(x);
-            // console.log(traderecord);
-            traderecord.sort(function (a, b) {
-                return new Date(b.tr_date + ' ' + b.tr_time) - new Date(a.tr_date + ' ' + a.tr_time);
+
+
+
+        // 資料庫
+        var traderecords = [];
+        var ncid = localStorage.getItem("memberID")
+        console.log(ncid)
+
+        function refreshcord() {
+            $.ajax({
+                url: `http://localhost:3000/select/traderecord/${ncid}`,
+                type: "GET"
+            }).done(function (x) {
+                var traderecord = JSON.parse(x);
+                // console.log(traderecord);
+
+                if (traderecord.length > 0) {
+                    traderecords.push(...traderecord);
+                }
+                mergeData();
+
             });
 
-            // console.log(traderecord);
-            allData = traderecord;
+        };
+        refreshcord();
 
-            for (i = 0; i < traderecord.length; i++) {
-                var type;
-                switch (traderecord[i].tr_type) {
-                    case 0: type = "儲值";
-                        break;
-                    case 1: type = "提款";
-                        break;
-                    case 2: type = "繳費";
-                        break;
-                }
-                // console.log(type);
-                if (type == "繳費") {
-                    $("#div4").append(
-                        `<div class="row placeCenter mb-3 ">
-                                <div class="col-12 card border border-light rounded-3">
-                                        <span class="cardTitle" style="color: #34A853;"><b class="me-1">${traderecord[i].tr_date}</b><b class="me-3">${traderecord[i].tr_time}</b><b>${type}成功</b></span>
-                                    <div class="cardText">
-                                        <span><b>${traderecord[i].tr_location}</b></span>
-                                        <span class="cardMoney"><i class="fa fa-dollar"></i><b>${traderecord[i].tr_amount}</b></span>
-                                    </div>
-                                        <span class="cardDate">${traderecord[i].tr_ps}</span>
-                                </div>
-                            </div>`
-                    );
-                } else if (type == "儲值") {
-                    // console.log(type);
-                    $("#div2").append(
-                        `<div class="row placeCenter mb-3">
-                                <div class="col-12 card border border-light rounded-3">
-                                        <span class="cardTitle" style="color: #34A853;"><b class="me-1">${traderecord[i].tr_date}</b><b class="me-3">${traderecord[i].tr_time}</b><b>${type}成功</b></span>
-                                    <div class="cardText">
-                                        <span><b>[${type}]${traderecord[i].tr_counterparty}</b></span>
-                                        <span class="cardMoney"><i class="fa fa-dollar"></i><b>${traderecord[i].tr_amount}</b></span>
-                                    </div>
-                                        <span class="cardDate">${traderecord[i].tr_date}</span>
-                                </div>
-                            </div>`
-                    );
-                } else if (type == "提款") {
-                    // console.log(type);
-                    $("#div3").append(
-                        `<div class="row placeCenter mb-3">
-                                <div class="col-12 card border border-light rounded-3">
-                                        <span class="cardTitle" style="color: #34A853;"><b class="me-1">${traderecord[i].tr_date}</b><b class="me-3">${traderecord[i].tr_time}</b><b>${type}成功</b></span>
-                                    <div class="cardText">
-                                        <span><b>[${type}]${traderecord[i].tr_counterparty}</b></span>
-                                        <span class="cardMoney"><i class="fa fa-dollar"></i><b>${traderecord[i].tr_amount}</b></span>
-                                    </div>
-                                        <span class="cardDate">${traderecord[i].tr_date}</span>
-                                </div>
-                            </div>`
-                    );
+        datafrom = [];
+
+        function refreshfromS() {
+            $.ajax({
+                url: `http://localhost:3000/select/license/${ncid}`,
+                type: "GET"
+            }).done(function (x) {
+                var dataS = JSON.parse(x)
+                for (i = 0; i < dataS.length; i++) {
+                    var li = dataS[i].license
+                    $.ajax({
+                        url: `http://localhost:3000/select/payment/${li}`,
+                        type: "GET"
+                    }).done(function (x) {
+                        var datafromS = JSON.parse(x);
+                        datafromS.sort(function (a, b) {
+                            return new Date(b.py_ps_d) - new Date(a.py_ps_d);
+                        });
+
+                        if (datafromS.length > 0) {
+                            datafrom.push(...datafromS);
+                        }
+                        mergeData();
+                    })
                 }
 
 
-            }
+            })
 
-            for (i = 0; i < allData.length; i++) {
-                var type;
-                switch (allData[i].tr_type) {
-                    case 0: type = "儲值";
-                        break;
-                    case 1: type = "提款";
-                        break;
-                    case 2: type = "繳費";
-                        break;
+        }
+        refreshfromS();
+
+
+        // 整合兩個資料庫內容
+        var mergedArrays = [];
+        function mergeData() {
+            if (traderecords.length > 0 && datafrom.length > 0) {
+                var mergedArray = traderecords.concat(datafrom);
+                console.log(mergedArray);
+
+                if (mergedArray.length > 0) {
+                    mergedArrays.push(...mergedArray);
                 }
-                if (type == "繳費") {
-                    $("#div1").append(
-                        `<div class="row placeCenter mb-3 ">
-                                <div class="col-12 card border border-light rounded-3">
-                                        <span class="cardTitle" style="color: #34A853;"><b class="me-1">${allData[i].tr_date}</b><b class="me-3">${allData[i].tr_time}</b><b>${type}成功</b></span>
-                                    <div class="cardText">
-                                        <span><b>${allData[i].tr_location}</b></span>
-                                        <span class="cardMoney"><i class="fa fa-dollar"></i><b>${allData[i].tr_amount}</b></span>
-                                    </div>
-                                        <span class="cardDate">${allData[i].tr_ps}</span>
+
+                unread();
+
+                // 儲值/提領/已繳費
+                if (mergedArray.some(item => item.hasOwnProperty('tr_type'))) {
+                    for (i = 0; i < mergedArray.length; i++) {
+                        if (!mergedArray[i].hasOwnProperty('tr_type')) {
+                            continue; // 跳過沒有 tr_type 的項目
+                        }
+
+                        var type;
+                        switch (mergedArray[i].tr_type) {
+                            case 0: type = "儲值";
+                                break;
+                            case 1: type = "提款";
+                                break;
+                            case 2: type = "繳費";
+                                break;
+                        }
+                        // console.log(type);
+                        if (type == "繳費") {
+                            $(".mergedArray_data").append(
+                                `<div class="row NCplaceCenter mb-3" dataType = "${mergedArray[i].tr_type}">
+                            <div class="col-12 NCcard border border-light rounded-3">
+                                    <span class="NCcardTitle" style="color: #34A853;"><b class="me-1">${mergedArray[i].tr_date}</b><b>${type}成功</b></span>
+                                <div class="NCcardText">
+                                    <span><b>${mergedArray[i].tr_location}</b></span>
+                                    <span class="NCcardMoney" style=" color: #34A853;"><b>$</b><b>${mergedArray[i].tr_amount}</b></span>
                                 </div>
-                            </div>`
-                    );
-                } else {
-                    $("#div1").append(
-                        `<div class="row placeCenter mb-3">
-                                <div class="col-12 card border border-light rounded-3">
-                                        <span class="cardTitle" style="color: #34A853;"><b class="me-1">${allData[i].tr_date}</b><b class="me-3">${allData[i].tr_time}</b><b>${type}成功</b></span>
-                                    <div class="cardText">
-                                        <span><b>[${type}]${allData[i].tr_counterparty}</b></span>
-                                        <span class="cardMoney"><i class="fa fa-dollar"></i><b>${allData[i].tr_amount}</b></span>
-                                    </div>
-                                        <span class="cardDate">${allData[i].tr_date}</span>
-                                </div>
-                            </div>`
-                    );
-                }
-            }
-
-        })
-
-        // setTimeout("console.log(data);", 3000);
-
-
-        var noData = [];
-        // 尚未繳費
-        $.ajax({
-            url: "http://localhost:3000/select/payment/a02-300a",
-            type: "GET"
-        }).done(function (x) {
-            var datafromS = JSON.parse(x);
-            // console.log(datafromS);
-            // console.log(x)
-            datafromS.sort(function (a, b) {
-                return new Date(b.py_ps_d) - new Date(a.py_ps_d);
-            });
-
-            noData = datafromS;
-
-            for (i = 0; i < datafromS.length; i++) {
-                // console.log(datafromS[i]);
-                $("#div5").append(
-                    `<div class="row placeCenter mb-3">
-                        <div class="col-12 card border border-light rounded-3" id="btnNo">
-                            <span class="cardTitle" style="color: #FF4545;"><b>尚未繳費</b></span>
-                            <div class="cardText">
-                                <span><b>${datafromS[i].py_location}</b></span>
-                                <span class="cardMoney"><i class="fa fa-dollar"></i><b>${datafromS[i].py_amount}</b></span>
-                                <p class="cardDate">${datafromS[i].py_ps_d} - ${datafromS[i].py_pe_d}</p>
+                                    <span class="NCcardDate">${mergedArray[i].tr_ps}</span>
                             </div>
-                        </div>
-                    </div>`
-                )
-            }
+                        </div>`
+                            );
+                        } else {
+                            $(".mergedArray_data").append(
+                                `<div class="row NCplaceCenter mb-3" dataType = "${mergedArray[i].tr_type}">
+                            <div class="col-12 NCcard border border-light rounded-3">
+                                    <span class="NCcardTitle" style="color: #34A853;"><b class="me-1">${mergedArray[i].tr_date}</b><b>${type}成功</b></span>
+                                <div class="NCcardText">
+                                    <span><b>[${type}]${mergedArray[i].tr_counterparty}</b></span>
+                                    <span class="NCcardMoney" style=" color: #34A853;"><b>$</b><b>${mergedArray[i].tr_amount}</b></span>
+                                </div>
+                                    <span class="NCcardDate">${mergedArray[i].tr_date}</span>
+                            </div>
+                        </div>`
+                            );
+                        }
+                    }
 
-        })
-        // setTimeout("console.log(noData);", 3000);
+                }
+
+                // 尚未繳費
+                if (mergedArray.some(item => item.hasOwnProperty('license'))) {
+                    for (j = 0; j < mergedArray.length; j++) {
+                        if (!mergedArray[j].hasOwnProperty('license')) {
+                            continue;
+                        }
+
+                        var license = mergedArray[j].license;
+                        if (license) {
+                            // console.log(license);
+
+                            $(".mergedArray_fromS").append(
+                                `<div class="row NCplaceCenter mb-3" datalicense = "${mergedArray[j].license}">
+                                <div class="col-12 NCcard border border-light rounded-3" id="btnNo">
+                                    <span class="NCcardTitle" style="color: #FF4545;"><b>尚未繳費</b></span>
+                                    <div class="NCcardText">
+                                        <span><b>${mergedArray[j].py_location}</b></span>
+                                        <span class="NCcardMoney" style=" color: #FF4545;"><b>$</b><b>${mergedArray[j].py_amount}</b></span>
+                                        </div>
+                                        <span class="NCcardDate">${mergedArray[j].py_ps_d} - ${mergedArray[j].py_pe_d}</span>
+                                </div>
+                            </div>`
+                            )
+                        }
+                    }
+                }
+
+
+            }
+        }
+
+
+
+
+
+
+
+
 
     </script>
+
+    F
 
 
     <!-- bs js -->

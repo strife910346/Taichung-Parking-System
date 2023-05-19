@@ -89,9 +89,10 @@
                 <div class="col-12 mb-5">
                     <label class="accPwdWord"><span>*</span> 確認登入密碼</label>
                     <input id="userPassword1" class="border border-1 rounded-2 accPwd" placeholder="Pwd0dd001"
+                        type="password"    
                         pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d]{6,}$" required
                         oninput="setCustomValidity('');"
-                        onchange="if(document.getElementById('userPassword').value != document.getElementById('userPassword1').value){setCustomValidity('密碼不吻合');}">
+                        onchange="if(document.getElementById('userPassword').value != document.getElementById('userPassword1').value){setCustomValidity('密碼不符合');}">
                     <i id="checkEye1" class="fas fa-eye " style="width: 0;"></i>
                 </div>
             </div>
@@ -99,7 +100,7 @@
 
             <div class="row justify-content-center">
                 <div class="col-12 placeCenter mb-4">
-                    <button type="submit" id="registerBtn"
+                    <button type="button" id="registerBtn"
                         style="width: 50%; height: 35px; background-color: #34A853; color: white;"
                         class="btn btn-block placeCenter"><span style="font-size: 18px;"><b>註冊</b> </span>
                     </button>
@@ -155,6 +156,7 @@
                 $("#acErrorMessage").addClass("error");
             } else {
                 $("#acErrorMessage").text("");
+          
             }
 
             if (!phonePattern.test(phone)) {
@@ -162,6 +164,7 @@
                 $("#phoneErrorMessage").addClass("error");
             } else {
                 $("#phoneErrorMessage").text("");
+               
             }
 
             if (!emailPattern.test(email)) {
@@ -169,6 +172,7 @@
                 $("#emailErrorMessage").addClass("error");
             } else {
                 $("#emailErrorMessage").text("");
+           
             }
 
             if (!passPattern.test(pass)) {
@@ -177,6 +181,7 @@
                 return
             } else {
                 $("#passErrorMessage").text("");
+              
             }
 
 

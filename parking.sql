@@ -5,7 +5,7 @@ create database CarParking default character set utf8;
 create table carparking.carstay 
 (sl_id int primary key NOT NULL, 
 cs_name varchar(50), 
-cs_type varchar(10) , 
+cs_type varchar(50) , 
 cs_water varchar(5), 
 cs_toilet varchar(5),
 cs_lng varchar(12) ,
@@ -18,8 +18,8 @@ member_ac  varchar(50),
 member_pass varchar(50) , 
 member_phone varchar(50), 
 member_email varchar(50),
-member_money int DEFAULT 0,
-member_image varchar(100));
+member_money int DEFAULT 0);
+
 create table carparking.license 
 (license varchar(10) primary key NOT NULL , 
 member_id int, 
@@ -36,6 +36,7 @@ tr_counterparty varchar(50),
 tr_type int,
 tr_ps varchar(50),
 tr_pe varchar(50),
+tr_read int DEFAULT 0,
 FOREIGN KEY (member_id) REFERENCES member(member_id));
 
 create table carparking.payment
@@ -48,17 +49,18 @@ py_ps_d varchar(50),
 py_ps_t varchar(50),
 py_pe_d varchar(50),
 py_pe_t varchar(50),
+py_read int DEFAULT 0,
 FOREIGN KEY (license) REFERENCES license(license)
 );
 
 create table carparking.traffic
-(parkingLot_id int,
+(parkingLot_id varchar(50) primary key,
 parkingLot_name varchar(50),
 monday JSON,
 tuesday JSON,
 wednesday JSON,
 thursday JSON,
-ftiday JSON,
+friday JSON,
 saturday JSON,
 sunday JSON);
 
@@ -66,5 +68,17 @@ sunday JSON);
 
 
 -- 新增測試用資料
-INSERT INTO traderecord VALUES (1,1,'100000','2023/4/17','00:06:53',"taiwan","counterparty",1)
-INSERT INTO traffic(parkingLot_id,parkingLot_name,monday) VALUES (1,'台中停車場','{"h1":20,"h2":20,"h3":30,"h4":30}')
+INSERT INTO `member`( `member_name`, `member_ac`, `member_pass`, `member_phone`, `member_email`, `member_money`) VALUES ('Andy','ANDY1234','pass1234','0912345678','andy12345@gmail.cin','0');
+INSERT INTO `license`(`license`, `member_id`) VALUES ('ASD-1234','1');
+INSERT INTO `license`(`license`, `member_id`) VALUES ('QWE-1234','1');
+INSERT INTO `payment`(`license`, `py_amount`, `py_location`, `py_ps_d`, `py_ps_t`, `py_pe_d`, `py_pe_t`) VALUES ("ASD-1234", 80, "[公有停車場] 台中公園", "2023/04/02", "19:00:01", "2023/04/02", "22:13:30");
+INSERT INTO `payment`(`license`, `py_amount`, `py_location`, `py_ps_d`, `py_ps_t`, `py_pe_d`, `py_pe_t`) VALUES ("ASD-1234", 80, "[公有停車場] 台中公園", "2023/04/02", "19:00:01", "2023/04/02", "22:13:30");
+INSERT INTO `payment`(`license`, `py_amount`, `py_location`, `py_ps_d`, `py_ps_t`, `py_pe_d`, `py_pe_t`) VALUES ("ASD-1234", 250, "[公有停車場] 廟東停車場", "2023/06/28", "10:00:01", "2023/06/28", "16:13:30");
+INSERT INTO `payment`(`license`, `py_amount`, `py_location`, `py_ps_d`, `py_ps_t`, `py_pe_d`, `py_pe_t`) VALUES ("ASD-1234", 220, "[私人停車場]" "Car Parking", "2023/09/14", "08:40:01", "2023/09/14", "12:13:30");
+INSERT INTO `payment`(`license`, `py_amount`, `py_location`, `py_ps_d`, `py_ps_t`, `py_pe_d`, `py_pe_t`) VALUES ("ASD-1234", 220, "[私人停車場]" "Car Parking", "2023/09/14", "08:40:01", "2023/09/14", "12:13:30");
+INSERT INTO `payment`(`license`, `py_amount`, `py_location`, `py_ps_d`, `py_ps_t`, `py_pe_d`, `py_pe_t`) VALUES ("ASD-1234", 20, "[路邊停車] 黎民路公益路口", "2023/10/01", "15:00:01", "2023/10/01", "16:13:30");
+INSERT INTO `payment`(`license`, `py_amount`, `py_location`, `py_ps_d`, `py_ps_t`, `py_pe_d`, `py_pe_t`) VALUES ("ASD-1234", 200, "[公有停車場] 南屯公園", "2023/09/01", "09:00:01", "2023/09/01", "16:13:30");
+INSERT INTO `payment`(`license`, `py_amount`, `py_location`, `py_ps_d`, `py_ps_t`, `py_pe_d`, `py_pe_t`) VALUES ("QWE-1234", 40, "[公有停車場] 公益公園", "2023/08/08", "19:00:01", "2023/08/08", "21:13:30");
+INSERT INTO `payment`(`license`, `py_amount`, `py_location`, `py_ps_d`, `py_ps_t`, `py_pe_d`, `py_pe_t`) VALUES ("QWE-1234", 140, "[公有停車場] 學府停車場", "2023/04/02", "12:00:01", "2023/04/02", "16:13:30");
+INSERT INTO `payment`(`license`, `py_amount`, `py_location`, `py_ps_d`, `py_ps_t`, `py_pe_d`, `py_pe_t`) VALUES ("QWE-1234", 30, "[公有停車場] 南屯公園", "2023/04/01", "09:00:01", "2023/04/01", "16:13:30");
+INSERT INTO `payment`(`license`, `py_amount`, `py_location`, `py_ps_d`, `py_ps_t`, `py_pe_d`, `py_pe_t`) VALUES ("QWE-1234", 90, "[私人停車場] Car Parking", "2023/04/21", "09:00:01", "2023/04/21", "12:13:30");

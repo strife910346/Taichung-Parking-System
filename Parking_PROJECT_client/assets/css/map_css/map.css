@@ -58,7 +58,7 @@
     bottom: 0;
     overflow-y: scroll;
     width: 390px;
-    height: 80vh;
+    height: 60vh;
     background-color: #fff;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease-in-out;
@@ -67,7 +67,7 @@
 }
 
 .sidebar.collapsed {
-    transform: translateY(400px);
+    transform: translateY(55vh);
 }
 
 

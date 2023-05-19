@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>線上錢包</title>
     <link rel="stylesheet" href="./assets/css/BS5_CSS/bootstrap.css">
     <script src="./assets/js/BS5_js/bootstrap.bundle.js"></script>
@@ -151,17 +153,23 @@
         }
 
         .color_gary {
-            color: rgb(150, 150, 150);
+            color: rgb(126, 123, 123)
         }
 
         .border_gray {
-            border: 1px rgb(150, 150, 150) solid;
+            border: 1px  rgb(126, 123, 123) solid;
         }
 
         .dis_flex_column_center {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+        }
+
+        .dis_flex_row_j_center {
+            display: flex;
+            flex-direction: row;
             justify-content: center;
         }
 
@@ -209,8 +217,7 @@
         .btn_i {
             color: white;
             text-align: center;
-            font-size: 40px;
-            padding-left: 30px;
+            font-size: 24px;
         }
 
         .bg_blue {
@@ -234,66 +241,59 @@
 
 <body class="body_color">
     <!-- 導覽列 -->
-    <div style="height: 80px;" class="bg_blue">
-        <div class="dis_flex_center">
-            <h1 class="color_white" style="line-height:80px; ">
-                <b>帳戶</b>
-            </h1>
-        </div>
-        <div style="margin-top: -83px;">
-            <button class="border_none btn_i G_F_H">
-                <i class="fa fa-angle-left"></i>
-            </button>
-        </div>
+    <div style="position: absolute; left:5px">
+        <button class=" border_none btn_i G_F_H">
+            <i class="fa fa-angle-left"></i>
+        </button>
     </div>
-
-
-
-
+    <div class="bg_blue dis_flex_row_j_center pt-1">
+        <h2 class="color_white  ">
+            <b>帳戶</b>
+        </h2>
+    </div>
     <div class="bg_white">
         <div class="container">
-            <div class="row" style="padding-top: 50px;">
+            <div class="row">
                 <div class="col-12 mt-3 dis_flex_center">
-                    <h2 class="ac"><b></b> </h2>
+                    <h3 class="ac"><b></b> </h3>
                 </div>
-                <div class="dis_flex_center">
+                <div class="dis_flex_center pt-2" >
                     <div class="me-2">
-                        <h3 style="position: relative; top:5px;"><b>TWD</b> </h3>
+                        <h4 ><b>TWD</b> </h4>
                     </div>
                     <div>
-                        <h1 class="money"> <b> </b></h1>
+                        <h2 class="money "> <b> </b></h2>
                     </div>
                 </div>
             </div>
-            <hr class="color_gary">
-            <div class="row">
-                <div class="col-6 " style="padding-left: 30%;">
-                    <div class="row" style="float: right;">
-                        <div style="position: relative;" class="col-12 ">
-                            <button class="border_none stored">
-                                <img id="stored" style="width:60px;" src="./assets/image/Gold_Flow_image/pay-06123.png"
+            <hr class="color_gary" style="margin-top: -3px;">
+            <div class="row">   
+                <div class="col-6 ">
+                    <div class="row ">
+                        <div class="col-12 ">    
+                            <button class="border_none stored" style="float: right;" >
+                                <img id="stored" style="width:30px;" src="./assets/image/Gold_Flow_image/pay-06123.png"
                                     alt="">
-                            </button>
+                            </button>   
 
                         </div>
-                        <div class="col-12 mt-2 ms-2">
-                            <h2>儲值</h2>
+                        <div class="col-12 mt-2" style="padding-right: 17px;">
+                            <h4 style="float: right;"> 儲值</h4>
                         </div>
                     </div>
 
                 </div>
-                <div class="col-6" style="padding-right:30%;">
-                    <div class="row" style="padding-left:45px ;">
-                        <div class="col-12 ">
+                <div class="col-6 ps-4">
+                    <div class="row" style="float: left;">
+                        <div class="col-12">
                             <button class="border_none withdrawal">
-                                <img id="Withdrawal" style="width:60px;"
+                                <img id="Withdrawal" style="width:30px;"
                                     src="./assets/image/Gold_Flow_image/pay-07456.png" alt="">
                             </button>
 
                         </div>
-                        <div class="col-12 mt-2 ms-2">
-
-                            <h2>提領</h2>
+                        <div class="col-12 mt-2 " style="padding-left: 17px;">
+                            <h4 >提領</h4>
                         </div>
                     </div>
 
@@ -304,7 +304,7 @@
     </div>
     <hr>
     <div class="bg_white ">
-        <div id="traderecord_data" class="container pt-5">
+        <div id="traderecord_data" class="container pt-4">
 
         </div>
     </div>
@@ -314,8 +314,8 @@
 
 
     <script>
-        var member_ac =  localStorage.getItem("member_ac")  
-        if(!member_ac){
+        var member_ac = localStorage.getItem("member_ac")
+        if (!member_ac) {
             window.location = "./login.html"
         }
     </script>
@@ -367,12 +367,12 @@
                     $('#traderecord_data').append(`
                         <div class="col-16 row traderecord_data" datadate="${traderecord[i].tr_date}" datatype="${traderecord[i].tr_type}">
                             <div class="col-6" style="text-align: left;">
-                                <h1>${traderecord[i].tr_counterparty}</h1>
-                                <p style="color: gray;">Carparking${type}</p>
-                                <p style="color: gray">${traderecord[i].tr_date} ${traderecord[i].tr_time}</p>
+                                <h4>${traderecord[i].tr_counterparty}</h4>
+                                <h6 class="color_gary">Carparking${type}</h6>
+                                <h6 style="color: gray">${traderecord[i].tr_date} ${traderecord[i].tr_time}</h6>
                             </div>
                             <div class="col-6" style="text-align: right;">
-                                <h1>${traderecord[i].tr_amount}元</h1>
+                                <h2>${traderecord[i].tr_amount}元</h2>
                             </div>                            
                             <hr>
                         </div>

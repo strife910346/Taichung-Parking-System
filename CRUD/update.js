@@ -32,4 +32,26 @@ api.put('/membermoney', function (req, res) {
         })
         // console.log(x)
 })
+api.put('/ncread', function (req, res) {
+    var sql = 'UPDATE  traderecord SET tr_read = 1 where member_id = ?;'
+    var sql1 = 'UPDATE  payment SET py_read = 1 where license =?;'
+    console.log(req.body.license)
+    config.query(sql, [req.body.id], (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            // res.send("result")
+        }
+    });
+    config.query(sql1, [req.body.license], (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            // res.send("result")
+        }
+    });
+    // console.log(x)
+})
 module.exports = api;

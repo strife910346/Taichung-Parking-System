@@ -6,9 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parking map</title>
     <!-- leaflet -->
-    <!-- <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script> -->
     <script src="./assets/js/map_control_js/leaflet/leaflet.js"></script>
-    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" /> -->
+    <script src="./assets/js/map_control_js/leaflet/leaflet-src.js"></script>
     <link rel="stylesheet" href="./assets/css/map_control_css/leaflet/leaflet.css" />
 
     <!-- bootstrap -->
@@ -27,6 +26,9 @@
     <!-- geasearch -->
     <link rel="stylesheet" href="./assets/css/map_control_css/geosearch.css">
     <script src="./assets/js/map_control_js/geosearch.js"></script>
+    <!-- MarkerCluster -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <meta charset="UTF-8">
     <!-- Vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -383,7 +385,8 @@
         let map = L.map('map').setView(center, zoom);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap', // 商用時必須要有版權出處
-            maxZoom: 18,
+            maxNativeZoom: 20,
+            maxZoom: 20,
             layerLimit: 20, // 設定顯示圖層數量上限為 20
             zoomControl: true, // 是否秀出 - + 按鈕
         }).addTo(map);
@@ -405,23 +408,13 @@
             iconSize: [20, 25]
         }); //停車場紅燈座標圖
 
-        // 路邊車格icon
-        var parkNon = L.icon({
-            iconUrl: './assets/image/map_control_img/in_car.png',
-            iconSize: [15, 15],
-        }); //無空位
-        var parkOk = L.icon({
-            iconUrl: './assets/image/map_control_img/no_car.png',
-            iconSize: [15, 15],
-        }); //有空位
-
         // 標籤匯入class
         let parkingClass = (markClass, className) => {
             let mark = markClass.closePopup();
             mark._icon.classList.add(className);
         }
 
-        // 標籤屬性匯入提示窗
+        // 停車場標籤屬性匯入提示窗
         function inputInfo(parkDct, marker) {
             if (parkDct['AvailableCar'] < 0) {
                 var CorrectAvailableCar = 0;
@@ -443,21 +436,29 @@
             }
         }
 
+        // 車格標籤屬性匯入提示窗
+        function roadLotInfo(parkDct, marker) {
+            marker.bindPopup(`
+                車格編號：${parkDct['PS_ID']}<br>
+                <button onclick="routing(${parkDct['PS_Lat']}, ${parkDct['PS_Lng']})">開始導航</button>
+            `)
+        }
+
         // 導航
         function routing(y, x) {
             // 導向google導航網頁
             var url = 'https://www.google.com/maps/dir/?api=1&destination=' + y + ',' + x;
-            window.open(url);
+            window.location.assign(url);
         }
 
         // 持續刷新使用者位置並取得路邊停車點位
-        // 取得使用者點位
         navigator.geolocation.watchPosition(success, error);
 
         // user icon
         var userIcon = L.icon({
             iconUrl: './assets/image/map_control_img/user_place.png',
             iconSize: [40, 40],
+            className: 'userIcon'
         });
         // search icon
         var searchIcon = L.icon({
@@ -488,61 +489,13 @@
         $('.glass').val(searchPlace);
         if ($('.glass').val() == searchPlace) {
             document.addEventListener('DOMContentLoaded', function () {
-                $('form').submit(function() {
+                $('form').submit(function () {
                     event.preventDefault();
                 });
-                
+
                 // $('.glass').trigger($.Event("keypress", { key: "Enter" }));
             })
         }
-
-        // display search marker
-        map.on('geosearch/showlocation', function (e) {
-            searchlat = e.location.y;
-            searchlng = e.location.x;
-            // reset marker and circle
-            if (searchmarker) {
-                map.removeLayer(searchmarker);
-                map.removeLayer(searchCircle);
-                // map.removeLayer(userCircle);
-            }
-            // add search marker
-            searchmarker = L.marker([searchlat, searchlng], { icon: searchIcon }).addTo(map);
-            if ($('#distance_select').val() == "2000") {
-                searchCircle = L.circle([searchlat, searchlng], {
-                    color: 'blue',
-                    fillColor: '#005DFF70',
-                    fillOpacity: 0.3,
-                    radius: 0
-                }).addTo(map);
-            } else {
-                searchCircle = L.circle([searchlat, searchlng], {
-                    color: 'blue',
-                    fillColor: '#005DFF70',
-                    fillOpacity: 0.3,
-                    radius: $('#distance_select').val()
-                }).addTo(map);
-            }
-
-            // add search road parkin lot
-            search_road($('#distance_select').val())
-
-            // click and remove marker
-            $('.reset').click(function () {
-                map.removeLayer(searchmarker);
-                map.removeLayer(searchCircle);
-                searchlat = 0;
-                searchlng = 0;
-                $('.roadOkDisabled').remove();
-                $('.roadNonDisabled').remove();
-                $('.roadOkParents').remove();
-                $('.roadNonParents').remove();
-                $('.roadOkNormal').remove();
-                $('.roadNonNormal').remove();
-                setTimeout(refrash_road($('#distance_select').val()), 1000);
-            })
-
-        });
 
 
         // 提示未啟用定位
@@ -562,22 +515,21 @@
             let targetIndex = targetDis.indexOf(Math.min(...targetDis));
             // console.log(targetPoint[targetIndex]);
             var url = 'https://www.google.com/maps/dir/?api=1&destination=' + targetPoint[targetIndex][0] + ',' + targetPoint[targetIndex][1];
-            window.open(url);
+            window.location.assign(url);
         });
 
         function success(pos, area = $('#distance_select').val(), parkType = $('#type_select').val()) {
 
             userlat = pos.coords.latitude;
             userlng = pos.coords.longitude;
-            map.setZoom(15);
             // reset marker and circle
-            if (usermarker) {
+            if (usermarker || userCircle) {
                 map.removeLayer(usermarker);
                 map.removeLayer(userCircle);
             }
+            map.setZoom(15);
             // add user marker
             usermarker = L.marker([userlat, userlng], { icon: userIcon }).addTo(map);
-
             // userplace callback
             addUserPlace(area, parkType, userlat, userlng);
 
@@ -610,9 +562,9 @@
 
             $('#userPlaceBtn').on('click', function () {
                 map.setView([userlat, userlng], 15);
+                resetClick();
             })
 
-            refrash_road($('#distance_select').val());
             refrash_park();
 
             switch ($('#type_select').val()) {
@@ -620,28 +572,15 @@
                     $(".parkDisabled").show();
                     $(".parkParents").show();
                     $(".parkNormal").show();
-                    $('.roadOkDisabled').hide();
-                    $('.roadNonDisabled').hide();
-                    $('.roadOkParents').hide();
-                    $('.roadNonParents').hide();
-                    $('.roadOkNormal').hide();
-                    $('.roadNonNormal').hide();
+                    $('.marker-cluster').hide();
                     switch ($('#special_select').val()) {
                         case "disabled":
                             $(".parkParents").hide();
                             $(".parkNormal").hide();
-                            $('.roadOkParents').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
                             break;
                         case "parent":
                             $(".parkDisabled").hide();
                             $(".parkNormal").hide();
-                            $('.roadOkDisabled').hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
                             break;
                         default:
                             break;
@@ -651,30 +590,19 @@
                     $(".parkDisabled").hide();
                     $(".parkParents").hide();
                     $(".parkNormal").hide();
-                    $('.roadOkDisabled').show();
-                    $('.roadNonDisabled').show();
-                    $('.roadOkParents').show();
-                    $('.roadNonParents').show();
-                    $('.roadOkNormal').show();
-                    $('.roadNonNormal').show();
+                    $('.marker-cluster').show();
                     switch ($('#special_select').val()) {
                         case "disabled":
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            $('.roadOkParents').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
+                            refrash_road($('#distance_select').val(), "disabled");
+                            search_road($('#distance_select').val(), "disabled");
                             break;
                         case "parent":
-                            $(".parkDisabled").hide();
-                            $(".parkNormal").hide();
-                            $('.roadOkDisabled').hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
+                            refrash_road($('#distance_select').val(), "parent");
+                            search_road($('#distance_select').val(), "parent");
                             break;
                         default:
+                            refrash_road($('#distance_select').val(), $('#special_select').val());
+                            search_road($('#distance_select').val(), $('#special_select').val());
                             break;
                     }
                     break;
@@ -682,65 +610,100 @@
                     $(".parkDisabled").hide();
                     $(".parkParents").hide();
                     $(".parkNormal").hide();
-                    $('.roadOkDisabled').show();
-                    $('.roadNonDisabled').hide();
-                    $('.roadOkParents').show();
-                    $('.roadNonParents').hide();
-                    $('.roadOkNormal').show();
-                    $('.roadNonNormal').hide();
-                    switch ($('#special_select').val()) {
-                        case "disabled":
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            $('.roadOkParents').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
-                            break;
-                        case "parent":
-                            $(".parkDisabled").hide();
-                            $(".parkNormal").hide();
-                            $('.roadOkDisabled').hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
-                            break;
-                        default:
-                            break;
-                    }
+                    refrash_road($('#distance_select').val(), "roadside-empty");
+                    search_road($('#distance_select').val(), "roadside-empty");
                     break;
-
                 default:
                     $(".parkDisabled").show();
                     $(".parkParents").show();
                     $(".parkNormal").show();
-                    $('.roadOkDisabled').show();
-                    $('.roadNonDisabled').show();
-                    $('.roadOkParents').show();
-                    $('.roadNonParents').show();
-                    $('.roadOkNormal').show();
-                    $('.roadNonNormal').show();
                     switch ($('#special_select').val()) {
                         case "disabled":
                             $(".parkParents").hide();
                             $(".parkNormal").hide();
-                            $('.roadOkParents').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
+                            refrash_road($('#distance_select').val(), "disabled");
+                            search_road($('#distance_select').val(), "disabled");
                             break;
                         case "parent":
                             $(".parkDisabled").hide();
                             $(".parkNormal").hide();
-                            $('.roadOkDisabled').hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
+                            refrash_road($('#distance_select').val(), "parent");
+                            search_road($('#distance_select').val(), "parent");
                             break;
                         default:
+                            refrash_road($('#distance_select').val(), $('#special_select').val());
+                            search_road($('#distance_select').val(), $('#special_select').val());
                             break;
                     }
                     break;
+            }
+        }
+
+        // display search marker
+        map.on('geosearch/showlocation', function (e) {
+            $('.userIcon').hide();
+            map.removeLayer(userCircle);
+            map.removeLayer(markers);
+            searchlat = e.location.y;
+            searchlng = e.location.x;
+            map.setZoom(16);
+            // reset marker and circle
+            if (searchmarker) {
+                map.removeLayer(searchmarker);
+                map.removeLayer(searchCircle);
+                // map.removeLayer(userCircle);
+            }
+            // add search marker
+            searchmarker = L.marker([searchlat, searchlng], { icon: searchIcon }).addTo(map);
+            if ($('#distance_select').val() == "2000") {
+                searchCircle = L.circle([searchlat, searchlng], {
+                    color: 'blue',
+                    fillColor: '#005DFF70',
+                    fillOpacity: 0.3,
+                    radius: 0
+                }).addTo(map);
+            } else {
+                searchCircle = L.circle([searchlat, searchlng], {
+                    color: 'blue',
+                    fillColor: '#005DFF70',
+                    fillOpacity: 0.3,
+                    radius: $('#distance_select').val()
+                }).addTo(map);
+            }
+
+            // add search road parkin lot
+            search_road($('#distance_select').val(), $('#special_select').val())
+
+            // click and remove marker
+            $('.reset').click(function () {
+                resetClick();
+            })
+
+        });
+
+        // reset search
+        function resetClick() {
+            $('.userIcon').show();
+            map.removeLayer(searchMarkers);
+            map.removeLayer(searchmarker);
+            map.removeLayer(searchCircle);
+            searchlat = 0;
+            searchlng = 0;
+            refrash_road($('#distance_select').val(), $('#special_select').val());
+            if ($('#distance_select').val() == "2000") {
+                userCircle = L.circle([userlat, userlng], {
+                    color: 'blue',
+                    fillColor: '#005DFF70',
+                    fillOpacity: 0.3,
+                    radius: 0
+                }).addTo(map);
+            } else {
+                userCircle = L.circle([userlat, userlng], {
+                    color: 'blue',
+                    fillColor: '#005DFF70',
+                    fillOpacity: 0.3,
+                    radius: $('#distance_select').val()
+                }).addTo(map);
             }
         }
 
@@ -749,8 +712,8 @@
             map.removeLayer(userCircle);
             map.removeLayer(searchCircle);
             if ($(this).val() == "2000") {
-                setTimeout(refrash_road($(this).val()), 1000);
-                setTimeout(search_road($(this).val()), 1000)
+                refrash_road($(this).val(), $('#special_select').val());
+                search_road($(this).val(), $('#special_select').val());
             } else {
                 userCircle = L.circle([userlat, userlng], {
                     color: 'blue',
@@ -764,9 +727,8 @@
                     fillOpacity: 0.3,
                     radius: $(this).val()
                 }).addTo(map);
-                // refrash_road($(this).val())
-                setTimeout(refrash_road($(this).val()), 1000);
-                setTimeout(search_road($(this).val()), 1000)
+                setTimeout(refrash_road($(this).val(), $('#special_select').val()), 1000);
+                setTimeout(search_road($(this).val(), $('#special_select').val()), 1000)
             }
 
         })
@@ -778,28 +740,15 @@
                     $(".parkDisabled").show();
                     $(".parkParents").show();
                     $(".parkNormal").show();
-                    $('.roadOkDisabled').hide();
-                    $('.roadNonDisabled').hide();
-                    $('.roadOkParents').hide();
-                    $('.roadNonParents').hide();
-                    $('.roadOkNormal').hide();
-                    $('.roadNonNormal').hide();
+                    $('.marker-cluster').hide();
                     switch ($('#special_select').val()) {
                         case "disabled":
                             $(".parkParents").hide();
                             $(".parkNormal").hide();
-                            $('.roadOkParents').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
                             break;
                         case "parent":
                             $(".parkDisabled").hide();
                             $(".parkNormal").hide();
-                            $('.roadOkDisabled').hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
                             break;
                         default:
                             break;
@@ -809,30 +758,19 @@
                     $(".parkDisabled").hide();
                     $(".parkParents").hide();
                     $(".parkNormal").hide();
-                    $('.roadOkDisabled').show();
-                    $('.roadNonDisabled').show();
-                    $('.roadOkParents').show();
-                    $('.roadNonParents').show();
-                    $('.roadOkNormal').show();
-                    $('.roadNonNormal').show();
+                    $('.marker-cluster').show();
                     switch ($('#special_select').val()) {
                         case "disabled":
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            $('.roadOkParents').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
+                            refrash_road($('#distance_select').val(), "disabled");
+                            search_road($('#distance_select').val(), "disabled");
                             break;
                         case "parent":
-                            $(".parkDisabled").hide();
-                            $(".parkNormal").hide();
-                            $('.roadOkDisabled').hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
+                            refrash_road($('#distance_select').val(), "parent");
+                            search_road($('#distance_select').val(), "parent");
                             break;
                         default:
+                            refrash_road($('#distance_select').val(), $('#special_select').val());
+                            search_road($('#distance_select').val(), $('#special_select').val());
                             break;
                     }
                     break;
@@ -840,62 +778,29 @@
                     $(".parkDisabled").hide();
                     $(".parkParents").hide();
                     $(".parkNormal").hide();
-                    $('.roadOkDisabled').show();
-                    $('.roadNonDisabled').hide();
-                    $('.roadOkParents').show();
-                    $('.roadNonParents').hide();
-                    $('.roadOkNormal').show();
-                    $('.roadNonNormal').hide();
-                    switch ($('#special_select').val()) {
-                        case "disabled":
-                            $(".parkParents").hide();
-                            $(".parkNormal").hide();
-                            $('.roadOkParents').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
-                            break;
-                        case "parent":
-                            $(".parkDisabled").hide();
-                            $(".parkNormal").hide();
-                            $('.roadOkDisabled').hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
-                            break;
-                        default:
-                            break;
-                    }
+                    refrash_road($('#distance_select').val(), "roadside-empty");
+                    search_road($('#distance_select').val(), "roadside-empty");
                     break;
-
                 default:
                     $(".parkDisabled").show();
                     $(".parkParents").show();
                     $(".parkNormal").show();
-                    $('.roadOkDisabled').show();
-                    $('.roadNonDisabled').show();
-                    $('.roadOkParents').show();
-                    $('.roadNonParents').show();
-                    $('.roadOkNormal').show();
-                    $('.roadNonNormal').show();
                     switch ($('#special_select').val()) {
                         case "disabled":
                             $(".parkParents").hide();
                             $(".parkNormal").hide();
-                            $('.roadOkParents').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
+                            refrash_road($('#distance_select').val(), "disabled");
+                            search_road($('#distance_select').val(), "disabled");
                             break;
                         case "parent":
                             $(".parkDisabled").hide();
                             $(".parkNormal").hide();
-                            $('.roadOkDisabled').hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
+                            refrash_road($('#distance_select').val(), "parent");
+                            search_road($('#distance_select').val(), "parent");
                             break;
                         default:
+                            refrash_road($('#distance_select').val(), $('#special_select').val());
+                            search_road($('#distance_select').val(), $('#special_select').val());
                             break;
                     }
                     break;
@@ -904,40 +809,32 @@
 
         // change park lot type
         $('#special_select').change(function () {
+            refrash_road($('#distance_select').val(), $(this).val())
+            search_road($('#distance_select').val(), $(this).val())
             switch ($(this).val()) {
                 case "disabled":
                     $(".parkDisabled").show();
                     $(".parkParents").hide();
                     $(".parkNormal").hide();
-                    $('.roadOkDisabled').show();
-                    $('.roadNonDisabled').show();
-                    $('.roadOkParents').hide();
-                    $('.roadNonParents').hide();
-                    $('.roadOkNormal').hide();
-                    $('.roadNonNormal').hide();
+                    refrash_road($('#distance_select').val(), "disabled");
+                    search_road($('#distance_select').val(), "disabled");
                     switch ($('#type_select').val()) {
                         case "parking-lot":
-                            $('.roadOkDisabled').hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadOkParents').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
+                            $('.marker-cluster').hide();
                             break;
                         case "roadside-all":
                             $(".parkDisabled").hide();
                             $(".parkParents").hide();
                             $(".parkNormal").hide();
+                            $('.marker-cluster').show();
                             break;
                         case "roadside-empty":
                             $(".parkDisabled").hide();
                             $(".parkParents").hide();
                             $(".parkNormal").hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadNonNormal').hide();
+                            refrash_road($('#distance_select').val(), "roadside-empty");
+                            search_road($('#distance_select').val(), "roadside-empty");
                             break;
-
                         default:
                             break;
                     }
@@ -946,73 +843,52 @@
                     $(".parkDisabled").hide();
                     $(".parkParents").show();
                     $(".parkNormal").hide();
-                    $('.roadOkDisabled').hide();
-                    $('.roadNonDisabled').hide();
-                    $('.roadOkParents').show();
-                    $('.roadNonParents').show();
-                    $('.roadOkNormal').hide();
-                    $('.roadNonNormal').hide();
+                    refrash_road($('#distance_select').val(), "parent");
+                    search_road($('#distance_select').val(), "parent");
                     switch ($('#type_select').val()) {
                         case "parking-lot":
-                            $('.roadOkDisabled').hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadOkParents').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
+                            $('.marker-cluster').hide();
                             break;
                         case "roadside-all":
                             $(".parkDisabled").hide();
                             $(".parkParents").hide();
                             $(".parkNormal").hide();
+                            $('.marker-cluster').show();
                             break;
                         case "roadside-empty":
                             $(".parkDisabled").hide();
                             $(".parkParents").hide();
                             $(".parkNormal").hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadNonNormal').hide();
+                            refrash_road($('#distance_select').val(), "roadside-empty");
+                            search_road($('#distance_select').val(), "roadside-empty");
                             break;
-
                         default:
                             break;
                     }
                     break;
-
                 default:
                     $(".parkDisabled").show();
                     $(".parkParents").show();
                     $(".parkNormal").show();
-                    $('.roadOkDisabled').show();
-                    $('.roadNonDisabled').show();
-                    $('.roadOkParents').show();
-                    $('.roadNonParents').show();
-                    $('.roadOkNormal').show();
-                    $('.roadNonNormal').show();
+                    refrash_road($('#distance_select').val(), "other");
+                    search_road($('#distance_select').val(), "other");
                     switch ($('#type_select').val()) {
                         case "parking-lot":
-                            $('.roadOkDisabled').hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadOkParents').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadOkNormal').hide();
-                            $('.roadNonNormal').hide();
+                            $('.marker-cluster').hide();
                             break;
                         case "roadside-all":
                             $(".parkDisabled").hide();
                             $(".parkParents").hide();
                             $(".parkNormal").hide();
+                            $('.marker-cluster').show();
                             break;
                         case "roadside-empty":
                             $(".parkDisabled").hide();
                             $(".parkParents").hide();
                             $(".parkNormal").hide();
-                            $('.roadNonDisabled').hide();
-                            $('.roadNonParents').hide();
-                            $('.roadNonNormal').hide();
+                            refrash_road($('#distance_select').val(), "roadside-empty");
+                            search_road($('#distance_select').val(), "roadside-empty");
                             break;
-
                         default:
                             break;
                     }
@@ -1020,17 +896,17 @@
             }
         })
 
-
-        function refrash_road(cur_area) {
-            // console.log(cur_area);
-            $('.roadOkDisabled').remove();
-            $('.roadNonDisabled').remove();
-            $('.roadOkParents').remove();
-            $('.roadNonParents').remove();
-            $('.roadOkNormal').remove();
-            $('.roadNonNormal').remove();
+        var markers = undefined;
+        var markerList;
+        function refrash_road(cur_area, special) {
+            if (markers) {
+                markers.clearLayers();
+            }
             let a = 0;
             a = cur_area;
+            // add markercluster
+            markers = L.markerClusterGroup();
+            markerList = [];
             let car_parking_url = "https://datacenter.taichung.gov.tw/Swagger/OpenData/791a8a4b-ade6-48cf-b3ed-6c594e58a1f1";
             let car_parking_xhr = new XMLHttpRequest();
             car_parking_xhr.open('GET', car_parking_url, true);
@@ -1038,57 +914,125 @@
             car_parking_xhr.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
                     response = JSON.parse(this.response);
-                    // console.log(response);
-                    $(response).each(function (i, parkInfo) {
-                        var roadlat = Number(parkInfo['PS_Lat']);
-                        var roadlng = Number(parkInfo['PS_Lng']);
-                        switch (parkInfo['PS_type']) {
-                            case '1':
+                    if (special == "disabled") {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (parkInfo['PS_type'] == '1') {
                                 if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
                                     if (parkInfo['status'] == 0) {
-                                        targetPoint.push([roadlat, roadlng]);
-                                        targetDis.push(L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)));
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkDisabled');
+                                        var parkOk = L.icon({
+                                            iconUrl: './assets/image/map_control_img/no_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadOkDisabled'
+                                        });
+                                        var roadOkDisabled = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                        roadLotInfo(parkInfo, roadOkDisabled);
+                                        markerList.push(roadOkDisabled);
                                     } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonDisabled');
+                                        var parkNon = L.icon({
+                                            iconUrl: './assets/image/map_control_img/in_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadNonDisabled'
+                                        });
+                                        var roadNonDisabled = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
+                                        roadLotInfo(parkInfo, roadNonDisabled);
+                                        markerList.push(roadNonDisabled);
                                     }
                                 }
-                                break;
-                            case '2':
+                            }
+                        })
+                    } else if (special == "parent") {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (parkInfo['PS_type'] == '2') {
                                 if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
                                     if (parkInfo['status'] == 0) {
-                                        targetPoint.push([roadlat, roadlng]);
-                                        targetDis.push(L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)))
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkParents');
+                                        var parkOk = L.icon({
+                                            iconUrl: './assets/image/map_control_img/no_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadOkParents'
+                                        });
+                                        var roadOkParents = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                        roadLotInfo(parkInfo, roadOkParents);
+                                        markerList.push(roadOkParents);
                                     } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonParents');
+                                        var parkNon = L.icon({
+                                            iconUrl: './assets/image/map_control_img/in_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadNonParents'
+                                        });
+                                        var roadNonParents = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
+                                        roadLotInfo(parkInfo, roadNonParents);
+                                        markerList.push(roadNonParents);
                                     }
                                 }
-                                break;
-                            default:
-                                if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
-                                    if (parkInfo['status'] == 0) {
-                                        targetPoint.push([roadlat, roadlng]);
-                                        targetDis.push(L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)))
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkNormal');
-                                    } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonNormal');
-                                    }
+                            }
+                        })
+                    } else if (special == 'roadside-empty') {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
+                                if (parkInfo['status'] == 0) {
+                                    var parkOk = L.icon({
+                                        iconUrl: './assets/image/map_control_img/no_car.png',
+                                        iconSize: [15, 15],
+                                        className: 'roadOk'
+                                    });
+                                    var roadOk = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                    roadLotInfo(parkInfo, roadOk);
+                                    markerList.push(roadOk);
                                 }
-                                break;
-                        }
-                    })
+                            }
+                        });
+                    } else {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
+                                if (parkInfo['status'] == 0) {
+                                    targetPoint.push([roadlat, roadlng]);
+                                    targetDis.push(L.latLng(userlat, userlng).distanceTo(L.latLng(roadlat, roadlng)));
+                                    var parkOk = L.icon({
+                                        iconUrl: './assets/image/map_control_img/no_car.png',
+                                        iconSize: [15, 15],
+                                        className: 'roadOk'
+                                    });
+                                    var roadOk = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                    roadLotInfo(parkInfo, roadOk);
+                                    markerList.push(roadOk);
+                                } else {
+                                    var parkNon = L.icon({
+                                        iconUrl: './assets/image/map_control_img/in_car.png',
+                                        iconSize: [15, 15],
+                                        className: 'roadNon'
+                                    });
+                                    var roadNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
+                                    roadLotInfo(parkInfo, roadNon);
+                                    markerList.push(roadNon);
+                                }
+                            }
+                        })
+                    }
+                    markers.addLayers(markerList);
                 };
             }
+            map.addLayer(markers);
         }
 
-        function search_road(search_area) {
+        var searchMarkers = undefined;
+        var searchList;
+        function search_road(search_area, special) {
+            if (searchMarkers) {
+                searchMarkers.clearLayers();
+            }
+            // add search marker
+            searchMarkers = L.markerClusterGroup();
+            searchList = [];
+            let a = 0;
+            a = search_area;
             let car_parking_url = "https://datacenter.taichung.gov.tw/Swagger/OpenData/791a8a4b-ade6-48cf-b3ed-6c594e58a1f1";
             let car_parking_xhr = new XMLHttpRequest();
             car_parking_xhr.open('GET', car_parking_url, true);
@@ -1096,48 +1040,110 @@
             car_parking_xhr.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
                     response = JSON.parse(this.response);
-                    // console.log(response);
-                    $(response).each(function (i, parkInfo) {
-                        var roadlat = Number(parkInfo['PS_Lat']);
-                        var roadlng = Number(parkInfo['PS_Lng']);
-                        switch (parkInfo['PS_type']) {
-                            case '1':
-                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < search_area) {
+                    if (special == "disabled") {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (parkInfo['PS_type'] == '1') {
+                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
                                     if (parkInfo['status'] == 0) {
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkDisabled');
+                                        var parkOk = L.icon({
+                                            iconUrl: './assets/image/map_control_img/no_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadOkDisabled'
+                                        });
+                                        var roadOkDisabled = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                        roadLotInfo(parkInfo, roadOkDisabled);
+                                        searchList.push(roadOkDisabled);
                                     } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonDisabled');
+                                        var parkNon = L.icon({
+                                            iconUrl: './assets/image/map_control_img/in_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadNonDisabled'
+                                        });
+                                        var roadNonDisabled = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
+                                        roadLotInfo(parkInfo, roadNonDisabled);
+                                        searchList.push(roadNonDisabled);
                                     }
                                 }
-                                break;
-                            case '2':
-                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < search_area) {
+                            }
+                        })
+                    } else if (special == "parent") {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (parkInfo['PS_type'] == '2') {
+                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
                                     if (parkInfo['status'] == 0) {
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkParents');
+                                        var parkOk = L.icon({
+                                            iconUrl: './assets/image/map_control_img/no_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadOkParents'
+                                        });
+                                        var roadOkParents = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                        roadLotInfo(parkInfo, roadOkParents);
+                                        searchList.push(roadOkParents);
                                     } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonParents');
+                                        var parkNon = L.icon({
+                                            iconUrl: './assets/image/map_control_img/in_car.png',
+                                            iconSize: [15, 15],
+                                            className: 'roadNonParents'
+                                        });
+                                        var roadNonParents = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
+                                        roadLotInfo(parkInfo, roadNonParents);
+                                        searchList.push(roadNonParents);
                                     }
                                 }
-                                break;
-                            default:
-                                if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < search_area) {
-                                    if (parkInfo['status'] == 0) {
-                                        var markerOK = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk }).addTo(map);
-                                        parkingClass(markerOK, 'roadOkNormal');
-                                    } else {
-                                        var markerNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon }).addTo(map);
-                                        parkingClass(markerNon, 'roadNonNormal');
-                                    }
+                            }
+                        })
+                    } else if (special == "roadside-empty") {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
+                                if (parkInfo['status'] == 0) {
+                                    var parkOk = L.icon({
+                                        iconUrl: './assets/image/map_control_img/no_car.png',
+                                        iconSize: [15, 15],
+                                        className: 'roadOk'
+                                    });
+                                    var roadOk = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                    roadLotInfo(parkInfo, roadOk);
+                                    searchList.push(roadOk);
                                 }
-                                break;
-                        }
-                    })
+                            }
+                        });
+                    } else {
+                        $(response).each(function (i, parkInfo) {
+                            var roadlat = Number(parkInfo['PS_Lat']);
+                            var roadlng = Number(parkInfo['PS_Lng']);
+                            if (L.latLng(searchlat, searchlng).distanceTo(L.latLng(roadlat, roadlng)) < a) {
+                                if (parkInfo['status'] == 0) {
+                                    var parkOk = L.icon({
+                                        iconUrl: './assets/image/map_control_img/no_car.png',
+                                        iconSize: [15, 15],
+                                        className: 'roadOk'
+                                    });
+                                    var roadOk = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkOk });
+                                    roadLotInfo(parkInfo, roadOk);
+                                    searchList.push(roadOk);
+                                } else {
+                                    var parkNon = L.icon({
+                                        iconUrl: './assets/image/map_control_img/in_car.png',
+                                        iconSize: [15, 15],
+                                        className: 'roadNon'
+                                    });
+                                    var roadNon = L.marker([parkInfo['PS_Lat'], parkInfo['PS_Lng']], { icon: parkNon });
+                                    roadLotInfo(parkInfo, roadNon);
+                                    searchList.push(roadNon);
+                                }
+                            }
+                        })
+                    }
+                    searchMarkers.addLayers(searchList);
                 };
             }
+            map.addLayer(searchMarkers);
         }
 
         function refrash_park() {
@@ -1463,7 +1469,7 @@
                         routing(y, x) {
                             // 導向google導航網頁
                             var url = 'https://www.google.com/maps/dir/?api=1&destination=' + y + ',' + x;
-                            window.open(url);
+                            window.location.assign(url);
                         },
                         sortParkingLotByDistance() {
                             this.parkingLot.sort((a, b) => {
@@ -1739,7 +1745,7 @@
                         routing(y, x) {
                             // 導向google導航網頁
                             var url = 'https://www.google.com/maps/dir/?api=1&destination=' + y + ',' + x;
-                            window.open(url);
+                            window.location.assign(url);
                         },
                         sortParkingRoadByDistance() {
                             this.parkingRoad.sort((a, b) => {
