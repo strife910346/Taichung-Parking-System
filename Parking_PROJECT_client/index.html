@@ -431,15 +431,6 @@
             iconSize: [20, 25]
         }); //停車場紅燈座標圖
 
-        // 路邊車格icon
-        var parkNon = L.icon({
-            iconUrl: './assets/image/map_control_img/in_car.png',
-            iconSize: [15, 15],
-        }); //無空位
-        var parkOk = L.icon({
-            iconUrl: './assets/image/map_control_img/no_car.png',
-            iconSize: [15, 15],
-        }); //有空位
         // user icon
         var userIcon = L.icon({
             iconUrl: './assets/image/map_control_img/user_place.png',
@@ -461,11 +452,6 @@
             }
         }
 
-        // 標籤匯入class
-        let parkingClass = (markClass, className) => {
-            let mark = markClass.closePopup();
-            mark._icon.classList.add(className);
-        }
         // 用來儲存距離和點位經緯度
         let targetPoint = [];
         let targetDis = [];
@@ -475,7 +461,7 @@
             let targetIndex = targetDis.indexOf(Math.min(...targetDis));
             // console.log(targetPoint[targetIndex]);
             var url = 'https://www.google.com/maps/dir/?api=1&destination=' + targetPoint[targetIndex][0] + ',' + targetPoint[targetIndex][1];
-            window.open(url);
+            window.location.assign(url);
         });
         // 讀取搜尋框資料，儲存為sessionStorage
         $("#searchPlace").keypress(function (event) {
@@ -649,13 +635,10 @@
                                     // console.log('身障');
                                     if (parkMark['AvailableCar'] / parkMark['TotalCar'] > 0.6) {
                                         var marker60 = L.marker([parkMark['Y'], parkMark['X']], { icon: park60 }).addTo(map);
-                                        parkingClass(marker60, 'parkDisabled');
                                     } else if (parkMark['AvailableCar'] / parkMark['TotalCar'] > 0.3) {
                                         var marker30 = L.marker([parkMark['Y'], parkMark['X']], { icon: park30 }).addTo(map);
-                                        parkingClass(marker30, 'parkDisabled');
                                     } else {
                                         var marker0 = L.marker([parkMark['Y'], parkMark['X']], { icon: park0 }).addTo(map);
-                                        parkingClass(marker0, 'parkDisabled');
                                     }
                                     break;
                                 default:
@@ -664,26 +647,20 @@
                                             // console.log('親子車位')
                                             if (parkMark['AvailableCar'] / parkMark['TotalCar'] > 0.6) {
                                                 var marker60 = L.marker([parkMark['Y'], parkMark['X']], { icon: park60 }).addTo(map);
-                                                parkingClass(marker60, 'parkParents');
                                             } else if (parkMark['AvailableCar'] / parkMark['TotalCar'] > 0.3) {
                                                 var marker30 = L.marker([parkMark['Y'], parkMark['X']], { icon: park30 }).addTo(map);
-                                                parkingClass(marker30, 'parkParents');
                                             } else {
                                                 var marker0 = L.marker([parkMark['Y'], parkMark['X']], { icon: park0 }).addTo(map);
-                                                parkingClass(marker0, 'parkParents');
                                             }
                                             break;
                                         default:
                                             // console.log('無特殊車位')
                                             if (parkMark['AvailableCar'] / parkMark['TotalCar'] > 0.6) {
                                                 var marker60 = L.marker([parkMark['Y'], parkMark['X']], { icon: park60 }).addTo(map);
-                                                parkingClass(marker60, 'parkNormal');
                                             } else if (parkMark['AvailableCar'] / parkMark['TotalCar'] > 0.3) {
                                                 var marker30 = L.marker([parkMark['Y'], parkMark['X']], { icon: park30 }).addTo(map);
-                                                parkingClass(marker30, 'parkNormal');
                                             } else {
                                                 var marker0 = L.marker([parkMark['Y'], parkMark['X']], { icon: park0 }).addTo(map);
-                                                parkingClass(marker0, 'parkNormal');
                                             }
                                             break;
                                     }
@@ -1058,7 +1035,6 @@
 
     </script>
 
-    F
 
 
     <!-- bs js -->

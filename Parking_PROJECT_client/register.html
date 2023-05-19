@@ -45,7 +45,7 @@
                     <input name="ac" id="userAccount" type="text" class="border border-1 rounded-2 accPwd"
                         placeholder="User001" required="required" minlength="2">
                     <p class="fz-3 fw-bold" id="acErrorMessage" style="margin-left: 25%; width: 50%;">
-                        </p>
+                    </p>
 
                 </div>
             </div>
@@ -57,7 +57,7 @@
                         placeholder="09xxxxxxxx" required="required" maxlength="11" pattern="09+[0-9]{8}"
                         oninput="setCustomValidity('');" oninvalid="setCustomValidity('手機號碼格式錯誤，須為09開頭。');">
                     <p class="fz-3 fw-bold" id="phoneErrorMessage" style="margin-left: 25%; width: 50%;">
-                        </p>
+                    </p>
                 </div>
             </div>
 
@@ -67,7 +67,7 @@
                     <input name="email" id="userEmail" class="border border-1 rounded-2  accPwd" type="email"
                         placeholder="a@g.xx" required="required" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
                     <p class="fz-3 fw-bold" id="emailErrorMessage" style="margin-left: 25%; width: 50%;">
-                        </p>
+                    </p>
                 </div>
             </div>
 
@@ -89,8 +89,7 @@
                 <div class="col-12 mb-5">
                     <label class="accPwdWord"><span>*</span> 確認登入密碼</label>
                     <input id="userPassword1" class="border border-1 rounded-2 accPwd" placeholder="Pwd0dd001"
-                        type="password"    
-                        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d]{6,}$" required
+                        type="password" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d]{6,}$" required
                         oninput="setCustomValidity('');"
                         onchange="if(document.getElementById('userPassword').value != document.getElementById('userPassword1').value){setCustomValidity('密碼不符合');}">
                     <i id="checkEye1" class="fas fa-eye " style="width: 0;"></i>
@@ -156,7 +155,7 @@
                 $("#acErrorMessage").addClass("error");
             } else {
                 $("#acErrorMessage").text("");
-          
+
             }
 
             if (!phonePattern.test(phone)) {
@@ -164,7 +163,7 @@
                 $("#phoneErrorMessage").addClass("error");
             } else {
                 $("#phoneErrorMessage").text("");
-               
+
             }
 
             if (!emailPattern.test(email)) {
@@ -172,7 +171,7 @@
                 $("#emailErrorMessage").addClass("error");
             } else {
                 $("#emailErrorMessage").text("");
-           
+
             }
 
             if (!passPattern.test(pass)) {
@@ -181,7 +180,7 @@
                 return
             } else {
                 $("#passErrorMessage").text("");
-              
+
             }
 
 
@@ -196,15 +195,24 @@
             };
 
             $.ajax({
-                type: 'POST',
-                url: 'http://localhost:3000/insert/member',
-                data: formData
-                // data: JSON.stringify(formData),
-                // contentType: 'application/json'
-            })
+                type: 'GET',
+                url: `http://localhost:3000/select/member/${ac}`,
+            }).done(function (x) {
+                x = JSON.parse(x)
+                var y = x[0] || { member_ac: "無" }
+                if (ac == y.member_ac) {
+                    alert('此帳號已經有人使用')
+                } else {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'http://localhost:3000/insert/member',
+                        data: formData
+                    })
 
-            alert('註冊成功')
-            window.location.href = ('login.html'); //頁面跳轉
+                    alert('註冊成功')
+                    window.location.href = ('login.html'); //頁面跳轉
+                }
+            })
         });
 
     </script>
