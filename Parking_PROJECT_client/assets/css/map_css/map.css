@@ -168,6 +168,7 @@ select {
     line-height: 11px;
 }
 
+
 /* 將下拉選單的選項文字置中 */
 #filter {
     text-align: center;
@@ -467,33 +468,35 @@ margin-right: -13px; */
     font-style: normal;
     font-size: 10pt;
     padding: 3px 5px;
-    font-weight:bold;
-    color:rgba(0, 0, 0, 0.934);
-
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.934);
 }
+
 #special_select {
     font-family: 'Nunito';
     font-style: normal;
     font-size: 10pt;
     padding: 3px 5px;
-    font-weight:bold;
-    color:rgba(0, 0, 0, 0.934);
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.934);
 }
+
 #type_select {
     font-family: 'Nunito';
     font-style: normal;
     font-size: 10pt;
     padding: 3px 5px;
-    font-weight:bold;
-    color:rgba(0, 0, 0, 0.934);
-    
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.934);
+
 }
 
-option{
-    font-weight:bold;
+option {
+    font-weight: bold;
     font-size: 10pt;
-    color:rgba(0, 0, 0, 0.934);
+    color: rgba(0, 0, 0, 0.934);
 }
+
 .distance {
     /* small */
     font-family: 'Nunito';
