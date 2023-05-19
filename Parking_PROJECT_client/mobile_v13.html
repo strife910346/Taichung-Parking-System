@@ -734,7 +734,7 @@
         // reset search
         function resetClick() {
             $('.userIcon').show();
-            map.removeLayer(searchMarkers);
+            $('.marker-cluster').remove();
             map.removeLayer(searchmarker);
             map.removeLayer(searchCircle);
             searchlat = 0;
