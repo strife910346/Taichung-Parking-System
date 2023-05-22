@@ -744,7 +744,8 @@
             usermarker = L.marker([userlat, userlng], { icon: userIcon }).addTo(map);
             searchMarkers.clearLayers();
             map.removeLayer(searchCircle);
-            map.removeLayer(searchmarker)
+            map.removeLayer(searchmarker);
+            searchmarker = undefined;
             refrash_road($('#distance_select').val(), $('#special_select').val());
             if ($('#distance_select').val() == "2000") {
                 userCircle = L.circle([userlat, userlng], {
