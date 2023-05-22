@@ -802,7 +802,8 @@
                         $(".parkDisabled").show();
                         $(".parkParents").show();
                         $(".parkNormal").show();
-                        $('.marker-cluster').remove();
+                        searchMarkers.clearLayers();
+                        markers.clearLayers();
                         switch ($('#special_select').val()) {
                             case "disabled":
                                 $(".parkParents").hide();
@@ -865,7 +866,8 @@
                         $(".parkDisabled").show();
                         $(".parkParents").show();
                         $(".parkNormal").show();
-                        $('.marker-cluster').remove();
+                        searchMarkers.clearLayers();
+                        markers.clearLayers();
                         switch ($('#special_select').val()) {
                             case "disabled":
                                 $(".parkParents").hide();
