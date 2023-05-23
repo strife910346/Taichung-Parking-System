@@ -52,7 +52,7 @@ api.get('/carstay/:id', function (req, res) {
         })
 })
 api.get('/traderecord/:id', function (req, res) {
-    var sql = `SELECT tr_id, member_id, tr_amount, DATE_FORMAT(tr_date,'%Y/%m/%d')AS tr_date, tr_time,tr_location,tr_counterparty,tr_type,tr_ps,tr_pe  FROM traderecord WHERE member_id=? ORDER BY tr_date DESC,tr_time DESC;`
+    var sql = `SELECT tr_id, member_id, tr_amount, DATE_FORMAT(tr_date,'%Y/%m/%d')AS tr_date, tr_time,tr_location,tr_counterparty,tr_type,tr_ps,tr_pe,tr_read  FROM traderecord WHERE member_id=? ORDER BY tr_date DESC,tr_time DESC;`
     config.query(sql, [req.params.id],
         function (err, result, fields) {
             if (err) {

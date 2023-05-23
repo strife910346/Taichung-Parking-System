@@ -357,7 +357,7 @@ $("#payment_sure").on("click", function () {
             var time2 = $('.time2')
             var parking = $('.parking')
 
-            if (x > parseInt(y[0].innerText)) {
+            if (x >= parseInt(y[0].innerText)) {
                 for (i = 0; i < test.length; i++) {
 
                     if (paymentcheckbox[i].checked) {

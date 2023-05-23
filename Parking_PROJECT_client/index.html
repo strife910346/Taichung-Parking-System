@@ -39,6 +39,9 @@
 </head>
 
 <body>
+    <button onclick="topFunction()" id="myBtnTop" class="btn btn-outline-primary shadow">
+        <i class="bi bi-arrow-up-short fs-2"></i>
+    </button>
 
     <!-- 導覽列 -->
     <nav class="navbar">
@@ -69,7 +72,7 @@
         </div>
     </nav>
 
-    <!-- 通知 -->
+   <!-- 通知中心內容 -->
     <!-- 關閉內容時 點擊ncContainer外的空間 -->
     <div class="row">
         <div class="col-12">
@@ -81,25 +84,37 @@
     <div class="ncContainer border rounded-3">
         <div class="row NCtopBgc mb-3" style="margin-top: -10px;">
             <div class="col-12">
-                <p class="NCtopWord">通知中心</p>
+                <p class="NCtopWord NCplaceCenter">通知中心</p>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-12 NCplaceCenter mb-3">
-                <button type="button" id="allPage" onclick="btnAll()"
-                    class="border border-light p-2 me-1 Classification">全部</button>
-                <button type="button" onclick="btnAdd()" class="border border-light p-2 me-1 Classification">儲值</button>
-                <button type="button" onclick="btnMin()" class="border border-light p-2 me-1 Classification">提領</button>
-                <button type="button" onclick="btnAready()"
-                    class="border border-light p-2 me-1 Classification">已繳費</button>
-                <button type="button" onclick="btnNo()" class="border border-light p-2 Classification">未繳費</button>
+        <div class="row" style="height: 50px;">
+            <div class="col-12 mb-3 button-container">
+                <div class="button-wrapper">
+                    <button type="button" id="allPage" onclick="btnAll()"
+                        class="border border-light me-1 Classification">全部</button>
+                    <button type="button" onclick="btnAdd()" class="border border-light me-1 Classification">儲值</button>
+                    <button type="button" onclick="btnMin()" class="border border-light me-1 Classification">提領</button>
+                    <button type="button" onclick="btnAready()"
+                        class="border border-light me-1 Classification">已繳費</button>
+                    <button type="button" onclick="btnNo()" class="border border-light Classification">未繳費</button>
+                </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-12">
                 <div class="mergedArray_fromS"></div>
+                <div class="row">
+                    <div class="col-12 ncCount">
+                        <p class="NCplaceCenter"><b>無通知</b></p>
+                        <div class="row">
+                            <div class="col-12 NCplaceCenter">
+                                <i class='far fa-frown'></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -108,9 +123,6 @@
                 <div class="mergedArray_data"></div>
             </div>
         </div>
-
-
-
 
     </div>
 
@@ -322,6 +334,26 @@
             </div>
         </div>
     </footer>
+    
+    <!-- 滾動 -->
+    <script>
+        window.onscroll = scrollFunction; //每當畫面捲動觸發一次
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                document.getElementById("myBtnTop").style.display = "block";
+            } else {
+                document.getElementById("myBtnTop").style.display = "none";
+            }
+        }//網頁捲動超過200pixel就會跑出來 display設定成block 跑回上面就隱藏。
+
+        // 重置scrollTop這個變數的值
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }
+    </script>
+
 
     <!-- 登入後判斷頁面呈現與切換 -->
     <script>
@@ -333,7 +365,8 @@
         <button id="ncBtn" class="rounded-3 NCplaceCenter mt-2 me-2">
                 <span id="ncCircle"></span>
                 <span id="ncIcon">
-                    <i class='fas fa-car' style="color: #0069B4;"></i>
+                    <i id="defaultIcon" class='fas fa-car'
+                        style="color: #f8f8f8;  font-size: 15px;margin-bottom: 10px;"></i>
                 </span>
             </button>
                 
@@ -605,365 +638,464 @@
 
     </script>
 
-    <!-- 通知中心 -->
-    <script>
-        // 未讀通知提醒
-        var totalCounts = [];
-        function unread() {
-            // console.log(mergedArrays);
+   <!-- 通知中心 -->
+   <script>
+    // 首頁通知按鍵
+    var ncContainerVisible = false; // 追蹤 ncContainer 的顯示狀態
 
-            var tr_unreadCount = 0;
-            for (var i = 0; i < mergedArrays.length; i++) {
-                if (!mergedArrays[i].hasOwnProperty("tr_read")) {
-                    continue;
-                }
-                // console.log(mergedArrays[i].tr_read);
-
-                if (mergedArrays[i].tr_read === 0) {
-                    tr_unreadCount++;
-                }
-            }
-            // console.log("未讀訊息: " + tr_unreadCount);
-
-            var py_unreadCount = 0;
-            for (var j = 0; j < mergedArrays.length; j++) {
-                if (!mergedArrays[j].hasOwnProperty("py_read")) {
-                    continue;
-                }
-                // console.log(mergedArrays[i].tr_read);
-
-                if (mergedArrays[j].py_read === 0) {
-                    py_unreadCount++;
-                }
-            }
-            // console.log("未讀訊息: " + py_unreadCount);
-
-            // 全部的未讀訊息
-            var totalUnreadCount = tr_unreadCount + py_unreadCount;
-            console.log("未讀訊息總數:" + totalUnreadCount);
-
-
-
-            var ncIcon = document.getElementById('ncIcon');
-            var ncCircle = document.getElementById('ncCircle');
-
-            if (totalUnreadCount > 0) {
-                ncIcon.innerHTML = "<b style='color: white;'>" + totalUnreadCount + "</b>";
-                ncCircle.innerHTML = "<i class='fas fa-circle iconNcircle';></i>";
-            } else {
-                ncIcon.innerHTML = "<i class='fas fa-car' style='color: white;'></i>";
-                ncCircle.innerHTML = "";
-            }
-
-            if (totalUnreadCount) {
-                totalCounts.push(totalUnreadCount);
-                console.log(totalCounts);
-            }
-            ncBtn();
+    // $('.ncCount').hide();
+    $('.overlay').hide();
+    $('#ncBtn').on('click', function () {
+        if (ncContainerVisible) {
+            hidencContainer();
+        } else {
+            showncContainer();
         }
+    });
 
-        function ncBtn() {
-            $('#ncBtn').on('click', function () {
-                console.log(totalCounts);
-                var license = $("div[datalicense]").attr('datalicense')
-                // 歸零未讀筆數
-                totalCounts[0] = 0;
+    $('.overlay').on('click', function () {
+        togglencContainer();
+    });
 
-                // 更新 mergedArrays 中的已讀狀態
-                for (var i = 0; i < mergedArrays.length; i++) {
-                    if (mergedArrays[i].hasOwnProperty("tr_read")) {
-                        mergedArrays[i].tr_read = 1;
-                    }
-                    if (mergedArrays[i].hasOwnProperty("py_read")) {
-                        mergedArrays[i].py_read = 1;
-                    }
-                }
+    function showncContainer() {
+        $('.ncContainer').css('display', 'block');
+        $('.overlay').show();
+        ncContainerVisible = true;
+    }
 
-                // 更新未讀筆數顯示
-
-                $.ajax(
-                    {
-                        url: "http://localhost:3000/update/ncread",
-                        type: "PUT",
-                        data: {
-                            id: ncid,
-                            license: license
-                        }
-                    }
-                ).done(function () {
-                    console.log("x");
-                });
-                unread();
-            })
-        }
-
-
-        // 首頁通知按鍵
-        var ncContainerVisible = false; // 追蹤 ncContainer 的顯示狀態
-
+    function hidencContainer() {
+        $('.ncContainer').css('display', 'none');
         $('.overlay').hide();
-        $('#ncBtn').on('click', function () {
-            if (ncContainerVisible) {
-                hidencContainer();
-            } else {
-                showncContainer();
+        ncContainerVisible = false;
+    }
+
+    function togglencContainer() {
+        if (ncContainerVisible) {
+            hidencContainer();
+        } else {
+            showncContainer();
+        }
+    }
+
+
+    // 分頁內容
+    var hasContent = false; // 標記分頁是否有內容的變量
+
+    function resetHasContent() {
+        hasContent = false;
+    }
+
+    window.onload = function () {
+        $('.ncCount').hide();
+    };
+
+    function btnAll() {
+        $(".ncData_off").removeClass("ncData_off");
+        $(".mergedArray_data").show();
+        $(".mergedArray_fromS").show();
+        $('.ncCount').hide();
+        resetHasContent();
+
+        for (i = 0; i < $('div[dataType]').length; i++) {
+            var trType = $('div[dataType]')[i].getAttribute('dataType');
+            if (trType) {
+                // console.log(trType);
+                hasContent = true;
             }
+        }
+
+        for (i = 0; i < $('div[datalicense]').length; i++) {
+            var trlicense = $('div[datalicense]')[i].getAttribute('datalicense');
+            if (trlicense) {
+                // console.log(trlicense);
+                hasContent = true;
+            }
+        }
+        // 分頁沒有內容就執行
+        if (!hasContent) {
+            $('.ncCount').show();
+        }
+
+
+    }
+
+
+    function btnAdd() {
+        $(".ncData_off").removeClass("ncData_off");
+        $(".mergedArray_data").show();
+        $(".mergedArray_fromS").hide();
+        $('.ncCount').hide();
+        resetHasContent();
+
+        for (i = 0; i < $('div[dataType]').length; i++) {
+            var trType = $('div[dataType]')[i].getAttribute('dataType');
+            if (trType === "0") {
+                // console.log(trType);
+                hasContent = true;
+            } else {
+                // console.log(trType + "nono");
+                $($('div[dataType]')[i]).addClass("ncData_off")
+            }
+        }
+        // 分頁沒有內容就執行
+        if (!hasContent) {
+            $('.ncCount').show();
+        }
+    }
+
+    function btnMin() {
+        $(".ncData_off").removeClass("ncData_off");
+        $(".mergedArray_data").show();
+        $(".mergedArray_fromS").hide();
+        $('.ncCount').hide();
+        resetHasContent();
+
+
+
+        for (var i = 0; i < $('div[dataType]').length; i++) {
+            var trType = $('div[dataType]')[i].getAttribute('dataType');
+            if (trType === "1") {
+                hasContent = true; // 如果分頁有內容，將變量設置為 true
+                // console.log(trType);
+            } else {
+                // console.log(trType + "nono");
+                $($('div[dataType]')[i]).addClass("ncData_off")
+            }
+        }
+
+        // 分頁沒有內容就執行
+        if (!hasContent) {
+            $('.ncCount').show();
+        }
+    }
+
+
+
+
+    function btnAready() {
+        $(".ncData_off").removeClass("ncData_off");
+        $(".mergedArray_data").show();
+        $(".mergedArray_fromS").hide();
+        $('.ncCount').hide();
+        resetHasContent();
+
+
+        for (i = 0; i < $('div[dataType]').length; i++) {
+            var trType = $('div[dataType]')[i].getAttribute('dataType');
+            if (trType === "2") {
+                // console.log(trType);
+                hasContent = true;
+            } else {
+                // console.log(trType + "nono");
+                $($('div[dataType]')[i]).addClass("ncData_off")
+            }
+        }
+        // 分頁沒有內容就執行
+        if (!hasContent) {
+            $('.ncCount').show();
+        }
+    }
+
+    function btnNo() {
+        $(".ncData_off").removeClass("ncData_off");
+        $(".mergedArray_data").hide();
+        $(".mergedArray_fromS").show();
+        $('.ncCount').hide();
+        resetHasContent();
+
+
+        for (i = 0; i < $('div[datalicense]').length; i++) {
+            var trlicense = $('div[datalicense]')[i].getAttribute('datalicense');
+            if (trlicense) {
+                // console.log(trlicense);
+                hasContent = true;
+            }
+        }
+        // 分頁沒有內容就執行
+        if (!hasContent) {
+            $('.ncCount').show();
+        }
+    }
+
+
+
+    // 資料庫
+    var traderecords = [];
+    var datafrom = [];
+    var ncid = localStorage.getItem("memberID");
+
+    // 獲取交易紀錄和付款資料
+    function refreshData() {
+        var traderecordPromise = $.ajax({
+            url: `http://localhost:3000/select/traderecord/${ncid}`,
+            type: "GET"
         });
 
-        $('.overlay').on('click', function () {
-            togglencContainer();
-        });
+        var paymentPromises = $.ajax({
+            url: `http://localhost:3000/select/license/${ncid}`,
+            type: "GET"
+        }).then(function (x) {
+            var dataS = JSON.parse(x);
+            var paymentPromises = [];
 
-        function showncContainer() {
-            $('.ncContainer').css('display', 'block');
-            $('.overlay').show();
+            for (var i = 0; i < dataS.length; i++) {
+                var li = dataS[i].license;
 
-            ncContainerVisible = true;
-        }
-
-        function hidencContainer() {
-            $('.ncContainer').css('display', 'none');
-            $('.overlay').hide();
-            ncContainerVisible = false;
-        }
-
-        function togglencContainer() {
-            if (ncContainerVisible) {
-                hidencContainer();
-            } else {
-                showncContainer();
-            }
-        }
-
-
-        // 分頁內容
-        function btnAll() {
-            $(".ncData_off").removeClass("ncData_off");
-            $(".mergedArray_data").show();
-            $(".mergedArray_fromS").show();
-        }
-
-        function btnAdd() {
-            $(".ncData_off").removeClass("ncData_off");
-            $(".mergedArray_data").show();
-            $(".mergedArray_fromS").hide();
-
-            for (i = 0; i < $('div[dataType]').length; i++) {
-                var trType = $('div[dataType]')[i].getAttribute('dataType');
-                if (trType === "0") {
-                    // console.log(trType);
-                } else {
-                    // console.log(trType + "nono");
-                    $($('div[dataType]')[i]).addClass("ncData_off")
-                }
-            }
-        }
-
-        function btnMin() {
-            $(".ncData_off").removeClass("ncData_off");
-            $(".mergedArray_data").show();
-            $(".mergedArray_fromS").hide();
-
-            for (i = 0; i < $('div[dataType]').length; i++) {
-                var trType = $('div[dataType]')[i].getAttribute('dataType');
-                if (trType === "1") {
-                    // console.log(trType);
-                } else {
-                    // console.log(trType + "nono");
-                    $($('div[dataType]')[i]).addClass("ncData_off")
-                }
-            }
-        }
-
-        function btnAready() {
-            $(".ncData_off").removeClass("ncData_off");
-            $(".mergedArray_data").show();
-            $(".mergedArray_fromS").hide();
-
-            for (i = 0; i < $('div[dataType]').length; i++) {
-                var trType = $('div[dataType]')[i].getAttribute('dataType');
-                if (trType === "2") {
-                    // console.log(trType);
-                } else {
-                    // console.log(trType + "nono");
-                    $($('div[dataType]')[i]).addClass("ncData_off")
-                }
-            }
-        }
-
-        function btnNo() {
-            $(".ncData_off").removeClass("ncData_off");
-            $(".mergedArray_data").hide();
-            $(".mergedArray_fromS").show();
-
-            for (i = 0; i < $('div[datalicense]').length; i++) {
-                var trlicense = $('div[datalicense]')[i].getAttribute('datalicense');
-                if (trlicense) {
-                    // console.log(trlicense);
-                }
-            }
-        }
-
-
-
-
-        // 資料庫
-        var traderecords = [];
-        var ncid = localStorage.getItem("memberID")
-        // console.log(ncid)
-
-        function refreshcord() {
-            $.ajax({
-                url: `http://localhost:3000/select/traderecord/${ncid}`,
-                type: "GET"
-            }).done(function (x) {
-                var traderecord = JSON.parse(x);
-                // console.log(traderecord);
-
-                if (traderecord.length > 0) {
-                    traderecords.push(...traderecord);
-                }
-                mergeData();
-
-            });
-
-        };
-        refreshcord();
-
-        datafrom = [];
-
-        function refreshfromS() {
-            $.ajax({
-                url: `http://localhost:3000/select/license/${ncid}`,
-                type: "GET"
-            }).done(function (x) {
-                var dataS = JSON.parse(x)
-                for (i = 0; i < dataS.length; i++) {
-                    var li = dataS[i].license
+                paymentPromises.push(
                     $.ajax({
                         url: `http://localhost:3000/select/payment/${li}`,
                         type: "GET"
-                    }).done(function (x) {
-                        var datafromS = JSON.parse(x);
-                        datafromS.sort(function (a, b) {
-                            return new Date(b.py_ps_d) - new Date(a.py_ps_d);
-                        });
-
-                        if (datafromS.length > 0) {
-                            datafrom.push(...datafromS);
-                        }
-                        mergeData();
                     })
-                }
+                );
+            }
+
+            return Promise.all(paymentPromises);
+        });
+
+        Promise.all([traderecordPromise, paymentPromises]).then(function (results) {
+            var traderecord = JSON.parse(results[0]);
+
+            traderecords = traderecords.concat(traderecord);
+
+            for (var i = 0; i < results[1].length; i++) {
+                var datafromS = JSON.parse(results[1][i]);
+                datafromS.sort(function (a, b) {
+                    return new Date(b.py_ps_d) - new Date(a.py_ps_d);
+                });
+
+                datafrom = datafrom.concat(datafromS);
+            }
+
+            mergeData();
+        });
+    }
+
+    refreshData();
 
 
-            })
 
+    // 整合兩個資料庫內容
+    var mergedArrays = [];
+    var mergeDataCallCount = 0;
+    function mergeData() {
+        // console.log(traderecords);
+        // console.log(datafrom);
+
+        // 查看 mergeData() 被呼叫的次數
+        mergeDataCallCount++;
+
+        var mergedArray = traderecords.concat(datafrom);
+
+        if (mergedArray.length > 0) {
+            mergedArrays.push(...mergedArray);
         }
-        refreshfromS();
 
+        unread();
 
-        // 整合兩個資料庫內容
-        var mergedArrays = [];
-        function mergeData() {
-            if (traderecords.length > 0 && datafrom.length > 0) {
-                var mergedArray = traderecords.concat(datafrom);
-                console.log(mergedArray);
-
-                if (mergedArray.length > 0) {
-                    mergedArrays.push(...mergedArray);
+        // 儲值/提領/已繳費
+        if (mergedArray.some(item => item.hasOwnProperty('tr_type'))) {
+            for (i = 0; i < mergedArray.length; i++) {
+                if (!mergedArray[i].hasOwnProperty('tr_type')) {
+                    continue; // 跳過沒有 tr_type 的項目
                 }
 
-                unread();
+                var type;
+                switch (mergedArray[i].tr_type) {
+                    case 0: type = "儲值";
+                        break;
+                    case 1: type = "提款";
+                        break;
+                    case 2: type = "繳費";
+                        break;
+                }
+                // console.log(type);
+                if (type == "繳費") {
+                    $(".mergedArray_data").append(
+                        `<div class="row NCplaceCenter mb-3" dataType = "${mergedArray[i].tr_type}">
+                        <div class="col-12 NCcard border border-light rounded-3">
+                                <span class="NCcardTitle" style="color: #34A853;"><b class="me-1">${mergedArray[i].tr_date}</b><b>${type}成功</b></span>
+                            <div class="NCcardText">
+                                <span><b>${mergedArray[i].tr_location}</b></span>
+                                <span class="NCcardMoney" style=" color: #34A853;"><b>$</b><b>${mergedArray[i].tr_amount}</b></span>
+                            </div>
+                                <span class="NCcardDate">${mergedArray[i].tr_ps}</span>
+                        </div>
+                    </div>`
+                    );
+                } else {
+                    $(".mergedArray_data").append(
+                        `<div class="row NCplaceCenter mb-3" dataType = "${mergedArray[i].tr_type}">
+                        <div class="col-12 NCcard border border-light rounded-3">
+                                <span class="NCcardTitle" style="color: #34A853;"><b class="me-1">${mergedArray[i].tr_date}</b><b>${type}成功</b></span>
+                            <div class="NCcardText">
+                                <span><b>[${type}]${mergedArray[i].tr_counterparty}</b></span>
+                                <span class="NCcardMoney" style=" color: #34A853;"><b>$</b><b>${mergedArray[i].tr_amount}</b></span>
+                            </div>
+                                <span class="NCcardDate">${mergedArray[i].tr_date}</span>
+                        </div>
+                    </div>`
+                    );
+                }
+            }
+            // console.log("mergeData() called " + mergeDataCallCount + " times");
+        }
 
-                // 儲值/提領/已繳費
-                if (mergedArray.some(item => item.hasOwnProperty('tr_type'))) {
-                    for (i = 0; i < mergedArray.length; i++) {
-                        if (!mergedArray[i].hasOwnProperty('tr_type')) {
-                            continue; // 跳過沒有 tr_type 的項目
-                        }
+        // 尚未繳費
+        var pylos = [];
+        var py = mergedArray.filter(function (item) {
+            return item.hasOwnProperty("license");
+        });
+        // console.log(py);
 
-                        var type;
-                        switch (mergedArray[i].tr_type) {
-                            case 0: type = "儲值";
-                                break;
-                            case 1: type = "提款";
-                                break;
-                            case 2: type = "繳費";
-                                break;
-                        }
-                        // console.log(type);
-                        if (type == "繳費") {
-                            $(".mergedArray_data").append(
-                                `<div class="row NCplaceCenter mb-3" dataType = "${mergedArray[i].tr_type}">
-                            <div class="col-12 NCcard border border-light rounded-3">
-                                    <span class="NCcardTitle" style="color: #34A853;"><b class="me-1">${mergedArray[i].tr_date}</b><b>${type}成功</b></span>
+        for (let m = 0; m < py.length; m++) {
+            var pylo = py[m].py_location;
+            if (pylo.includes("路邊停車")) {
+                // console.log(pylo);
+
+                if (py[m].py_location == pylo) {
+                    // console.log(py[m]);
+
+                    // 繳費期限
+                    var parkingDate = new Date(py[m].py_ps_d);
+                    var paymentDueDate = new Date(parkingDate);
+                    paymentDueDate.setDate(paymentDueDate.getDate() + 30);
+                    var paymentDueDateString = paymentDueDate.toISOString().slice(0, 10).replace(/-/g, '/');
+
+                    $(".mergedArray_fromS").append(
+                        ` <div class="row NCplaceCenter mb-3" datalicense="${py[m].license}">
+                            <div class="col-12 NCcard border border-light rounded-3" id="btnNo">
+                                <span class="NCcardTitle" style="color: #FF4545;"><b>繳費提醒</b></span>
                                 <div class="NCcardText">
-                                    <span><b>${mergedArray[i].tr_location}</b></span>
-                                    <span class="NCcardMoney" style=" color: #34A853;"><b>$</b><b>${mergedArray[i].tr_amount}</b></span>
-                                </div>
-                                    <span class="NCcardDate">${mergedArray[i].tr_ps}</span>
+                                    <span><b>${py[m].py_location}</b></span>
+                                    <span class="NCcardMoney" style=" color: #FF4545;"><b>$</b><b>${py[m].py_amount}</b></span>
+                                    </div>
+                                <p class="NCcardT"> 車牌: ${py[m].license}</p>
+                                <p class="NCcardT"> 停車日期: ${py[m].py_ps_d}</p>
+                                <p class="NCcardT"> 繳費期限: ${paymentDueDateString} </p>
                             </div>
                         </div>`
-                            );
-                        } else {
-                            $(".mergedArray_data").append(
-                                `<div class="row NCplaceCenter mb-3" dataType = "${mergedArray[i].tr_type}">
-                            <div class="col-12 NCcard border border-light rounded-3">
-                                    <span class="NCcardTitle" style="color: #34A853;"><b class="me-1">${mergedArray[i].tr_date}</b><b>${type}成功</b></span>
-                                <div class="NCcardText">
-                                    <span><b>[${type}]${mergedArray[i].tr_counterparty}</b></span>
-                                    <span class="NCcardMoney" style=" color: #34A853;"><b>$</b><b>${mergedArray[i].tr_amount}</b></span>
-                                </div>
-                                    <span class="NCcardDate">${mergedArray[i].tr_date}</span>
-                            </div>
-                        </div>`
-                            );
-                        }
-                    }
+                    )
+                }
+            }
+        }
+    }
 
+
+
+    // 未讀通知提醒
+    var totalCounts = [];
+    var countP = [];
+    var countT = [];
+    function unread() {
+        // console.log(mergedArrays);
+        var filterT = mergedArrays.filter(function (item) {
+            return item.hasOwnProperty("tr_read");
+        });
+        // console.log(filterT);
+
+        if (filterT) {
+            countT.push(filterT);
+        }
+
+        var tr_unreadCount = 0;
+        for (let i = 0; i < filterT.length; i++) {
+            var dataT = filterT[i].tr_read;
+            if (dataT == 0) {
+                tr_unreadCount++;
+            }
+        }
+        // console.log("未讀訊息: " + tr_unreadCount);
+
+        // 未繳費
+        var filterP = mergedArrays.filter(function (item) {
+            return item.hasOwnProperty("license");
+        });
+
+        var py_unreadCount = 0;
+        for (let p = 0; p < filterP.length; p++) {
+            var Pcount = filterP[p].py_location;
+            if (Pcount.includes("路邊停車")) {
+                // console.log(Pcount);
+                var filterData = filterP[p].py_read;
+                if (filterData == 0) {
+                    py_unreadCount++;
                 }
 
-                // 尚未繳費
-                if (mergedArray.some(item => item.hasOwnProperty('license'))) {
-                    for (j = 0; j < mergedArray.length; j++) {
-                        if (!mergedArray[j].hasOwnProperty('license')) {
-                            continue;
-                        }
-
-                        var license = mergedArray[j].license;
-                        if (license) {
-                            // console.log(license);
-
-                            $(".mergedArray_fromS").append(
-                                `<div class="row NCplaceCenter mb-3" datalicense = "${mergedArray[j].license}">
-                                <div class="col-12 NCcard border border-light rounded-3" id="btnNo">
-                                    <span class="NCcardTitle" style="color: #FF4545;"><b>尚未繳費</b></span>
-                                    <div class="NCcardText">
-                                        <span><b>${mergedArray[j].py_location}</b></span>
-                                        <span class="NCcardMoney" style=" color: #FF4545;"><b>$</b><b>${mergedArray[j].py_amount}</b></span>
-                                        </div>
-                                        <span class="NCcardDate">${mergedArray[j].py_ps_d} - ${mergedArray[j].py_pe_d}</span>
-                                </div>
-                            </div>`
-                            )
-                        }
-                    }
+                if (Pcount) {
+                    countP.push(Pcount);
                 }
-
-
             }
         }
 
+        // 全部的未讀訊息
+        var totalUnreadCount = tr_unreadCount + py_unreadCount;
+        // console.log("未讀訊息總數:" + totalUnreadCount);
+
+        var ncIcon = document.getElementById('ncIcon');
+        var ncCircle = document.getElementById('ncCircle');
+
+        if (totalUnreadCount > 0) {
+            ncIcon.innerHTML = "<b class='NCplaceCenter' style='color: white; font-size: 16px;'>" + totalUnreadCount + "</b>";
+            ncCircle.innerHTML = "<i class='fas fa-circle iconNcircle';></i>";
+        } else {
+            ncIcon.innerHTML = "<i id='defaultIcon' class='fas fa-car' style='color: white; width: 15px;'></i>";
+            ncCircle.innerHTML = "";
+        }
+
+        if (totalUnreadCount) {
+            totalCounts.push(totalUnreadCount);
+        }
+        // console.log(totalCounts);
+        ncBtn();
+
+    }
+    // }
 
 
+    function ncBtn() {
+        $('#ncBtn').on('click', function () {
+            var licenses = [];
+            $("div[datalicense]").each(function () {
+                var license = $(this).attr('datalicense');
+                licenses.push(license);
+            });
+            // console.log(licenses);
+
+            $.ajax(
+                {
+                    url: "http://localhost:3000/update/ncread",
+                    type: "PUT",
+                    data: {
+                        id: ncid,
+                        license: licenses
+                    }
+                }
+            ).done(function () {
+                console.log("x");
+            });
 
 
+            // 歸零未讀筆數
+            totalCounts[0] = 0;
+
+            // 更新 mergedArrays 中的已讀狀態
+            for (var i = 0; i < mergedArrays.length; i++) {
+                if (mergedArrays[i].hasOwnProperty("tr_read")) {
+                    mergedArrays[i].tr_read = 1;
+                }
+                if (mergedArrays[i].hasOwnProperty("py_read")) {
+                    mergedArrays[i].py_read = 1;
+                }
+            }
+
+            // 更新未讀筆數顯示
 
 
+            unread();
+        })
+    }
 
-
-    </script>
+</script>
 
 
 

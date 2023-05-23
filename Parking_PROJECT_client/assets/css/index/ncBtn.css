@@ -1,9 +1,8 @@
-
 .ncContainer {
     display: none;
-    position: fixed;
-    top: 50px;
-    right: 30px;
+    position: absolute;
+    top: 60px;
+    right: 10px;
     width: 320px;
     height: 70%;
     padding: 10px;
@@ -26,7 +25,6 @@
     width: 100%;
     height: 100%;
     z-index: -1;
-    background: #8f918f;
 }
 
 /* icon */
@@ -39,13 +37,14 @@
 }
 
 .iconNcircle {
-    font-size: 12px;
+    font-size: 13px;
     position: absolute;
     left: 19px;
-    top: -6px;
+    top: -5px;
     z-index: 1;
     color: #ff0000;
 }
+
 
 /* 內容 */
 .NCplaceCenter {
@@ -75,13 +74,13 @@ a {
     font-size: 18px;
     display: flex;
     margin: auto;
-    justify-content: center;
+    justify-content: centecontainerr;
     color: white;
 }
 
 .NCcard {
     width: 80%;
-    height: 90px;
+    height: 100%;
     box-shadow: 0px 2px 5px 0px rgba(216, 215, 215, 0.4);
 }
 
@@ -91,21 +90,51 @@ a {
 }
 
 .NCcardText {
-    font-size: 13px;
+    font-size: 14px;
     position: relative;
-    margin: 7px 0 5px 0;
+    margin: 5px 0 5px 0;
 }
 
 .NCcardMoney {
     position: absolute;
     right: 0;
-    color: #ff0000;
+    font-size: 15px;
 }
 
 .NCcardDate {
     font-size: 12px;
-    color: rgb(126, 123, 123);
-    font-weight: bold;
+    color: #2c2c2c;
+}
+
+.NCcardT {
+    font-size: 10px;
+    color: #2c2c2c;
+    margin: 5px 0;
+}
+
+.button-container {
+    display: inline-block;
+    width: 100%;
+    margin-top: 5px;
+    margin-left: 5px;
+    /* overflow-x: auto; 超出寬度時顯示水平滾動條 */
+    /* -webkit-overflow-scrolling: touch; 支援滑動操作 */
+    /* overflow-y: scroll; */
+}
+
+
+.button-wrapper {
+    display: flex;
+    max-width: fit-content;
+    /* 使內容寬度適應按鈕寬度總和 */
+    /* align-items: center; */
+    /* 垂直居中對齊按鈕 */
+    /* line-height: 1; */
+}
+
+.button-container button {
+    white-space: nowrap;
+    /* 防止按鈕換行 */
 }
 
 .Classification {
@@ -113,13 +142,26 @@ a {
     background-color: white;
     color: #0069B4;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 16px;
+    padding: 5px;
 }
 
 .Classification:hover {
     background-color: #d8d7d7;
+    padding: 5px;
 }
 
 .ncData_off {
     display: none;
+}
+
+.ncCount {
+    margin-top: 50%;
+    font-size: 50px;
+    color: rgba(0, 105, 180, 0.5);
+}
+
+.ncCount b {
+    font-size: 30px;
+
 }

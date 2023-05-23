@@ -12,21 +12,10 @@
     <script src="./assets/js/jquery-3.6.4.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-        /* .member_img:active {
+        .member_img_css {
             transform: scale(1.2);
-            filter: blur(4px);
+            filter: blur(4px)
         }
-        .hover_text{    
-            position: relative;
-        }
-        .hover_text::after {
-            content: "更改頭像";
-            position: absolute;
-            top: 90px;
-            left: 15px;
-            font-size: 30px;
-            font-weight: bold;
-        } */
 
         .bg_black_member {
             position: fixed;
@@ -48,11 +37,11 @@
             font-weight: bold;
         }
 
-        .dis_flex_column_center img:hover {
+        .a_payment img:hover {
             transform: scale(1.5);
         }
 
-        .dis_flex_column_center img:active {
+        .a_payment img:active {
             transform: scale(1.03);
         }
 
@@ -98,14 +87,27 @@
             align-items: center;
             justify-content: center;
         }
+
         .dis_flex_column_j_center {
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
+
+        .dis_flex_row {
+            display: flex;
+            flex-direction: column;
+        }
+
         .dis_flex_row {
             display: flex;
             flex-direction: row;
+        }
+
+        .dis_flex_row_j_space_around {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
         }
 
         .dis_flex_center {
@@ -123,58 +125,92 @@
             visibility: hidden;
         }
 
-        .bg_black_member img:active {
+        .bg_black_member_css {
+            border: solid 5px #0069B4;
             transform: scale(1.2);
+            background-color: white;
+        }
+        .bg_blue{
+            background-color: #0069B4;
+        }
+        .color_white{
+            color: white;
+        }
+        .btn_i {
+            color: white;
+            text-align: center;
+            font-size: 24px;
+        }
+        .dis_flex_row_j_center {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        .color_blue{
+            color: #0069B4;
         }
     </style>
 </head>
 
 <body>
-    <!-- <div class="bg_black_member">
-        <div style="position: fixed; top:30%;">
-            <div class="row">
-                <div class="col-12">
-                    <div class="row">
-                        <div class="col-4 dis_flex_center"> <img style="width: 80px; height:80px"
-                                src="./assets/image/Gold_Flow_image/member_photo_1.png" alt=""></div>
-                        <div class="col-4 dis_flex_center"> <img style="width: 80px; height:80px"
-                                src="./assets/image/Gold_Flow_image/member_photo_2.png" alt=""></div>
-                        <div class="col-4 dis_flex_center"> <img style="width: 80px; height:80px"
-                                src="./assets/image/Gold_Flow_image/member_photo_3.png" alt=""></div>
-                    </div>
+    <div class="bg_black_member hidden">
+        <div class="row" style="position: fixed; top:30%;">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-4 dis_flex_center"> <img style="width: 90px; height:90px"
+                            src="./assets/image/Gold_Flow_image/member_photo_1.png" alt=""></div>
+                    <div class="col-4 dis_flex_center"> <img style="width: 90px; height:90px"
+                            src="./assets/image/Gold_Flow_image/member_photo_2.png" alt=""></div>
+                    <div class="col-4 dis_flex_center"> <img style="width: 90px; height:90px"
+                            src="./assets/image/Gold_Flow_image/member_photo_3.png" alt=""></div>
                 </div>
-                <div class="col-12">
-                    <div class="row">
-                        <div class="col-4 dis_flex_center"> <img style="width: 80px; height:80px"
-                                src="./assets/image/Gold_Flow_image/member_photo_4.png" alt=""></div>
-                        <div class="col-4 dis_flex_center"> <img style="width: 80px; height:80px"
-                                src="./assets/image/Gold_Flow_image/member_photo_5.png" alt=""></div>
-                        <div class="col-4 dis_flex_center"> <img style="width: 80px; height:80px"
-                                src="./assets/image/Gold_Flow_image/member_photo_6.png" alt=""></div>
-                    </div>
+            </div>
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-4 dis_flex_center"> <img style="width: 90px; height:90px"
+                            src="./assets/image/Gold_Flow_image/member_photo_4.png" alt=""></div>
+                    <div class="col-4 dis_flex_center"> <img style="width: 90px; height:90px"
+                            src="./assets/image/Gold_Flow_image/member_photo_5.png" alt=""></div>
+                    <div class="col-4 dis_flex_center"> <img style="width: 90px; height:90px"
+                            src="./assets/image/Gold_Flow_image/member_photo_6.png" alt=""></div>
                 </div>
-                <div class="col-12">
-                    <div class="row">
-                        <div class="col-4 dis_flex_center"> <img style="width: 80px; height:80px"
-                                src="./assets/image/Gold_Flow_image/member_photo_7.png" alt=""></div>
-                        <div class="col-4 dis_flex_center"> <img style="width: 80px; height:80px"
-                                src="./assets/image/Gold_Flow_image/member_photo_8.png" alt=""></div>
-                        <div class="col-4 dis_flex_center"> <img style="width: 80px; height:80px"
-                                src="./assets/image/Gold_Flow_image/member_photo_9.png" alt=""></div>
-                    </div>
+            </div>
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-4 dis_flex_center"> <img style="width: 90px; height:90px"
+                            src="./assets/image/Gold_Flow_image/member_photo_7.png" alt=""></div>
+                    <div class="col-4 dis_flex_center"> <img style="width: 90px; height:90px"
+                            src="./assets/image/Gold_Flow_image/member_photo_8.png" alt=""></div>
+                    <div class="col-4 dis_flex_center"> <img style="width: 90px; height:90px"
+                            src="./assets/image/Gold_Flow_image/member_photo_9.png" alt=""></div>
+                </div>
+            </div>
+            <div class="col-12 mt-4">
+                <div class="row">
+                    <div class="col-6 dis_flex_center"><button class="btn btn-primary cancel">
+                            <h3 class="mt-2"><b>取消</b></h3>
+                        </button></div>
+                    <div class="col-6 dis_flex_center"><button class="btn btn-primary img_sure">
+                            <h3 class="mt-2"><b>確定</b></h3>
+                        </button></div>
                 </div>
             </div>
         </div>
-    </div> -->
-
-    <button class="border_none btn_i G_index">
-        <i class="fa fa-angle-left" style="font-size: 32px;"></i>
-    </button>
-    <button class="border_none hidden member_photo" style="z-index: 999; position: absolute;top:90px; left: 15px">
-        <h3><b></b> </h3>
-    </button>
-    <div class="container dis_flex_row" style="margin-top: 20px;">
-        <img style="width: 90px;" class="member_img " src="./assets/image/Gold_Flow_image/member.jpg" alt="">
+    </div>
+    <div class="bg_blue">
+        <div style="position: absolute; left:5px">
+            <button class="border_none btn_i G_index">
+                <i class="fa fa-angle-left"></i>
+            </button>
+        </div>
+        <div class="dis_flex_row_j_center pt-1">
+            <h2 class="color_white">
+                <b>會員中心</b>
+            </h2>
+        </div>
+    </div>
+    <div class=" container dis_flex_row" style="margin-top: 20px;">
+        <img style="width: 90px;" class="member_img " >
         <div style="position: absolute;left:15px; top:90px" class="photo_change hidden">
             <button class="border_none photo_change_button">
                 <h3><b>更改頭像</b></h3>
@@ -191,20 +227,20 @@
     </div>
 
     <br>
-    <div class="dis_flex_center">
-        <div class="row border_gray" style=" width: 95%; border-radius: 7px;">
-            <div class="col-12" style="padding-top: 10px;">
+    <div class="dis_flex_center container-fluid">
+        <div class="row border_gray container" style=" border-radius: 7px;">
+            <div class="col-12 " style="padding-top: 10px;">
                 <h3 class="color_gary"><b>Car Parking 帳戶 (TWD)</b> </h3>
             </div>
-            <div class="col-12">
-                <div class="dis_flex_center">
+            <div class="col-12 ">
+                <div class="dis_flex_center ">
                     <h2 class="member_money">
                         <b></b>
                     </h2>
                 </div>
 
                 <div style="position: relative;bottom:35%;  margin-top: -30px;">
-                    <button class="border_none wallet" style="float: right;">
+                    <button class="border_none wallet " style="float: right;">
                         <i class="fa fa-chevron-circle-right" style="font-size: 24px; color: #0069B4;"></i>
                     </button>
                 </div>
@@ -214,76 +250,78 @@
     </div>
 
     <hr class="color_gary">
-    <div class="row">
-        <div class="col-12 dis_flex_center">
-            <h3 class="color_gary">車牌號碼</h3>
-        </div>
-        <div class="col-12">
-            <div class="row">
-                <div class="col-6" style="padding-left: 80px; padding-top: 30px;">
-                    <div class="col-12">
-                        <div class="dis_flex_center ps-2 pt-2"
-                            style="float: right; width:150px; height:70px; background-image: url('./assets/image/Gold_Flow_image/pay-22.png');background-size:150px 70px;">
-                            <select style="width:115px; " class="license">
+    <div class="dis_flex_column_center">
+        <h3 class="color_gary">車牌號碼</h3>
+        <div style=" padding-top: 30px;">
+            <div class="dis_flex_center ps-2 pt-2"
+                style="float: right; width:150px; height:70px; background-image: url('./assets/image/Gold_Flow_image/pay-22.png');background-size:150px 70px;">
+                <select style="width:115px; " class="license">
 
-                            </select>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="col-6" style="padding-left: 20px;">
-                    <div class="row">
-                        <div class="col-12 mb-2">
-                            <button class="license_update border_none">
-                                <img style="float: left; width:130px;" src="./assets/image/Gold_Flow_image/pay-20.png"
-                                    alt="">
-                            </button>
-                        </div>
-                        <div class="col-12 ">
-                            <button class="license_delete border_none">
-                                <img style="float: left; width:130px;" src="./assets/image/Gold_Flow_image/pay-01.png"
-                                    alt="">
-                            </button>
-                        </div>
-
-                    </div>
-
-                </div>
+                </select>
             </div>
         </div>
-
+    </div>
+    <div class="dis_flex_row  mt-4" style="justify-content: center;">
+        <div>
+            <button class="license_update border_none">
+                <img style=" width:130px;" src="./assets/image/Gold_Flow_image/pay-20.png" alt="">
+            </button>
+        </div>
+        <button class="license_delete border_none">
+            <img style=" width:130px;" src="./assets/image/Gold_Flow_image/pay-01.png" alt="">
+        </button>
     </div>
     <hr class="color_gary ">
     <br>
-    <div class="row ">
-        <div class="col-3 dis_flex_column_center">
+    <div class="dis_flex_row_j_space_around a_payment">
+        <div class=" dis_flex_column_center">
             <button class="border_none payment" style="padding-top: 13px; ">
                 <img style="width: 60px;" src="./assets/image/Gold_Flow_image/pay-02.png" alt="">
             </button>
-            <h5 class="color_gary " style=" margin-top: 20px;"><b>路邊停車費</b> </h5>
+            <h4 class="color_blue" style=" margin-top: 20px;"><b>路邊停車費</b> </h4>
 
         </div>
-        <div class="col-3 dis_flex_column_center">
+        <div class="dis_flex_column_center">
             <button class="border_none payment">
                 <img style="width: 60px;" src="./assets/image/Gold_Flow_image/pay-03.png" alt="">
             </button>
-            <h5 class="color_gary " style=" margin-top: 25px;"><b>公有停車場</b> </h5>
+            <h4 class="color_blue " style=" margin-top: 25px;"><b>公有停車場</b> </h4>
         </div>
-        <div class="col-3 dis_flex_column_center">
+        <div class="dis_flex_column_center">
             <button class="border_none Trade_record">
                 <img style="width: 45px;" src="./assets/image/Gold_Flow_image/pay-04.png" alt="">
             </button>
-            <h5 class="color_gary " style=" margin-top: 20px;"><b>交易紀錄</b> </h5>
+            <h4 class="color_blue " style=" margin-top: 20px;"><b>交易紀錄</b> </h4>
         </div>
-        <div class="col-3 dis_flex_column_center">
+        <div class="dis_flex_column_center">
             <button class="border_none wallet">
                 <img style="width: 45px;" src="./assets/image/Gold_Flow_image/pay-05.png" alt="">
             </button>
-            <h5 class="color_gary " style=" margin-top: 18px;"><b>線上錢包</b> </h5>
+            <h4 class="color_blue " style=" margin-top: 18px;"><b>線上錢包</b> </h4>
         </div>
     </div>
-    </div>
+
+
+
     <script>
+         var id = localStorage.getItem("memberID")
+        //  判定資料庫是否有image 沒有則放預設圖片
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/select/member",
+            data: {id},
+        }).done(function(e){
+            var dataServer = JSON.parse(e);
+            // console.log(dataServer)
+            var member_photo = dataServer[0].member_image
+            // console.log(member_photo)
+            if(member_photo){
+                $(".member_img").attr("src", member_photo)
+            }else{
+                $(".member_img").attr("src", "./assets/image/Gold_Flow_image/member.jpg")
+            }
+        })
+        // 判定登入
         var member_ac = localStorage.getItem("member_ac")
         if (!member_ac) {
             window.location = "./login.html"
@@ -291,19 +329,50 @@
     </script>
 
     <script>
-        var id = localStorage.getItem("memberID")
+       
         // console.log(id)
 
         // 更改頭像
         $(".member_img").mousedown(function () {
-            $(".member_img").css({
-                "transform": "scale(1.2)"
-                , "filter": "blur(4px)"
-            })
+            $(".member_img").addClass("member_img_css")
             $(".photo_change").removeClass("hidden")
         })
         $(".photo_change_button").on("click", function () {
-            // console.log("12")
+            $(".bg_black_member").removeClass("hidden")
+        })
+
+        $(".bg_black_member img").on("click", function () {
+            $(".bg_black_member img").removeClass("bg_black_member_css");
+            $(this).addClass("bg_black_member_css")
+        })
+
+        $(".cancel").on("click", function () {
+            $(".bg_black_member").addClass("hidden")
+            $(".member_img").removeClass("member_img_css")
+            $(".photo_change").addClass("hidden")
+        })
+
+        // $(".member_img").attr("src", "./assets/image/Gold_Flow_image/member.jpg")
+
+        $(".img_sure").on("click", function () {
+            $(".bg_black_member_css").each(function () {
+                var img_src_attr = $(this).attr("src")
+                //  console.log(img_src_attr)
+                $.ajax({
+                    type: "PUT",
+                    url: 'http://localhost:3000/update/memberimg',
+                    data: {
+                        id: id,
+                        image: img_src_attr
+                    }
+                })
+                sessionStorage.setItem("member_src", img_src_attr)
+                $(".member_img").attr("src", img_src_attr)
+                $(".photo_change").addClass("hidden")
+                $(".member_img").removeClass("member_img_css")
+                $(".bg_black_member").addClass("hidden")
+            })
+            // console.log("1234")
         })
 
         // Car Parking 帳戶 
